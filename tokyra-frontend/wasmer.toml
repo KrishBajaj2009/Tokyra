@@ -1,0 +1,10 @@
+[package]
+name = "YOUR_WASMER_USERNAME/tokyra"
+version = "0.1.0"
+description = "Prompt Compressor frontend"
+
+[dependencies]
+"sharrattj/static-web-server" = "1"
+
+[fs]
+public = "dist"
