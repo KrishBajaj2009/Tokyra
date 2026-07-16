@@ -1,4 +1,0 @@
-kind: wasmer.io/App.v0
-owner: YOUR_WASMER_USERNAME
-name: tokyra-api
-package: .
