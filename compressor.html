@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Paste a prompt, see Tokyra cut it down — free, no signup.">
+<meta name="description" content="Paste a prompt, see Tokyra cut it down — free with a Tokyra account.">
 <meta name="theme-color" content="#0A0A0C">
 
 <link rel="icon" type="image/png" href="tokyra.png">
@@ -13,6 +13,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="auth.js" defer></script>
 
 <style>
   :root{
@@ -131,6 +134,46 @@
     border-radius:999px;
     white-space:nowrap;
   }
+
+  /* ---------- AUTH CONTROLS ---------- */
+  .auth-controls{ display:flex; align-items:center; gap:10px; }
+  .btn-sm{ padding:9px 16px; font-size:13.5px; }
+  .account-badge{
+    display:none;
+    align-items:center; gap:7px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--paper);
+    border:1px solid var(--hair);
+    padding:8px 14px 8px 12px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .account-badge::before{
+    content:"";
+    width:7px; height:7px; border-radius:50%;
+    background:var(--amber); flex:none;
+  }
+  @media (max-width:640px){
+    .auth-controls .btn-sm span.full{ display:none; }
+  }
+
+  /* ---------- GATE ---------- */
+  .gate-panel{ text-align:center; }
+  .gate-panel h3{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(24px,3vw,32px);
+    margin-bottom:14px;
+  }
+  .gate-panel p{
+    color:var(--paper-dim);
+    font-size:15.5px;
+    line-height:1.7;
+    max-width:48ch;
+    margin:0 auto 26px;
+  }
+  .gate-actions{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
 
   /* ---------- HERO ---------- */
   .hero{ padding:52px 0 20px; text-align:center; }
@@ -303,12 +346,18 @@
   <div class="nav-right">
     <a class="btn btn-outline" href="index.html">Back to Tokyra</a>
     <span class="badge-soft">Launching soon</span>
+    <div class="auth-controls">
+      <span class="account-badge" id="authAccountBadge"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="authLoginBtn">Log in</button>
+      <button type="button" class="btn btn-redline btn-sm" id="authSignupBtn"><span class="full">Sign </span>up</button>
+      <button type="button" class="btn btn-outline btn-sm" id="authLogoutBtn" style="display:none;">Log out</button>
+    </div>
   </div>
 </nav>
 
 <section class="hero">
   <div class="wrap">
-    <span class="eyebrow"><span class="dot"></span>Free Trial · No Signup Required</span>
+    <span class="eyebrow"><span class="dot"></span>Free with a Tokyra account</span>
     <h1>Paste a prompt.<br>Watch it shrink.</h1>
     <p class="lede">Tokyra rewrites it to use fewer tokens without losing meaning, facts, or instructions. See the before-and-after for yourself.</p>
   </div>
@@ -316,7 +365,7 @@
 
 <section class="compressor">
   <div class="wrap">
-    <div class="panel">
+    <div class="panel" id="compressorPanel" style="display:none;">
       <span class="panel-label">Your prompt</span>
       <textarea id="inputPrompt" placeholder="Paste your AI prompt here..."></textarea>
 
@@ -352,6 +401,15 @@
         </div>
       </div>
     </div>
+
+    <div class="panel gate-panel" id="authGate" style="display:none;">
+      <h3>Log in to use the compressor</h3>
+      <p>Tokyra accounts are free — creating one keeps this tool available for everyone while we're in early access.</p>
+      <div class="gate-actions">
+        <button type="button" class="btn btn-redline" id="gateSignupBtn">Create free account</button>
+        <button type="button" class="btn btn-outline" id="gateLoginBtn">Log in</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -371,7 +429,56 @@
 <footer>© 2026 Tokyra. All rights reserved.</footer>
 
 <script>
+// ---------- Account gate ----------
+// Both panels start hidden (display:none in the markup) so there's no
+// flash of the wrong one before Netlify Identity reports session state.
+// auth.js dispatches "tokyra:auth" on document whenever login state
+// changes (including once on page load).
+(function () {
+  var compressorPanel = document.getElementById("compressorPanel");
+  var authGate = document.getElementById("authGate");
+  var gateSignupBtn = document.getElementById("gateSignupBtn");
+  var gateLoginBtn = document.getElementById("gateLoginBtn");
+
+  function showForUser(user) {
+    var loggedIn = !!user;
+    compressorPanel.style.display = loggedIn ? "block" : "none";
+    authGate.style.display = loggedIn ? "none" : "block";
+  }
+
+  document.addEventListener("tokyra:auth", function (e) {
+    showForUser(e.detail.user);
+  });
+
+  if (gateSignupBtn) {
+    gateSignupBtn.addEventListener("click", function () {
+      if (window.netlifyIdentity) window.netlifyIdentity.open("signup");
+    });
+  }
+  if (gateLoginBtn) {
+    gateLoginBtn.addEventListener("click", function () {
+      if (window.netlifyIdentity) window.netlifyIdentity.open("login");
+    });
+  }
+
+  // Fallback: if the Identity widget fails to load for some reason,
+  // don't leave the page blank — default to showing the gate.
+  setTimeout(function () {
+    if (compressorPanel.style.display === "none" && authGate.style.display === "none") {
+      authGate.style.display = "block";
+    }
+  }, 2500);
+})();
+
 async function compressPrompt(){
+
+  // Defense in depth: the panel is hidden for logged-out visitors, but
+  // guard here too in case of stale state.
+  if (!window.netlifyIdentity || !window.netlifyIdentity.currentUser()) {
+    document.getElementById("compressorPanel").style.display = "none";
+    document.getElementById("authGate").style.display = "block";
+    return;
+  }
 
   const input = document.getElementById("inputPrompt").value;
   if(!input){ return; }
