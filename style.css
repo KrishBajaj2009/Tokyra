@@ -300,6 +300,17 @@ color:#777;
 
 }
 
+.panel{
+    width:100%;
+}
+
+.compressor-wrap{
+    width:100%;
+    max-width:none;
+    padding:0 3vw;
+    margin:0 auto;
+}
+
 
 
 
