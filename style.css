@@ -36,6 +36,8 @@ z-index:-1;
 
 
 
+/* NAV */
+
 nav{
 
 display:flex;
@@ -124,6 +126,9 @@ font-size:14px;
 
 
 
+/* HERO */
+
+
 .hero{
 
 min-height:75vh;
@@ -200,6 +205,9 @@ margin:auto;
 
 
 
+
+
+/* WAITLIST */
 
 
 .waitlist{
@@ -470,6 +478,9 @@ font-size:16px;
 
 
 
+/* CONTROLS */
+
+
 .controls{
 
 position:absolute;
@@ -632,6 +643,195 @@ font-size:14px;
 
 
 
+/* ================================
+TOKYRA FULL WIDTH COMPRESSOR
+================================ */
+
+
+.compressor{
+
+width:100%;
+
+padding:80px 0;
+
+}
+
+
+
+.compressor .container{
+
+max-width:none;
+
+width:100%;
+
+padding:0 3vw;
+
+}
+
+
+
+
+
+.compressor-panel{
+
+width:100%;
+
+background:#050505;
+
+border:1px solid #222;
+
+border-radius:35px;
+
+padding:55px;
+
+}
+
+
+
+
+
+textarea{
+
+width:100%;
+
+height:320px;
+
+resize:vertical;
+
+background:#0d0d0d;
+
+border:1px solid #222;
+
+border-radius:25px;
+
+padding:30px;
+
+color:white;
+
+font-size:18px;
+
+line-height:1.7;
+
+font-family:Inter,sans-serif;
+
+outline:none;
+
+}
+
+
+
+textarea:focus{
+
+border-color:white;
+
+}
+
+
+
+
+
+.compressor-output{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:35px;
+
+margin-top:40px;
+
+}
+
+
+
+.output-box{
+
+background:#0d0d0d;
+
+border:1px solid #222;
+
+border-radius:25px;
+
+padding:35px;
+
+min-height:350px;
+
+}
+
+
+
+.output-box h3{
+
+font-size:13px;
+
+text-transform:uppercase;
+
+color:#777;
+
+margin-bottom:20px;
+
+letter-spacing:2px;
+
+}
+
+
+
+.output-box p{
+
+font-size:17px;
+
+line-height:1.8;
+
+color:#aaa;
+
+}
+
+
+
+
+
+.compressor-stats{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:25px;
+
+margin-top:30px;
+
+}
+
+
+
+.compressor-stat{
+
+background:#0d0d0d;
+
+border:1px solid #222;
+
+border-radius:25px;
+
+padding:30px;
+
+text-align:center;
+
+}
+
+
+
+.compressor-stat span{
+
+font-size:38px;
+
+font-weight:700;
+
+}
+
+
+
+
+
 /* MOBILE */
 
 
@@ -641,24 +841,6 @@ font-size:14px;
 h1{
 
 font-size:48px;
-
-}
-
-
-
-.nav-right{
-
-gap:8px;
-
-}
-
-
-
-.header-btn{
-
-font-size:12px;
-
-padding:10px 14px;
 
 }
 
@@ -709,7 +891,9 @@ font-size:18px;
 
 
 .steps,
-.audience{
+.audience,
+.compressor-output,
+.compressor-stats{
 
 grid-template-columns:1fr;
 
@@ -721,6 +905,22 @@ input,
 button{
 
 width:100%;
+
+}
+
+
+
+.compressor-panel{
+
+padding:25px;
+
+}
+
+
+
+textarea{
+
+height:220px;
 
 }
 
