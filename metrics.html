@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="How Tokyra measures compression: compression ratio, fidelity, and a combined score — plus live numbers from the actual compressor.">
+<meta name="theme-color" content="#0A0A0C">
+
+<link rel="icon" type="image/png" href="tokyra.png">
+
+<title>Tokyra — Metrics</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="auth.js" defer></script>
+
+<style>
+  :root{
+    --ink:        #0A0A0C;
+    --ink-2:      #131418;
+    --ink-3:      #1D1F24;
+    --hair:       #2A2C31;
+    --paper:      #ECEDE8;
+    --paper-dim:  #B7B8B2;
+    --muted:      #86877F;
+    --redline:    #D6432E;
+    --redline-2:  #B93A28;
+    --redline-soft: rgba(214,67,46,0.14);
+    --amber:      #C9A227;
+    --amber-soft: rgba(201,162,39,0.14);
+
+    --display: 'Big Shoulders Display', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+
+    --max: 1120px;
+    --radius: 18px;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  body{
+    font-family:var(--body);
+    background:var(--ink);
+    color:var(--paper);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:
+      radial-gradient(circle at 18% 0%, rgba(214,67,46,0.07), transparent 40%),
+      radial-gradient(circle at 100% 20%, rgba(201,162,39,0.05), transparent 45%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  a{ color:inherit; }
+
+  :focus-visible{
+    outline:2px solid var(--amber);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 6vw; position:relative; z-index:1; }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:var(--muted);
+    border:1px solid var(--hair);
+    padding:7px 14px;
+    border-radius:999px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--redline); flex:none; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:relative; z-index:2;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:28px 6vw;
+    max-width:var(--max); margin:0 auto;
+  }
+  .logo{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:26px;
+    letter-spacing:-0.01em;
+  }
+  .logo span{ color:var(--redline); }
+  .nav-right{ display:flex; align-items:center; gap:14px; }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:12px 22px;
+    border-radius:999px;
+    font-size:14.5px;
+    font-weight:600;
+    text-decoration:none;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:transform .18s ease, background .18s ease, border-color .18s ease;
+    font-family:var(--body);
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn-primary{ background:var(--paper); color:#0A0A0C; }
+  .btn-primary:hover{ background:#fff; }
+  .btn-outline{ background:transparent; color:var(--paper); border-color:var(--hair); }
+  .btn-outline:hover{ border-color:var(--paper-dim); }
+  .btn-redline{ background:var(--redline); color:#fff; }
+  .btn-redline:hover{ background:var(--redline-2); }
+
+  .badge-soft{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+    border:1px solid var(--hair);
+    padding:8px 14px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+
+  /* ---------- AUTH CONTROLS ---------- */
+  .auth-controls{ display:flex; align-items:center; gap:10px; }
+  .btn-sm{ padding:9px 16px; font-size:13.5px; }
+  .account-badge{
+    display:none;
+    align-items:center; gap:7px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--paper);
+    border:1px solid var(--hair);
+    padding:8px 14px 8px 12px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .account-badge::before{
+    content:"";
+    width:7px; height:7px; border-radius:50%;
+    background:var(--amber); flex:none;
+  }
+  @media (max-width:640px){
+    .auth-controls .btn-sm span.full{ display:none; }
+    .nav-right .btn-outline.hide-sm{ display:none; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding:52px 0 20px; text-align:center; }
+  .hero .eyebrow{ margin-bottom:22px; }
+  h1{
+    font-family:var(--display);
+    font-weight:900;
+    font-size:clamp(40px, 6vw, 72px);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    margin-bottom:18px;
+  }
+  .hero p.lede{
+    font-size:17.5px;
+    line-height:1.7;
+    color:var(--paper-dim);
+    max-width:60ch;
+    margin:0 auto;
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section.block{ padding:76px 0; border-top:1px solid var(--hair); }
+  .block-head{ max-width:680px; margin-bottom:44px; }
+  .block-eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--redline);
+    margin-bottom:14px;
+    display:block;
+  }
+  .block-head h2{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(28px,3.6vw,42px);
+    line-height:1.08;
+    letter-spacing:-0.005em;
+  }
+  .block-head p{
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.7;
+    margin-top:14px;
+  }
+
+  /* ---------- METHODOLOGY CARDS ---------- */
+  .method-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .method-card{
+    background:var(--ink-2);
+    border:1px solid var(--hair);
+    border-radius:var(--radius);
+    padding:28px 26px;
+  }
+  .method-card .tag{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--redline);
+    margin-bottom:14px;
+    display:block;
+  }
+  .method-card h3{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:22px;
+    margin-bottom:10px;
+  }
+  .method-card p{ color:var(--muted); font-size:14.5px; line-height:1.65; }
+  .method-card code{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--paper-dim);
+    background:var(--ink-3);
+    padding:2px 6px;
+    border-radius:5px;
+  }
+
+  /* ---------- LIVE STATS ---------- */
+  .stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .stat-card{
+    background:var(--ink-2);
+    border:1px solid var(--hair);
+    border-radius:14px;
+    padding:26px;
+    text-align:center;
+  }
+  .stat-card h4{
+    font-family:var(--mono);
+    color:var(--muted);
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    margin-bottom:12px;
+    font-weight:600;
+  }
+  .stat-card .val{ font-family:var(--mono); font-size:34px; font-weight:600; color:var(--paper-dim); }
+  .stat-card.hl .val{ color:var(--amber); }
+  .stat-card .val.dash{ color:var(--hair); font-size:28px; }
+
+  .live-status{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--mono); font-size:12.5px; color:var(--muted);
+    margin-bottom:22px;
+  }
+  .live-dot{ width:7px; height:7px; border-radius:50%; background:var(--amber); flex:none; }
+  .live-dot.err{ background:var(--redline); }
+
+  .empty-note{
+    background:var(--ink-2);
+    border:1px dashed var(--hair);
+    border-radius:14px;
+    padding:26px;
+    color:var(--muted);
+    font-size:14.5px;
+    line-height:1.7;
+    text-align:center;
+  }
+
+  /* ---------- CASE STUDY (before/after) ---------- */
+  .proof-card{
+    background:var(--ink-2);
+    border:1px solid var(--hair);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .proof-grid{ display:grid; grid-template-columns:1fr 1fr; }
+  .proof-col{ padding:32px 32px; }
+  .proof-col + .proof-col{ border-left:1px dashed var(--hair); }
+  .proof-tag{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+    display:inline-block;
+  }
+  .proof-tag.before{ color:var(--muted); }
+  .proof-tag.after{ color:var(--amber); }
+  .proof-col p.body-text{ font-size:14.5px; line-height:1.7; }
+  .proof-col.before p.body-text{ color:var(--paper-dim); }
+  .proof-col.after p.body-text{ color:var(--paper); }
+  .proof-foot{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:18px 32px;
+    border-top:1px solid var(--hair);
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--muted);
+    flex-wrap:wrap; gap:10px;
+  }
+  .proof-foot strong{ color:var(--amber); font-weight:600; }
+  .proof-note{ margin-top:16px; color:var(--muted); font-size:13.5px; line-height:1.6; }
+
+  .cfs-row{ display:flex; gap:14px; flex-wrap:wrap; margin-top:20px; }
+  .cfs-pill{
+    font-family:var(--mono);
+    font-size:13px;
+    padding:9px 14px;
+    border-radius:8px;
+    border:1px solid var(--hair);
+    color:var(--paper-dim);
+  }
+  .cfs-pill b{ color:var(--paper); }
+
+  /* ---------- HONESTY NOTE ---------- */
+  .honesty-card{
+    background:var(--ink-2);
+    border:1px solid var(--hair);
+    border-left:3px solid var(--redline);
+    border-radius:14px;
+    padding:28px 30px;
+  }
+  .honesty-card p{ color:var(--paper-dim); font-size:15px; line-height:1.75; }
+  .honesty-card p + p{ margin-top:14px; }
+
+  /* ---------- CONTACT ---------- */
+  .contact{ border-top:1px solid var(--hair); padding:64px 0; text-align:center; }
+  .contact h2{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(26px,3.4vw,36px);
+    margin-bottom:16px;
+  }
+  .contact p{ color:var(--muted); font-size:16px; line-height:1.8; }
+  .contact a.mail{ color:var(--paper); text-decoration:underline; text-decoration-color:var(--hair); text-underline-offset:4px; }
+  .contact a.mail:hover{ text-decoration-color:var(--redline); }
+
+  footer{
+    border-top:1px solid var(--hair);
+    padding:26px 6vw;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    font-family:var(--mono);
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .method-grid{ grid-template-columns:1fr; }
+    .stat-grid{ grid-template-columns:1fr; }
+    .proof-grid{ grid-template-columns:1fr; }
+    .proof-col + .proof-col{ border-left:none; border-top:1px dashed var(--hair); }
+    section.block{ padding:56px 0; }
+    .nav-right .badge-soft{ display:none; }
+  }
+  @media (max-width:520px){
+    nav{ padding:22px 6vw; }
+  }
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="logo">Tok<span>y</span>ra</div>
+  <div class="nav-right">
+    <a class="btn btn-outline hide-sm" href="index.html">Back to Tokyra</a>
+    <a class="btn btn-outline" href="compressor.html">Try the compressor</a>
+    <span class="badge-soft">Launching soon</span>
+    <div class="auth-controls">
+      <span class="account-badge" id="authAccountBadge"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="authLoginBtn">Log in</button>
+      <button type="button" class="btn btn-redline btn-sm" id="authSignupBtn"><span class="full">Sign </span>up</button>
+      <button type="button" class="btn btn-outline btn-sm" id="authLogoutBtn" style="display:none;">Log out</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Measured, not marketed</span>
+    <h1>Metrics.</h1>
+    <p class="lede">How we actually score a compression, one verified example run end to end, and live numbers pulled straight from the compressor — not a highlight reel.</p>
+  </div>
+</header>
+
+<section class="block reveal" id="methodology">
+  <div class="wrap">
+    <div class="block-head">
+      <span class="block-eyebrow">How we score it</span>
+      <h2>Two numbers, combined one way.</h2>
+      <p>A shorter prompt is only a win if it still does the job. We score every compression on both axes and combine them so neither can be gamed alone.</p>
+    </div>
+    <div class="method-grid">
+      <div class="method-card">
+        <span class="tag">01 — Compression</span>
+        <h3>CR</h3>
+        <p>How much shorter the rewrite is. <code>CR = 1 − (tokens after / tokens before)</code>. Higher means more cut — but cutting everything scores 1.0 too, which is why CR never stands alone.</p>
+      </div>
+      <div class="method-card">
+        <span class="tag">02 — Fidelity</span>
+        <h3>F</h3>
+        <p>How much of the original's meaning and hard constraints survive — exact numbers, thresholds, emails, named entities, negations. Checked against the original, not self-graded by the model that did the compressing.</p>
+      </div>
+      <div class="method-card">
+        <span class="tag">03 — Combined</span>
+        <h3>CFS</h3>
+        <p>The harmonic mean of CR and F: <code>2·CR·F / (CR+F)</code>. Weighted so a strong score requires both — a compressor can't inflate CFS just by deleting more.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block reveal" id="live">
+  <div class="wrap">
+    <div class="block-head">
+      <span class="block-eyebrow">Live from the compressor</span>
+      <h2>Pulled from the API, on page load.</h2>
+      <p>Every run through the compressor now logs its own CR, F, and CFS. This section fetches that log directly — it updates as the tool gets used, and shows nothing until there's something real to show.</p>
+    </div>
+
+    <div class="live-status" id="liveStatus">
+      <span class="live-dot" id="liveDot"></span>
+      <span id="liveStatusText">Loading live stats…</span>
+    </div>
+
+    <div id="liveStatsContainer"></div>
+  </div>
+</section>
+
+<section class="block reveal" id="case-study">
+  <div class="wrap">
+    <div class="block-head">
+      <span class="block-eyebrow">A verified example</span>
+      <h2>One run, hand-checked in full.</h2>
+      <p>A customer-support system prompt, run through the live compressor, with the output checked against seven explicit hard constraints from the original — not sampled, not summarized, this is the actual pair.</p>
+    </div>
+
+    <div class="proof-card">
+      <div class="proof-grid">
+        <div class="proof-col before">
+          <span class="proof-tag before">Original — 1,028 characters</span>
+          <p class="body-text">Please could you kindly act as a helpful and friendly customer support assistant for our company... A few important rules to follow at all times: responses must never exceed 150 words. Always include the support email address, help@northstargear.com... Do not offer refunds for any order placed more than 30 days ago — instead, direct the customer to our warranty page. If a customer mentions the product name "TrailForge 2.0," always ask for their order number... Never make promises about shipping times faster than 5 business days.</p>
+        </div>
+        <div class="proof-col after">
+          <span class="proof-tag after">Tokyra rewrite — 304 characters</span>
+          <p class="body-text">Act as a polite, professional customer support assistant. Provide detailed answers ≤150 words. Include help@northstargear.com if unresolved. No refunds for orders &gt;30 days → warranty page. For "TrailForge 2.0" ask for order number first (batch recall). Never promise shipping faster than 5 business days.</p>
+        </div>
+      </div>
+      <div class="proof-foot">
+        <span>Estimated at ~4 characters per token</span>
+        <span><strong>−70%</strong> fewer tokens</span>
+      </div>
+    </div>
+
+    <div class="cfs-row">
+      <span class="cfs-pill">CR <b>70%</b></span>
+      <span class="cfs-pill">F <b>89%</b></span>
+      <span class="cfs-pill">CFS <b>79</b> / 100</span>
+    </div>
+    <p class="proof-note">F here means: of 9 atomic facts in the original (word limit, email, refund window, product name, recall trigger, shipping floor, etc.), 8 survived exactly. The one that didn't — the specific recall month — wasn't operational in the instructions to begin with, so it cost fidelity points without costing behavior. That distinction is why we check facts individually instead of eyeballing "does this look about right."</p>
+  </div>
+</section>
+
+<section class="block reveal" id="honesty">
+  <div class="wrap">
+    <div class="block-head">
+      <span class="block-eyebrow">What this page isn't</span>
+      <h2>The honest state of the data.</h2>
+    </div>
+    <div class="honesty-card">
+      <p>Tokyra is pre-launch. The live numbers above reflect actual API usage since scoring went live — at low volume, that's a handful of runs, not a benchmark suite. We're not going to round that up with a headline stat that implies more than we've measured.</p>
+      <p>As usage grows, this page grows with it — same live feed, more data behind it. If you want the methodology in more depth, or you're evaluating Tokyra against another tool and want the raw numbers, <a class="mail" href="mailto:tokyracompany@gmail.com">email us</a> and we'll share what we have.</p>
+    </div>
+  </div>
+</section>
+
+<section class="contact">
+  <div class="wrap">
+    <h2>Contact Tokyra</h2>
+    <p>
+      Questions, partnerships, or ideas?<br><br>
+      <a class="mail" href="mailto:tokyracompany@gmail.com">tokyracompany@gmail.com</a>
+    </p>
+    <div style="margin-top:26px;">
+      <a class="btn btn-primary" href="https://www.linkedin.com/company/tokyra" target="_blank" rel="noopener">Visit our LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Tokyra. All rights reserved.</footer>
+
+<script>
+  // ---------- Live stats ----------
+  // Pulls real aggregate data from the worker's /stats route. No values
+  // here are hardcoded — if the endpoint isn't deployed yet, or nothing
+  // has run yet, this shows an honest empty state instead of zeros.
+  const STATS_URL = "https://tokyra-compressor.tokyracompany.workers.dev/stats";
+
+  const liveDot = document.getElementById("liveDot");
+  const liveStatusText = document.getElementById("liveStatusText");
+  const container = document.getElementById("liveStatsContainer");
+
+  function pct(x){ return x === null || x === undefined ? null : Math.round(x * 100); }
+
+  function renderStats(data){
+    if(!data || !data.compressionsRun){
+      container.innerHTML = `
+        <div class="empty-note">
+          No compressions logged yet. This section will populate automatically
+          once the compressor has real runs behind it — nothing is pre-filled.
+        </div>
+      `;
+      return;
+    }
+
+    const avgF = pct(data.avgFidelity);
+    const avgCFS = pct(data.avgCFS);
+
+    container.innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-card">
+          <h4>Compressions run</h4>
+          <span class="val">${data.compressionsRun}</span>
+        </div>
+        <div class="stat-card">
+          <h4>Avg. compression</h4>
+          <span class="val">${data.avgCompressionPercent ?? "—"}%</span>
+        </div>
+        <div class="stat-card hl">
+          <h4>Avg. fidelity</h4>
+          <span class="val">${avgF !== null ? avgF + "%" : "—"}</span>
+        </div>
+        <div class="stat-card hl">
+          <h4>Avg. CFS</h4>
+          <span class="val">${avgCFS !== null ? avgCFS : "—"}</span>
+        </div>
+        <div class="stat-card">
+          <h4>Repair pass used</h4>
+          <span class="val">${data.repairRatePercent ?? "—"}%</span>
+        </div>
+        <div class="stat-card">
+          <h4>Fell back to original</h4>
+          <span class="val">${data.fallbackRatePercent ?? "—"}%</span>
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadStats(){
+    try{
+      const res = await fetch(STATS_URL, { method: "GET" });
+      if(!res.ok){ throw new Error("Stats endpoint returned " + res.status); }
+      const data = await res.json();
+      liveDot.classList.remove("err");
+      liveStatusText.textContent = "Live — refreshed on page load";
+      renderStats(data);
+    } catch(err){
+      console.log(err);
+      liveDot.classList.add("err");
+      liveStatusText.textContent = "Live stats unavailable right now";
+      container.innerHTML = `
+        <div class="empty-note">
+          Couldn't reach the stats endpoint. If you're setting this up: the
+          worker needs its /stats route deployed and a STATS KV namespace bound.
+        </div>
+      `;
+    }
+  }
+
+  loadStats();
+
+  // ---------- Gentle scroll-reveal, matches the rest of the site ----------
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll(".reveal").forEach(el => el.classList.add("reveal"));
+  if (!reduceMotion && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  } else {
+    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+  }
+</script>
+
+<style>
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+</style>
+
+</body>
+</html>
