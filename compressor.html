@@ -524,7 +524,10 @@ async function compressPrompt(){
 
   button.innerHTML = "Optimizing…";
   copy.classList.remove("show");
-  original.innerHTML = input;
+  // textContent, not innerHTML: this is raw user-typed text. Rendering it
+  // as HTML would let anyone who pastes markup (or gets tricked into
+  // pasting someone else's "magic prompt") run it in their own session.
+  original.textContent = input;
 
   output.innerHTML = `
     Analyzing prompt structure...
@@ -572,13 +575,16 @@ async function compressPrompt(){
     const optimizedPrompt = data.optimized;
     window.optimizedPrompt = optimizedPrompt;
 
-    output.innerHTML = "";
+    // textContent, not innerHTML: the compressed text can echo back
+    // fragments of whatever was pasted in, so treat it as plain text
+    // the same way the original-prompt box does above.
+    output.textContent = "";
 
     let i = 0;
 
     function typeText(){
       if(i < optimizedPrompt.length){
-        output.innerHTML += optimizedPrompt.charAt(i);
+        output.textContent += optimizedPrompt.charAt(i);
         i++;
         setTimeout(typeText, 30);
       } else {
