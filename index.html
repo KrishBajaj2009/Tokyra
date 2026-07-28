@@ -1,750 +1,1433 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Tokyra rewrites AI prompts to use fewer tokens without losing meaning, facts, or intent — lower API costs, faster responses.">
-<meta name="theme-color" content="#0A0A0C">
+
+<meta name="description" content="Tokyra compresses AI prompts to reduce token costs, improve latency, and optimize AI applications.">
+
+<meta name="theme-color" content="#050505">
 
 <link rel="icon" type="image/png" href="tokyra.png">
 
-<title>Tokyra — Cut the filler. Keep the meaning.</title>
+<title>Tokyra — Make every AI request cheaper.</title>
+
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
 <script src="auth.js" defer></script>
 
-<style>
-  :root{
-    --ink:        #0A0A0C;
-    --ink-2:      #131418;
-    --ink-3:      #1D1F24;
-    --hair:       #2A2C31;
-    --paper:      #ECEDE8;
-    --paper-dim:  #B7B8B2;
-    --muted:      #86877F;
-    --redline:    #D6432E;
-    --redline-2:  #B93A28;
-    --redline-soft: rgba(214,67,46,0.14);
-    --amber:      #C9A227;
-    --amber-soft: rgba(201,162,39,0.14);
 
-    --display: 'Big Shoulders Display', sans-serif;
-    --body: 'Inter', sans-serif;
-    --mono: 'IBM Plex Mono', monospace;
+<link rel="stylesheet" href="style.css">
 
-    --max: 1120px;
-    --radius: 18px;
-  }
-
-  *{ margin:0; padding:0; box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
-
-  @media (prefers-reduced-motion: reduce){
-    html{ scroll-behavior:auto; }
-    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
-  }
-
-  body{
-    font-family:var(--body);
-    background:var(--ink);
-    color:var(--paper);
-    -webkit-font-smoothing:antialiased;
-  }
-
-  body::before{
-    content:"";
-    position:fixed; inset:0;
-    background:
-      radial-gradient(circle at 18% 0%, rgba(214,67,46,0.07), transparent 40%),
-      radial-gradient(circle at 100% 20%, rgba(201,162,39,0.05), transparent 45%);
-    pointer-events:none;
-    z-index:0;
-  }
-
-  a{ color:inherit; }
-  img{ max-width:100%; display:block; }
-
-  :focus-visible{
-    outline:2px solid var(--amber);
-    outline-offset:3px;
-    border-radius:4px;
-  }
-
-  .wrap{ max-width:var(--max); margin:0 auto; padding:0 6vw; position:relative; z-index:1; }
-
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:8px;
-    font-family:var(--mono);
-    font-size:12.5px;
-    letter-spacing:0.09em;
-    text-transform:uppercase;
-    color:var(--muted);
-    border:1px solid var(--hair);
-    padding:7px 14px;
-    border-radius:999px;
-  }
-  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--redline); flex:none; }
-
-  /* ---------- NAV ---------- */
-  nav{
-    position:relative; z-index:2;
-    display:flex; justify-content:space-between; align-items:center;
-    padding:28px 6vw;
-    max-width:var(--max); margin:0 auto;
-  }
-  .logo{
-    font-family:var(--display);
-    font-weight:800;
-    font-size:26px;
-    letter-spacing:-0.01em;
-  }
-  .logo span{ color:var(--redline); }
-  .nav-right{ display:flex; align-items:center; gap:14px; }
-
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center;
-    padding:12px 22px;
-    border-radius:999px;
-    font-size:14.5px;
-    font-weight:600;
-    text-decoration:none;
-    cursor:pointer;
-    border:1px solid transparent;
-    transition:transform .18s ease, background .18s ease, border-color .18s ease;
-    font-family:var(--body);
-  }
-  .btn:hover{ transform:translateY(-2px); }
-  .btn-primary{ background:var(--paper); color:#0A0A0C; }
-  .btn-primary:hover{ background:#fff; }
-  .btn-outline{ background:transparent; color:var(--paper); border-color:var(--hair); }
-  .btn-outline:hover{ border-color:var(--paper-dim); }
-  .btn-redline{ background:var(--redline); color:#fff; }
-  .btn-redline:hover{ background:var(--redline-2); }
-
-  .badge-soft{
-    font-family:var(--mono);
-    font-size:12px;
-    color:var(--muted);
-    border:1px solid var(--hair);
-    padding:8px 14px;
-    border-radius:999px;
-    white-space:nowrap;
-  }
-
-  /* ---------- AUTH CONTROLS ---------- */
-  .auth-controls{ display:flex; align-items:center; gap:10px; }
-  .btn-sm{ padding:9px 16px; font-size:13.5px; }
-  .account-badge{
-    display:none;
-    align-items:center; gap:7px;
-    font-family:var(--mono);
-    font-size:12px;
-    color:var(--paper);
-    border:1px solid var(--hair);
-    padding:8px 14px 8px 12px;
-    border-radius:999px;
-    white-space:nowrap;
-  }
-  .account-badge::before{
-    content:"";
-    width:7px; height:7px; border-radius:50%;
-    background:var(--amber); flex:none;
-  }
-  @media (max-width:640px){
-    .auth-controls .btn-sm span.full{ display:none; }
-  }
-
-  /* ---------- HERO ---------- */
-  .hero{
-    padding:64px 0 40px;
-  }
-  .hero-grid{
-    display:grid;
-    grid-template-columns:1.05fr 0.95fr;
-    gap:64px;
-    align-items:center;
-  }
-
-  h1{
-    font-family:var(--display);
-    font-weight:900;
-    font-size:clamp(44px, 6.4vw, 84px);
-    line-height:0.98;
-    letter-spacing:-0.01em;
-    margin:22px 0 22px;
-  }
-  h1 .strike-word{
-    position:relative;
-    display:inline-block;
-    color:var(--paper-dim);
-  }
-  h1 .strike-word::after{
-    content:"";
-    position:absolute; left:-2%; right:-2%; top:52%;
-    height:0.08em;
-    background:var(--redline);
-    transform:scaleX(0);
-    transform-origin:left;
-    animation:draw-strike 0.7s 0.9s ease-out forwards;
-  }
-  @keyframes draw-strike{ to{ transform:scaleX(1); } }
-
-  .hero p.lede{
-    font-size:19px;
-    line-height:1.7;
-    color:var(--paper-dim);
-    max-width:46ch;
-  }
-
-  .hero-cta{ display:flex; gap:14px; margin-top:34px; flex-wrap:wrap; }
-
-  /* ---------- SIGNATURE: compression demo card ---------- */
-  .demo-card{
-    background:var(--ink-2);
-    border:1px solid var(--hair);
-    border-radius:var(--radius);
-    padding:30px 30px 26px;
-    position:relative;
-    overflow:hidden;
-  }
-  .demo-card::before{
-    content:"REDLINE";
-    position:absolute; top:16px; right:22px;
-    font-family:var(--mono);
-    font-size:11px;
-    letter-spacing:0.12em;
-    color:var(--hair);
-  }
-  .demo-label{
-    font-family:var(--mono);
-    font-size:11.5px;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    color:var(--muted);
-    margin-bottom:12px;
-  }
-  .demo-text{
-    font-size:16px;
-    line-height:1.75;
-    color:var(--paper-dim);
-    padding-bottom:22px;
-    border-bottom:1px dashed var(--hair);
-    margin-bottom:20px;
-  }
-  .demo-text .cut{
-    position:relative;
-    transition:color .5s ease;
-  }
-  .demo-text .cut::after{
-    content:"";
-    position:absolute; left:0; right:0; top:50%;
-    height:1.5px;
-    background:var(--redline);
-    transform:scaleX(0);
-    transform-origin:left;
-    transition:transform .5s ease;
-  }
-  .demo-card.is-struck .demo-text .cut{ color:#57585A; }
-  .demo-card.is-struck .demo-text .cut::after{ transform:scaleX(1); }
-  .demo-text .keep{ color:var(--paper); font-weight:500; }
-
-  .demo-result{
-    opacity:0; transform:translateY(8px);
-    transition:opacity .5s ease, transform .5s ease;
-  }
-  .demo-card.is-revealed .demo-result{ opacity:1; transform:none; }
-
-  .demo-result-text{
-    font-size:16px;
-    line-height:1.7;
-    color:var(--paper);
-    margin-bottom:18px;
-  }
-
-  .demo-stats{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
-  .token-pill{
-    font-family:var(--mono);
-    font-size:13px;
-    padding:8px 13px;
-    border-radius:8px;
-    border:1px solid var(--hair);
-    color:var(--paper-dim);
-    display:inline-flex; align-items:center; gap:8px;
-  }
-  .token-pill .n{ color:var(--paper); font-weight:600; }
-  .token-pill.cut-count .n{ color:#6b6c6e; text-decoration:line-through; text-decoration-color:var(--redline); }
-  .token-pill.keep-count .n{ color:var(--amber); }
-  .reduction-tag{
-    font-family:var(--mono);
-    font-size:13px;
-    font-weight:600;
-    color:var(--redline);
-    background:var(--redline-soft);
-    padding:8px 13px;
-    border-radius:8px;
-    opacity:0;
-    transition:opacity .5s ease .1s;
-  }
-  .demo-card.is-revealed .reduction-tag{ opacity:1; }
-
-  /* ---------- WAITLIST ---------- */
-  .waitlist{ padding:70px 0 30px; text-align:center; }
-  .waitlist h2{
-    font-family:var(--display);
-    font-weight:800;
-    font-size:clamp(30px,4vw,42px);
-    margin-bottom:10px;
-  }
-  .waitlist .sub{ color:var(--muted); font-size:15.5px; margin-bottom:26px; }
-
-  form.wl-form{
-    display:flex; justify-content:center; gap:12px; flex-wrap:wrap;
-  }
-  form.wl-form input{
-    width:340px; max-width:100%;
-    padding:16px 20px;
-    border-radius:999px;
-    border:1px solid var(--hair);
-    background:var(--ink-2);
-    color:var(--paper);
-    font-size:15.5px;
-    font-family:var(--body);
-  }
-  form.wl-form input::placeholder{ color:var(--muted); }
-  form.wl-form input:focus{ outline:none; border-color:var(--redline); }
-  form.wl-form button{
-    padding:16px 30px;
-    border:none;
-    border-radius:999px;
-    background:var(--paper);
-    color:#0A0A0C;
-    font-weight:700;
-    font-size:15.5px;
-    cursor:pointer;
-    transition:transform .18s ease, background .18s ease;
-    font-family:var(--body);
-  }
-  form.wl-form button:hover{ background:#fff; transform:translateY(-2px); }
-  .wl-msg{ margin-top:16px; color:var(--muted); font-size:14px; }
-  .wl-msg.ok{ color:var(--amber); }
-  .wl-msg.err{ color:var(--redline); }
-
-  /* ---------- SECTION SHELL ---------- */
-  section.block{ padding:86px 0; border-top:1px solid var(--hair); }
-  .block-head{ max-width:640px; margin-bottom:52px; }
-  .block-eyebrow{
-    font-family:var(--mono);
-    font-size:12px;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:var(--redline);
-    margin-bottom:14px;
-    display:block;
-  }
-  .block-head h2{
-    font-family:var(--display);
-    font-weight:800;
-    font-size:clamp(30px,4vw,46px);
-    line-height:1.06;
-    letter-spacing:-0.005em;
-  }
-  .block-head p{
-    color:var(--muted);
-    font-size:16.5px;
-    line-height:1.7;
-    margin-top:16px;
-  }
-
-  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
-  .reveal.in{ opacity:1; transform:none; }
-
-  /* ---------- HOW IT WORKS ---------- */
-  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
-  .step{
-    background:var(--ink-2);
-    border:1px solid var(--hair);
-    border-radius:var(--radius);
-    padding:32px 28px;
-  }
-  .step .num{
-    font-family:var(--mono);
-    font-size:13px;
-    color:var(--redline);
-    margin-bottom:18px;
-    display:block;
-  }
-  .step h3{
-    font-family:var(--display);
-    font-weight:800;
-    font-size:23px;
-    margin-bottom:12px;
-  }
-  .step p{ color:var(--muted); font-size:15px; line-height:1.65; }
-
-  /* ---------- PROOF / BEFORE-AFTER ---------- */
-  .proof-card{
-    background:var(--ink-2);
-    border:1px solid var(--hair);
-    border-radius:var(--radius);
-    overflow:hidden;
-  }
-  .proof-grid{ display:grid; grid-template-columns:1fr 1fr; }
-  .proof-col{ padding:34px 34px; }
-  .proof-col + .proof-col{ border-left:1px dashed var(--hair); }
-  .proof-tag{
-    font-family:var(--mono);
-    font-size:11.5px;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    margin-bottom:16px;
-    display:inline-block;
-  }
-  .proof-tag.before{ color:var(--muted); }
-  .proof-tag.after{ color:var(--amber); }
-  .proof-col p.body-text{ font-size:15.5px; line-height:1.75; }
-  .proof-col.before p.body-text{ color:#6b6c6e; text-decoration:line-through; text-decoration-color:var(--redline-2); text-decoration-thickness:1.5px; }
-  .proof-col.after p.body-text{ color:var(--paper); }
-  .proof-foot{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:18px 34px;
-    border-top:1px solid var(--hair);
-    font-family:var(--mono);
-    font-size:13px;
-    color:var(--muted);
-    flex-wrap:wrap; gap:10px;
-  }
-  .proof-foot strong{ color:var(--amber); font-weight:600; }
-
-  .proof-note{ margin-top:18px; color:var(--muted); font-size:13.5px; }
-
-  /* ---------- AUDIENCE ---------- */
-  .audience{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
-  .aud-card{
-    padding:30px 26px;
-    border:1px solid var(--hair);
-    border-radius:var(--radius);
-    transition:border-color .2s ease, transform .2s ease;
-  }
-  .aud-card:hover{ border-color:var(--paper-dim); transform:translateY(-4px); }
-  .aud-card h3{
-    font-family:var(--display);
-    font-weight:800;
-    font-size:21px;
-    margin-bottom:10px;
-  }
-  .aud-card p{ color:var(--muted); font-size:14.5px; line-height:1.65; }
-
-  /* ---------- CTA BAND ---------- */
-  .cta-band{
-    border-top:1px solid var(--hair);
-    padding:80px 0;
-    text-align:center;
-  }
-  .cta-band h2{
-    font-family:var(--display);
-    font-weight:800;
-    font-size:clamp(28px,4vw,40px);
-    margin-bottom:14px;
-  }
-  .cta-band p{ color:var(--muted); font-size:16px; margin-bottom:30px; }
-  .cta-actions{ display:flex; justify-content:center; gap:14px; flex-wrap:wrap; }
-
-  /* ---------- CONTACT ---------- */
-  .contact{ border-top:1px solid var(--hair); padding:64px 0; text-align:center; }
-  .contact h2{
-    font-family:var(--display);
-    font-weight:800;
-    font-size:clamp(26px,3.4vw,36px);
-    margin-bottom:16px;
-  }
-  .contact p{ color:var(--muted); font-size:16px; line-height:1.8; }
-  .contact a.mail{ color:var(--paper); text-decoration:underline; text-decoration-color:var(--hair); text-underline-offset:4px; }
-  .contact a.mail:hover{ text-decoration-color:var(--redline); }
-
-  footer{
-    border-top:1px solid var(--hair);
-    padding:26px 6vw;
-    text-align:center;
-    color:var(--muted);
-    font-size:13px;
-    font-family:var(--mono);
-  }
-
-  /* ---------- RESPONSIVE ---------- */
-  @media (max-width:920px){
-    .hero-grid{ grid-template-columns:1fr; gap:44px; }
-    .steps{ grid-template-columns:1fr; }
-    .audience{ grid-template-columns:1fr; }
-    .proof-grid{ grid-template-columns:1fr; }
-    .proof-col + .proof-col{ border-left:none; border-top:1px dashed var(--hair); }
-    section.block{ padding:64px 0; }
-    .nav-right .badge-soft{ display:none; }
-  }
-  @media (max-width:520px){
-    nav{ padding:22px 6vw; }
-    form.wl-form input, form.wl-form button{ width:100%; }
-  }
-</style>
 </head>
+
 
 <body>
 
+
+<!-- =========================
+NAVIGATION
+========================= -->
+
+
 <nav>
-  <div class="logo">Tok<span>y</span>ra</div>
 
-  <div class="nav-right">
-    <a class="btn btn-outline" href="compressor.html">
-      Try the compressor
-    </a>
 
-    <a class="btn btn-outline" href="metrics.html">
-      Metrics
-    </a>
+<div class="logo">
+Tok<span>y</span>ra
+</div>
 
-    <span class="badge-soft">
-      Launching soon
-    </span>
 
-    <div class="auth-controls">
-      <span class="account-badge" id="authAccountBadge"></span>
+<div class="nav-right">
 
-      <button 
-        type="button" 
-        class="btn btn-outline btn-sm" 
-        id="authLoginBtn">
-        Log in
-      </button>
 
-      <button 
-        type="button" 
-        class="btn btn-redline btn-sm" 
-        id="authSignupBtn">
-        <span class="full">Sign </span>up
-      </button>
+<a class="btn btn-outline" href="compressor.html">
+Try compressor
+</a>
 
-      <button 
-        type="button" 
-        class="btn btn-outline btn-sm" 
-        id="authLogoutBtn" 
-        style="display:none;">
-        Log out
-      </button>
-    </div>
-  </div>
+
+<a class="btn btn-outline" href="metrics.html">
+Metrics
+</a>
+
+
+<span class="badge">
+Launching soon
+</span>
+
+
+<div class="auth-controls">
+
+
+<span class="account-badge" id="authAccountBadge"></span>
+
+
+<button 
+class="btn btn-outline btn-sm"
+id="authLoginBtn">
+
+Log in
+
+</button>
+
+
+<button 
+class="btn btn-redline btn-sm"
+id="authSignupBtn">
+
+Sign up
+
+</button>
+
+
+<button
+class="btn btn-outline btn-sm"
+id="authLogoutBtn"
+style="display:none;">
+
+Log out
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
 </nav>
 
+
+
+
+<!-- =========================
+HERO
+========================= -->
+
+
 <header class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="eyebrow"><span class="dot"></span>Prompt compression for AI teams</span>
-      <h1>Cut the <span class="strike-word">filler.</span><br>Keep the meaning.</h1>
-      <p class="lede">Tokyra rewrites AI prompts to use fewer tokens without losing intent, facts, or instructions — so every API call costs less and comes back faster.</p>
-      <div class="hero-cta">
-        <a class="btn btn-redline" href="#waitlist">Join the waitlist</a>
-        <a class="btn btn-outline" href="compressor.html">Try it free</a>
-      </div>
-    </div>
 
-    <div class="demo-card" id="demoCard">
-      <div class="demo-label">Original prompt</div>
-      <p class="demo-text" id="demoText">
-        <span class="cut">Please could you kindly go ahead and write me a detailed and comprehensive </span><span class="keep">summary of the following article, </span><span class="cut">making sure to include every single </span><span class="keep">important point and </span><span class="cut">relevant </span><span class="keep">detail</span><span class="cut"> without leaving anything out.</span>
-      </p>
 
-      <div class="demo-result" id="demoResult">
-        <div class="demo-label">Tokyra rewrite</div>
-        <p class="demo-result-text">Summarize the following article, covering all key points and details.</p>
-        <div class="demo-stats">
-          <span class="token-pill cut-count">before <span class="n">53</span></span>
-          <span class="token-pill keep-count">after <span class="n">18</span></span>
-          <span class="reduction-tag">−66% tokens</span>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="container">
+
+
+<div class="tag">
+
+AI infrastructure for efficient models
+
+</div>
+
+
+
+<h1>
+
+Make every AI request
+<br>
+
+<span>cheaper and faster.</span>
+
+</h1>
+
+
+
+<p>
+
+Tokyra compresses prompts before they reach your models,
+reducing token usage while preserving instructions,
+context, and meaning.
+
+</p>
+
+
+
+<div style="margin-top:35px;display:flex;justify-content:center;gap:15px;flex-wrap:wrap;">
+
+
+<a class="btn btn-redline" href="compressor.html">
+
+Try Tokyra free
+
+</a>
+
+
+<a class="btn btn-outline" href="#waitlist">
+
+Join waitlist
+
+</a>
+
+
+</div>
+
+
+
+</div>
+
+
 </header>
+<!-- =========================
+PRODUCT DEMO
+========================= -->
+
+
+<section class="compressor-preview">
+
+<div class="compressor-preview-inner">
+
+
+<div class="preview-header">
+
+<span class="tag">
+Live compression engine
+</span>
+
+
+<h2>
+Your prompts.
+<br>
+Optimized before inference.
+</h2>
+
+
+<p>
+Tokyra removes unnecessary tokens while keeping
+the instructions your models actually need.
+</p>
+
+
+</div>
+
+
+
+<div class="demo-container">
+
+
+<div class="demo-column">
+
+
+<div class="demo-label">
+
+BEFORE TOKYRA
+
+</div>
+
+
+<div class="demo-box before">
+
+
+<p>
+
+Please could you kindly analyze the following
+information carefully and provide a detailed,
+comprehensive explanation while making sure
+that every important point is included and
+nothing relevant is missed.
+
+</p>
+
+
+<div class="demo-stat">
+
+~82 tokens
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="demo-arrow">
+
+↓
+
+</div>
+
+
+
+
+
+<div class="demo-column">
+
+
+<div class="demo-label">
+
+AFTER TOKYRA
+
+</div>
+
+
+<div class="demo-box after">
+
+
+<p>
+
+Analyze the information and provide a complete
+explanation covering all important points.
+
+</p>
+
+
+<div class="demo-stat highlight">
+
+~24 tokens
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+<div class="compression-result">
+
+
+<div>
+
+<strong>
+
+70%
+
+</strong>
+
+<span>
+
+fewer tokens
+
+</span>
+
+</div>
+
+
+
+<div>
+
+<strong>
+
+Lower
+
+</strong>
+
+<span>
+
+API costs
+
+</span>
+
+</div>
+
+
+
+<div>
+
+<strong>
+
+Faster
+
+</strong>
+
+<span>
+
+AI responses
+
+</span>
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+</section>
+
+
+
+
+
+<!-- =========================
+TRUST / PROOF
+========================= -->
+
+
+<section class="proof">
+
+
+<div class="proof-inner">
+
+
+<div class="section-heading">
+
+
+<span class="tag">
+
+Why token efficiency matters
+
+</span>
+
+
+<h2>
+
+AI costs scale with every word.
+
+</h2>
+
+
+<p>
+
+As AI applications grow, inefficient prompts
+create unnecessary compute, latency, and cost.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="metrics-grid">
+
+
+<div class="metric-card">
+
+
+<h3>
+
+Token Reduction
+
+</h3>
+
+
+<strong>
+
+50-80%
+
+</strong>
+
+
+<p>
+
+Typical reduction target from prompt optimization.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="metric-card">
+
+
+<h3>
+
+Meaning Retention
+
+</h3>
+
+
+<strong>
+
+99%
+
+</strong>
+
+
+<p>
+
+Preserving instructions, constraints, and intent.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="metric-card">
+
+
+<h3>
+
+Built For
+
+</h3>
+
+
+<strong>
+
+AI Apps
+
+</strong>
+
+
+<p>
+
+Agents, APIs, workflows, and production systems.
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+</section>
+<!-- =========================
+WHY TOKYRA
+========================= -->
+
+
+<section class="why-tokyra">
+
+
+<div class="section-inner">
+
+
+<div class="section-heading">
+
+
+<span class="tag">
+
+Why Tokyra
+
+</span>
+
+
+<h2>
+
+Every unnecessary token
+is wasted compute.
+
+</h2>
+
+
+<p>
+
+Modern AI systems process millions of tokens.
+Tokyra optimizes the input layer before models
+ever see the request.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="feature-grid">
+
+
+<div class="feature-card">
+
+
+<div class="feature-number">
+
+01
+
+</div>
+
+
+<h3>
+
+Reduce AI costs
+
+</h3>
+
+
+<p>
+
+Send smaller prompts to your models and lower
+the cost of every API request without changing
+your application.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="feature-card">
+
+
+<div class="feature-number">
+
+02
+
+</div>
+
+
+<h3>
+
+Increase speed
+
+</h3>
+
+
+<p>
+
+Fewer input tokens means less processing,
+faster responses, and improved user experience.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="feature-card">
+
+
+<div class="feature-number">
+
+03
+
+</div>
+
+
+<h3>
+
+Preserve intelligence
+
+</h3>
+
+
+<p>
+
+Tokyra keeps requirements, constraints,
+formatting, and important context intact.
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- =========================
+TECHNICAL SECTION
+========================= -->
+
+
+<section class="technical">
+
+
+<div class="section-inner">
+
+
+<div class="section-heading">
+
+
+<span class="tag">
+
+Built for developers
+
+</span>
+
+
+<h2>
+
+A compression layer
+between your app and AI models.
+
+</h2>
+
+
+<p>
+
+Drop Tokyra into existing AI workflows.
+No model changes. No infrastructure rewrite.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="architecture">
+
+
+<div class="architecture-box">
+
+
+<span>
+
+YOUR APPLICATION
+
+</span>
+
+
+<p>
+
+Agents<br>
+Chatbots<br>
+AI workflows<br>
+Enterprise tools
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="architecture-arrow">
+
+→
+
+</div>
+
+
+
+
+<div class="architecture-box tok">
+
+<span>
+
+TOKYRA
+
+</span>
+
+
+<p>
+
+Prompt analysis<br>
+Redundancy removal<br>
+Meaning preservation<br>
+Optimization
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="architecture-arrow">
+
+→
+
+</div>
+
+
+
+
+<div class="architecture-box">
+
+
+<span>
+
+AI MODELS
+
+</span>
+
+
+<p>
+
+GPT<br>
+Claude<br>
+Gemini<br>
+Llama
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- =========================
+USE CASES
+========================= -->
+
+
+<section class="use-cases">
+
+
+<div class="section-inner">
+
+
+<div class="section-heading">
+
+
+<span class="tag">
+
+Built for
+
+</span>
+
+
+<h2>
+
+Wherever AI usage becomes expensive.
+
+</h2>
+
+
+</div>
+
+
+
+
+<div class="use-grid">
+
+
+<div class="use-card">
+
+
+<h3>
+
+Developers
+
+</h3>
+
+
+<p>
+
+Optimize prompts automatically inside
+production AI applications.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="use-card">
+
+
+<h3>
+
+Startups
+
+</h3>
+
+
+<p>
+
+Extend runway by reducing inference costs
+before scaling usage.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="use-card">
+
+
+<h3>
+
+Enterprises
+
+</h3>
+
+
+<p>
+
+Standardize AI efficiency across teams
+and workflows.
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+<!-- =========================
+WAITLIST
+========================= -->
+
 
 <section class="waitlist" id="waitlist">
-  <div class="wrap">
-    <h2>Join the waitlist</h2>
-    <p class="sub">Free to try when your batch opens. One email, no spam.</p>
 
-    <form id="waitlist-form" class="wl-form">
-      <input type="email" name="email" placeholder="you@company.com" required>
-      <button type="submit">Join Tokyra</button>
-    </form>
-    <div id="message" class="wl-msg">Be the first to access Tokyra.</div>
-  </div>
+
+<div class="section-inner">
+
+
+<div class="section-heading center">
+
+
+<span class="tag">
+
+Early Access
+
+</span>
+
+
+<h2>
+
+Start optimizing your AI stack.
+
+</h2>
+
+
+<p>
+
+Join the Tokyra waitlist and get access
+when the next batch opens.
+
+</p>
+
+
+</div>
+
+
+
+
+<form id="waitlist-form">
+
+
+<input
+type="email"
+name="email"
+placeholder="you@company.com"
+required
+>
+
+
+<button type="submit">
+
+Join Tokyra
+
+</button>
+
+
+</form>
+
+
+
+<div id="message" class="small">
+
+Be one of the first teams using Tokyra.
+
+</div>
+
+
+</div>
+
+
 </section>
 
-<section class="block reveal" id="how">
-  <div class="wrap">
-    <div class="block-head">
-      <span class="block-eyebrow">How it works</span>
-      <h2>Three steps. Same answer, fewer tokens.</h2>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <span class="num">01</span>
-        <h3>Paste your prompt</h3>
-        <p>A system prompt, an agent instruction, a long context block — anything you'd normally send as-is.</p>
-      </div>
-      <div class="step">
-        <span class="num">02</span>
-        <h3>Tokyra rewrites it</h3>
-        <p>Filler, redundant phrasing, and unnecessary politeness get cut. Facts, constraints, and intent stay exactly as they were.</p>
-      </div>
-      <div class="step">
-        <span class="num">03</span>
-        <h3>Ship it for less</h3>
-        <p>Send the compressed version instead. Same quality response, fewer tokens billed, faster time to first token.</p>
-      </div>
-    </div>
-  </div>
+
+
+
+
+
+
+<!-- =========================
+FINAL CTA
+========================= -->
+
+
+<section class="final-cta">
+
+
+<div class="section-inner">
+
+
+<h2>
+
+Every token matters.
+
+</h2>
+
+
+<p>
+
+Optimize prompts before they become
+your biggest AI expense.
+
+</p>
+
+
+
+<div class="cta-buttons">
+
+
+<a class="btn btn-redline" href="compressor.html">
+
+Try Tokyra
+
+</a>
+
+
+
+<a class="btn btn-outline" href="#waitlist">
+
+Get Early Access
+
+</a>
+
+
+</div>
+
+
+</div>
+
+
 </section>
 
-<section class="block reveal" id="proof">
-  <div class="wrap">
-    <div class="block-head">
-      <span class="block-eyebrow">See it work</span>
-      <h2>A real system prompt, before and after.</h2>
-      <p>This is exactly what Tokyra does to text like this — nothing invented for the demo.</p>
-    </div>
 
-    <div class="proof-card">
-      <div class="proof-grid">
-        <div class="proof-col before">
-          <span class="proof-tag before">Before — 74 tokens (est.)</span>
-          <p class="body-text">You are an extremely helpful and friendly AI assistant. Please make sure to always be polite and courteous in your responses, and try your best to provide the most accurate and detailed information possible whenever a user asks you a question, no matter how complex or simple the question may be.</p>
-        </div>
-        <div class="proof-col after">
-          <span class="proof-tag after">After — 23 tokens (est.)</span>
-          <p class="body-text">You are a helpful AI assistant. Be accurate and detailed regardless of question complexity.</p>
-        </div>
-      </div>
-      <div class="proof-foot">
-        <span>Estimated at ~4 characters per token</span>
-        <span><strong>−69%</strong> fewer tokens, same instruction</span>
-      </div>
-    </div>
-    <p class="proof-note">Token counts are estimates — exact figures vary by model tokenizer. Try your own prompt with the free compressor.</p>
-  </div>
-</section>
 
-<section class="block reveal" id="built-for">
-  <div class="wrap">
-    <div class="block-head">
-      <span class="block-eyebrow">Built for</span>
-      <h2>Wherever tokens turn into a bill.</h2>
-    </div>
-    <div class="audience">
-      <div class="aud-card">
-        <h3>Developers</h3>
-        <p>Drop compression into your prompt pipeline and cut the token bill on every call, without rewriting your app logic.</p>
-      </div>
-      <div class="aud-card">
-        <h3>Startups</h3>
-        <p>Every dollar saved on inference is a dollar of runway. Compress at the edges before you scale usage, not after.</p>
-      </div>
-      <div class="aud-card">
-        <h3>Enterprises</h3>
-        <p>Standardize prompt efficiency across teams, without asking every engineer to become a prompt-compression expert.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="cta-band reveal">
-  <div class="wrap">
-    <h2>Every word earns its tokens.</h2>
-    <p>Try the compressor free, or get on the list for early access.</p>
-    <div class="cta-actions">
-      <a class="btn btn-redline" href="compressor.html">Try the compressor</a>
-      <a class="btn btn-outline" href="#waitlist">Join the waitlist</a>
-    </div>
-  </div>
-</section>
+
+
+
+<!-- =========================
+CONTACT
+========================= -->
+
 
 <section class="contact">
-  <div class="wrap">
-    <h2>Contact Tokyra</h2>
-    <p>
-      Questions, partnerships, or ideas?<br><br>
-      <a class="mail" href="mailto:tokyracompany@gmail.com">tokyracompany@gmail.com</a>
-    </p>
-    <div style="margin-top:26px;">
-      <a class="btn btn-primary" href="https://www.linkedin.com/company/tokyra" target="_blank" rel="noopener">Visit our LinkedIn</a>
-    </div>
-  </div>
+
+
+<div class="section-inner">
+
+
+<h2>
+
+Contact Tokyra
+
+</h2>
+
+
+
+<p>
+
+Questions, partnerships, or enterprise usage?
+
+<br><br>
+
+
+<a href="mailto:tokyracompany@gmail.com">
+
+tokyracompany@gmail.com
+
+</a>
+
+
+</p>
+
+
+
+
+<a 
+class="linkedin-btn"
+href="https://www.linkedin.com/company/tokyra"
+target="_blank"
+rel="noopener"
+>
+
+Visit our LinkedIn
+
+</a>
+
+
+</div>
+
+
 </section>
 
-<footer>© 2026 Tokyra. All rights reserved.</footer>
 
+
+
+
+
+
+<!-- =========================
+FOOTER
+========================= -->
+
+
+<footer>
+
+
+© 2026 Tokyra.
+All rights reserved.
+
+
+</footer>
 <script>
-  // Waitlist form — unchanged Formspree integration
-  const form = document.getElementById("waitlist-form");
-  const message = document.getElementById("message");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const data = new FormData(form);
-    message.className = "wl-msg";
-    message.textContent = "Sending…";
-    try {
-      const response = await fetch("https://formspree.io/f/xdaqawll", {
-        method: "POST",
-        body: data,
-        headers: { "Accept": "application/json" }
-      });
-      if (response.ok) {
-        message.className = "wl-msg ok";
-        message.textContent = "✓ You're on the Tokyra waitlist.";
-        form.reset();
-      } else {
-        message.className = "wl-msg err";
-        message.textContent = "Something went wrong. Try again.";
-      }
-    } catch {
-      message.className = "wl-msg err";
-      message.textContent = "Something went wrong. Try again.";
-    }
-  });
 
-  // Hero signature: reveal the strike-through + rewrite once, on load
-  // (not looped — respects prefers-reduced-motion by skipping straight
-  // to the end state).
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const demoCard = document.getElementById("demoCard");
+/* =========================
+WAITLIST FORM
+========================= */
 
-  function playDemo() {
-    if (reduceMotion) {
-      demoCard.classList.add("is-struck", "is-revealed");
-      return;
-    }
-    setTimeout(() => demoCard.classList.add("is-struck"), 500);
-    setTimeout(() => demoCard.classList.add("is-revealed"), 1500);
-  }
-  playDemo();
 
-  // Gentle scroll-reveal for section blocks
-  if (!reduceMotion && "IntersectionObserver" in window) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in");
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-  } else {
-    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
-  }
+const form = document.getElementById("waitlist-form");
+
+const message = document.getElementById("message");
+
+
+if(form){
+
+form.addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+
+const data = new FormData(form);
+
+
+message.className="small";
+
+message.textContent="Sending...";
+
+
+try{
+
+
+const response = await fetch(
+"https://formspree.io/f/xdaqawll",
+{
+
+method:"POST",
+
+body:data,
+
+headers:{
+"Accept":"application/json"
+}
+
+}
+);
+
+
+
+if(response.ok){
+
+
+message.textContent=
+"✓ You're on the Tokyra waitlist.";
+
+
+form.reset();
+
+
+}
+
+else{
+
+
+message.textContent=
+"Something went wrong. Try again.";
+
+
+}
+
+
+}
+
+catch(error){
+
+
+message.textContent=
+"Something went wrong. Try again.";
+
+
+}
+
+
+});
+
+
+}
+
+
+
+
+
+/* =========================
+SCROLL REVEALS
+========================= */
+
+
+const observer =
+new IntersectionObserver(
+(entries)=>{
+
+
+entries.forEach(entry=>{
+
+
+if(entry.isIntersecting){
+
+
+entry.target.classList.add("in");
+
+
+observer.unobserve(entry.target);
+
+
+}
+
+
+});
+
+
+},
+{
+threshold:.15
+}
+);
+
+
+
+document
+.querySelectorAll(
+".feature-card,.metric-card,.use-card,.architecture-box,.section-heading"
+)
+.forEach(
+(el)=>observer.observe(el)
+);
+
+
+
+
+
+
+/* =========================
+NETLIFY IDENTITY
+========================= */
+
+
+(function(){
+
+
+function updateAuth(user){
+
+
+const badge =
+document.getElementById(
+"authAccountBadge"
+);
+
+
+const login =
+document.getElementById(
+"authLoginBtn"
+);
+
+
+const signup =
+document.getElementById(
+"authSignupBtn"
+);
+
+
+const logout =
+document.getElementById(
+"authLogoutBtn"
+);
+
+
+
+if(!badge)
+return;
+
+
+
+if(user){
+
+
+badge.style.display="inline-flex";
+
+
+badge.textContent =
+(user.email || "")
+.split("@")[0];
+
+
+
+if(login)
+login.style.display="none";
+
+
+if(signup)
+signup.style.display="none";
+
+
+if(logout)
+logout.style.display="inline-flex";
+
+
+}
+
+
+else{
+
+
+badge.style.display="none";
+
+
+if(login)
+login.style.display="inline-flex";
+
+
+if(signup)
+signup.style.display="inline-flex";
+
+
+if(logout)
+logout.style.display="none";
+
+
+}
+
+
+}
+
+
+
+if(window.netlifyIdentity){
+
+
+window.netlifyIdentity.on(
+"init",
+updateAuth
+);
+
+
+window.netlifyIdentity.on(
+"login",
+function(user){
+
+updateAuth(user);
+
+window.netlifyIdentity.close();
+
+}
+);
+
+
+
+window.netlifyIdentity.on(
+"logout",
+function(){
+
+updateAuth(null);
+
+}
+);
+
+
+
+}
+
+
+})();
+
+
+
+
+
+
+/* =========================
+HERO LOAD ANIMATION
+========================= */
+
+
+window.addEventListener(
+"load",
+()=>{
+
+
+document
+.querySelector(".hero")
+?.classList.add("loaded");
+
+
+}
+);
+
+
+
 </script>
-
-</body>
-</html>
