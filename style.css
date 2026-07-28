@@ -5,19 +5,38 @@ box-sizing:border-box;
 scroll-behavior:smooth;
 }
 
+:root{
+
+--bg:#050505;
+--surface:#0b0b0b;
+--surface2:#111;
+--border:#222;
+
+--text:#fff;
+--muted:#9a9a9a;
+
+--accent:#ffffff;
+--red:#d6432e;
+
+--radius:24px;
+
+--font:"Inter",sans-serif;
+}
+
 
 body{
 
-font-family:Inter,sans-serif;
+font-family:var(--font);
 
-background:#000;
+background:var(--bg);
 
-color:white;
+color:var(--text);
 
 overflow-x:hidden;
 
-}
+-webkit-font-smoothing:antialiased;
 
+}
 
 
 body::before{
@@ -28,15 +47,40 @@ position:fixed;
 
 inset:0;
 
-background:radial-gradient(circle at top,#202020,transparent 45%);
+background:
+radial-gradient(circle at 20% 0%,rgba(255,255,255,.08),transparent 35%),
+radial-gradient(circle at 90% 20%,rgba(214,67,46,.08),transparent 40%);
+
+pointer-events:none;
 
 z-index:-1;
 
 }
 
 
+a{
 
-/* NAV */
+color:inherit;
+
+text-decoration:none;
+
+}
+
+
+button,
+input,
+textarea{
+
+font-family:inherit;
+
+}
+
+
+
+/* =========================
+NAVIGATION
+========================= */
+
 
 nav{
 
@@ -46,22 +90,31 @@ justify-content:space-between;
 
 align-items:center;
 
-padding:25px 8%;
+padding:28px 6vw;
+
+max-width:1300px;
+
+margin:auto;
 
 }
-
 
 
 .logo{
 
-font-size:30px;
+font-size:32px;
 
-font-weight:700;
+font-weight:800;
 
-letter-spacing:-1px;
+letter-spacing:-1.5px;
 
 }
 
+
+.logo span{
+
+color:var(--red);
+
+}
 
 
 .nav-right{
@@ -70,7 +123,43 @@ display:flex;
 
 align-items:center;
 
-gap:15px;
+gap:14px;
+
+}
+
+
+
+.header-btn,
+.btn{
+
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+padding:12px 24px;
+
+border-radius:999px;
+
+font-size:14px;
+
+font-weight:700;
+
+border:1px solid transparent;
+
+cursor:pointer;
+
+transition:.25s ease;
+
+}
+
+
+
+.header-btn:hover,
+.btn:hover{
+
+transform:translateY(-3px);
 
 }
 
@@ -78,21 +167,9 @@ gap:15px;
 
 .header-btn{
 
-padding:12px 22px;
-
-border-radius:999px;
-
 background:white;
 
 color:black;
-
-font-size:14px;
-
-font-weight:700;
-
-text-decoration:none;
-
-transition:.3s;
 
 }
 
@@ -102,7 +179,43 @@ transition:.3s;
 
 background:#ddd;
 
-transform:translateY(-3px);
+}
+
+
+
+.btn-outline{
+
+background:transparent;
+
+border-color:#333;
+
+color:white;
+
+}
+
+
+
+.btn-outline:hover{
+
+border-color:#777;
+
+}
+
+
+
+.btn-redline{
+
+background:#d6432e;
+
+color:white;
+
+}
+
+
+
+.btn-redline:hover{
+
+background:#b93a28;
 
 }
 
@@ -112,21 +225,23 @@ transform:translateY(-3px);
 
 border:1px solid #333;
 
-padding:9px 17px;
+padding:9px 16px;
 
 border-radius:999px;
 
-color:#aaa;
+color:#888;
 
-font-size:14px;
+font-size:13px;
+
+font-family:"IBM Plex Mono",monospace;
 
 }
 
 
 
-
-
-/* HERO */
+/* =========================
+HERO
+========================= */
 
 
 .hero{
@@ -135,11 +250,11 @@ min-height:75vh;
 
 display:flex;
 
-justify-content:center;
-
 align-items:center;
 
-padding:45px 8% 25px;
+justify-content:center;
+
+padding:60px 6vw 30px;
 
 }
 
@@ -147,7 +262,9 @@ padding:45px 8% 25px;
 
 .container{
 
-max-width:1000px;
+max-width:1100px;
+
+width:100%;
 
 text-align:center;
 
@@ -157,19 +274,41 @@ text-align:center;
 
 .tag{
 
-display:inline-block;
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
 
 border:1px solid #333;
 
-padding:9px 16px;
+padding:9px 17px;
 
 border-radius:999px;
 
-color:#aaa;
+color:#999;
 
-font-size:14px;
+font-size:13px;
 
-margin-bottom:25px;
+margin-bottom:28px;
+
+font-family:"IBM Plex Mono",monospace;
+
+}
+
+
+
+.tag::before{
+
+content:"";
+
+width:7px;
+
+height:7px;
+
+background:#d6432e;
+
+border-radius:50%;
 
 }
 
@@ -177,13 +316,15 @@ margin-bottom:25px;
 
 h1{
 
-font-size:78px;
+font-size:clamp(48px,7vw,88px);
 
-line-height:1.05;
+line-height:1;
 
 letter-spacing:-5px;
 
-margin-bottom:25px;
+font-weight:900;
+
+margin-bottom:28px;
 
 }
 
@@ -191,38 +332,49 @@ margin-bottom:25px;
 
 .hero p{
 
+max-width:850px;
+
+margin:auto;
+
 font-size:21px;
 
 line-height:1.7;
 
 color:#aaa;
 
-max-width:850px;
-
-margin:auto;
-
 }
-
-
-
-
-
-/* WAITLIST */
+/* =========================
+WAITLIST
+========================= */
 
 
 .waitlist{
 
-margin-top:40px;
+padding:50px 6vw 70px;
+
+text-align:center;
 
 }
 
 
-
 .waitlist h2{
 
-font-size:32px;
+font-size:38px;
 
-margin-bottom:20px;
+letter-spacing:-1.5px;
+
+margin-bottom:15px;
+
+}
+
+
+.waitlist .small{
+
+margin-top:16px;
+
+color:#777;
+
+font-size:14px;
 
 }
 
@@ -233,6 +385,8 @@ form{
 display:flex;
 
 justify-content:center;
+
+align-items:center;
 
 gap:12px;
 
@@ -258,6 +412,16 @@ color:white;
 
 font-size:16px;
 
+outline:none;
+
+}
+
+
+
+input:focus{
+
+border-color:white;
+
 }
 
 
@@ -266,17 +430,21 @@ button{
 
 padding:17px 32px;
 
-border:none;
-
 border-radius:999px;
 
+border:none;
+
 background:white;
+
+color:black;
+
+font-size:16px;
 
 font-weight:700;
 
 cursor:pointer;
 
-transition:.3s;
+transition:.25s ease;
 
 }
 
@@ -292,47 +460,91 @@ transform:translateY(-3px);
 
 
 
-.small{
+/* =========================
+GLOBAL SECTION CONTAINER
+========================= */
 
-margin-top:15px;
 
-color:#777;
+section{
 
-}
+position:relative;
 
-.panel{
-    width:100%;
-}
-
-.compressor-wrap{
-    width:100%;
-    max-width:none;
-    padding:0 3vw;
-    margin:0 auto;
 }
 
 
 
+.block{
+
+max-width:1300px;
+
+margin:auto;
+
+padding:90px 6vw;
+
+border-top:1px solid #1d1d1d;
+
+}
 
 
-/* SLIDE DECK */
+
+.block-title{
+
+max-width:700px;
+
+margin-bottom:50px;
+
+}
+
+
+
+.block-title h2{
+
+font-size:clamp(36px,5vw,60px);
+
+letter-spacing:-3px;
+
+line-height:1;
+
+margin-bottom:20px;
+
+}
+
+
+
+.block-title p{
+
+font-size:19px;
+
+line-height:1.7;
+
+color:#999;
+
+}
+
+
+
+
+
+/* =========================
+SLIDE DECK
+========================= */
 
 
 .deck{
 
-max-width:1150px;
+max-width:1200px;
 
 height:560px;
 
-margin:60px auto 0;
+margin:60px auto;
 
 position:relative;
 
 overflow:hidden;
 
-border:1px solid #222;
-
 border-radius:35px;
+
+border:1px solid #222;
 
 background:#050505;
 
@@ -358,7 +570,7 @@ opacity:0;
 
 transform:translateX(40px);
 
-transition:.5s ease;
+transition:.45s ease;
 
 }
 
@@ -368,7 +580,7 @@ transition:.5s ease;
 
 opacity:1;
 
-transform:translateX(0);
+transform:none;
 
 }
 
@@ -376,11 +588,11 @@ transform:translateX(0);
 
 .slide h2{
 
-font-size:58px;
+font-size:60px;
 
 letter-spacing:-3px;
 
-margin-bottom:30px;
+margin-bottom:25px;
 
 }
 
@@ -392,7 +604,7 @@ font-size:22px;
 
 line-height:1.7;
 
-color:#aaa;
+color:#999;
 
 max-width:850px;
 
@@ -406,12 +618,17 @@ margin-top:35px;
 
 font-size:32px;
 
-font-weight:700;
+font-weight:800;
 
 }
 
 
 
+
+
+/* =========================
+STEP CARDS
+========================= */
 
 
 .steps,
@@ -421,9 +638,7 @@ display:grid;
 
 grid-template-columns:repeat(3,1fr);
 
-gap:20px;
-
-margin-top:30px;
+gap:24px;
 
 }
 
@@ -432,15 +647,15 @@ margin-top:30px;
 .steps div,
 .audience div{
 
-background:#0d0d0d;
+background:#0b0b0b;
 
 border:1px solid #222;
 
-border-radius:25px;
+border-radius:26px;
 
-padding:30px;
+padding:32px;
 
-transition:.3s;
+transition:.25s ease;
 
 }
 
@@ -449,7 +664,9 @@ transition:.3s;
 .steps div:hover,
 .audience div:hover{
 
-transform:translateY(-5px);
+transform:translateY(-6px);
+
+border-color:#444;
 
 background:#111;
 
@@ -459,9 +676,11 @@ background:#111;
 
 .steps span{
 
+font-size:13px;
+
 color:#666;
 
-font-size:13px;
+font-family:"IBM Plex Mono",monospace;
 
 }
 
@@ -470,9 +689,11 @@ font-size:13px;
 .steps h3,
 .audience h3{
 
-font-size:24px;
+font-size:26px;
 
-margin:15px 0;
+letter-spacing:-1px;
+
+margin:18px 0 12px;
 
 }
 
@@ -483,56 +704,139 @@ margin:15px 0;
 
 font-size:16px;
 
-}
+line-height:1.7;
 
-
-
-
-
-/* CONTROLS */
-
-
-.controls{
-
-position:absolute;
-
-bottom:25px;
-
-right:35px;
-
-display:flex;
-
-gap:12px;
+color:#999;
 
 }
 
 
 
-.controls button{
+/* =========================
+GENERIC FEATURE CARDS
+========================= */
 
-width:50px;
 
-height:50px;
+.card-grid{
 
-padding:0;
+display:grid;
 
-border-radius:50%;
+grid-template-columns:repeat(3,1fr);
 
-font-size:20px;
+gap:25px;
 
 }
 
 
 
-.controls button:disabled{
+.card{
 
-background:#333;
+background:#0b0b0b;
+
+border:1px solid #222;
+
+border-radius:28px;
+
+padding:35px;
+
+transition:.25s;
+
+}
+
+
+
+.card:hover{
+
+transform:translateY(-5px);
+
+border-color:#555;
+
+}
+
+
+
+.card h3{
+
+font-size:24px;
+
+margin-bottom:15px;
+
+}
+
+
+
+.card p{
+
+color:#999;
+
+line-height:1.7;
+
+font-size:16px;
+
+}
+/* =========================
+TOKYRA COMPRESSOR
+========================= */
+
+
+.compressor{
+
+width:100%;
+
+padding:90px 0;
+
+}
+
+
+
+.compressor-wrap{
+
+width:100%;
+
+max-width:1400px;
+
+padding:0 4vw;
+
+margin:auto;
+
+}
+
+
+
+.panel,
+.compressor-panel{
+
+width:100%;
+
+background:#070707;
+
+border:1px solid #222;
+
+border-radius:35px;
+
+padding:55px;
+
+box-shadow:0 20px 80px rgba(0,0,0,.35);
+
+}
+
+
+
+.panel-label{
+
+display:block;
+
+font-family:"IBM Plex Mono",monospace;
+
+font-size:12px;
+
+letter-spacing:2px;
+
+text-transform:uppercase;
 
 color:#777;
 
-cursor:not-allowed;
-
-transform:none;
+margin-bottom:18px;
 
 }
 
@@ -540,20 +844,439 @@ transform:none;
 
 
 
-/* CONTACT */
+/* INPUT AREA */
+
+
+textarea{
+
+width:100%;
+
+height:330px;
+
+resize:vertical;
+
+background:#101010;
+
+border:1px solid #252525;
+
+border-radius:25px;
+
+padding:30px;
+
+color:white;
+
+font-size:18px;
+
+line-height:1.7;
+
+outline:none;
+
+transition:.25s ease;
+
+}
+
+
+
+textarea::placeholder{
+
+color:#666;
+
+}
+
+
+
+textarea:focus{
+
+border-color:#777;
+
+box-shadow:0 0 0 3px rgba(255,255,255,.04);
+
+}
+
+
+
+
+
+/* ACTION BUTTON */
+
+
+.action{
+
+display:flex;
+
+justify-content:center;
+
+margin-top:28px;
+
+}
+
+
+
+.action button{
+
+background:#d6432e;
+
+color:white;
+
+}
+
+
+
+.action button:hover{
+
+background:#b93a28;
+
+}
+
+
+
+
+
+/* =========================
+OUTPUT
+========================= */
+
+
+.output,
+.compressor-output{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:30px;
+
+margin-top:45px;
+
+}
+
+
+
+.box,
+.output-box{
+
+background:#101010;
+
+border:1px solid #222;
+
+border-radius:26px;
+
+padding:35px;
+
+min-height:360px;
+
+}
+
+
+
+.box h3,
+.output-box h3{
+
+font-family:"IBM Plex Mono",monospace;
+
+font-size:12px;
+
+letter-spacing:2px;
+
+text-transform:uppercase;
+
+color:#777;
+
+margin-bottom:22px;
+
+}
+
+
+
+.box:last-child h3,
+.output-box:last-child h3{
+
+color:#c9a227;
+
+}
+
+
+
+.text,
+.output-box p{
+
+font-size:17px;
+
+line-height:1.8;
+
+color:#aaa;
+
+white-space:pre-wrap;
+
+}
+
+
+
+.box:last-child .text{
+
+color:white;
+
+}
+
+
+
+
+
+/* COPY BUTTON */
+
+
+.copy-btn{
+
+display:none;
+
+margin-top:25px;
+
+}
+
+
+
+.copy-btn.show{
+
+display:inline-flex;
+
+}
+
+
+
+
+
+/* =========================
+TOKEN STATS
+========================= */
+
+
+.stats,
+.compressor-stats{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:25px;
+
+margin-top:35px;
+
+}
+
+
+
+.stat,
+.compressor-stat{
+
+background:#101010;
+
+border:1px solid #222;
+
+border-radius:25px;
+
+padding:30px;
+
+text-align:center;
+
+}
+
+
+
+.stat h4,
+.compressor-stat h4{
+
+font-family:"IBM Plex Mono",monospace;
+
+font-size:12px;
+
+text-transform:uppercase;
+
+letter-spacing:2px;
+
+color:#777;
+
+margin-bottom:15px;
+
+}
+
+
+
+.stat span,
+.compressor-stat span{
+
+font-size:40px;
+
+font-weight:800;
+
+letter-spacing:-2px;
+
+}
+
+
+
+.stat.after span{
+
+color:#c9a227;
+
+}
+
+
+
+.stat.saved span{
+
+color:#d6432e;
+
+}
+
+
+
+
+
+/* =========================
+AUTH GATE
+========================= */
+
+
+.gate-panel{
+
+text-align:center;
+
+}
+
+
+
+.gate-panel h3{
+
+font-size:42px;
+
+letter-spacing:-2px;
+
+margin-bottom:20px;
+
+}
+
+
+
+.gate-panel p{
+
+max-width:550px;
+
+margin:0 auto 30px;
+
+font-size:18px;
+
+line-height:1.7;
+
+color:#999;
+
+}
+
+
+
+.gate-actions{
+
+display:flex;
+
+justify-content:center;
+
+gap:15px;
+
+flex-wrap:wrap;
+
+}
+
+
+
+
+
+/* =========================
+LIMIT MESSAGE
+========================= */
+
+
+.limit-msg{
+
+background:rgba(214,67,46,.1);
+
+border:1px solid #d6432e;
+
+border-radius:25px;
+
+padding:45px;
+
+text-align:center;
+
+}
+
+
+
+.limit-msg h3{
+
+font-size:34px;
+
+margin-bottom:15px;
+
+}
+
+
+
+.limit-msg p{
+
+color:#aaa;
+
+line-height:1.7;
+
+margin-bottom:8px;
+
+}
+
+
+
+
+
+.cursor{
+
+display:inline-block;
+
+color:#c9a227;
+
+animation:blink 1s infinite;
+
+}
+
+
+
+@keyframes blink{
+
+0%,50%{
+
+opacity:1;
+
+}
+
+51%,100%{
+
+opacity:0;
+
+}
+
+}
+/* =========================
+CONTACT
+========================= */
 
 
 .contact{
 
-max-width:1100px;
+max-width:1200px;
 
-margin:0 auto;
+margin:auto;
 
-padding:45px 8% 35px;
+padding:80px 6vw 50px;
 
 text-align:center;
 
-border-top:1px solid #222;
+border-top:1px solid #1d1d1d;
 
 }
 
@@ -561,7 +1284,7 @@ border-top:1px solid #222;
 
 .contact h2{
 
-font-size:42px;
+font-size:48px;
 
 letter-spacing:-2px;
 
@@ -575,9 +1298,9 @@ margin-bottom:20px;
 
 font-size:20px;
 
-line-height:1.7;
+line-height:1.8;
 
-color:#aaa;
+color:#999;
 
 }
 
@@ -586,8 +1309,6 @@ color:#aaa;
 .contact a{
 
 color:white;
-
-text-decoration:none;
 
 }
 
@@ -601,9 +1322,9 @@ align-items:center;
 
 justify-content:center;
 
-margin-top:25px;
+margin-top:30px;
 
-padding:15px 32px;
+padding:16px 35px;
 
 border-radius:999px;
 
@@ -613,7 +1334,7 @@ color:black !important;
 
 font-weight:700;
 
-transition:.3s;
+transition:.25s ease;
 
 }
 
@@ -631,169 +1352,24 @@ transform:translateY(-3px);
 
 
 
-/* FOOTER */
+/* =========================
+FOOTER
+========================= */
 
 
 footer{
 
 border-top:1px solid #111;
 
-margin-top:20px;
-
-padding:25px 8%;
+padding:30px 6vw;
 
 text-align:center;
 
 color:#666;
 
-font-size:14px;
-
-}
-
-
-
-
-
-/* ================================
-TOKYRA FULL WIDTH COMPRESSOR
-================================ */
-
-
-.compressor{
-
-width:100%;
-
-padding:80px 0;
-
-}
-
-
-
-.compressor .container{
-
-max-width:none;
-
-width:100%;
-
-padding:0 3vw;
-
-}
-
-
-
-
-
-.compressor-panel{
-
-width:100%;
-
-background:#050505;
-
-border:1px solid #222;
-
-border-radius:35px;
-
-padding:55px;
-
-}
-
-
-
-
-
-textarea{
-
-width:100%;
-
-height:320px;
-
-resize:vertical;
-
-background:#0d0d0d;
-
-border:1px solid #222;
-
-border-radius:25px;
-
-padding:30px;
-
-color:white;
-
-font-size:18px;
-
-line-height:1.7;
-
-font-family:Inter,sans-serif;
-
-outline:none;
-
-}
-
-
-
-textarea:focus{
-
-border-color:white;
-
-}
-
-
-
-
-
-.compressor-output{
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-gap:35px;
-
-margin-top:40px;
-
-}
-
-
-
-.output-box{
-
-background:#0d0d0d;
-
-border:1px solid #222;
-
-border-radius:25px;
-
-padding:35px;
-
-min-height:350px;
-
-}
-
-
-
-.output-box h3{
-
 font-size:13px;
 
-text-transform:uppercase;
-
-color:#777;
-
-margin-bottom:20px;
-
-letter-spacing:2px;
-
-}
-
-
-
-.output-box p{
-
-font-size:17px;
-
-line-height:1.8;
-
-color:#aaa;
+font-family:"IBM Plex Mono",monospace;
 
 }
 
@@ -801,41 +1377,28 @@ color:#aaa;
 
 
 
-.compressor-stats{
-
-display:grid;
-
-grid-template-columns:repeat(3,1fr);
-
-gap:25px;
-
-margin-top:30px;
-
-}
+/* =========================
+SCROLL ANIMATIONS
+========================= */
 
 
+.reveal{
 
-.compressor-stat{
+opacity:0;
 
-background:#0d0d0d;
+transform:translateY(25px);
 
-border:1px solid #222;
-
-border-radius:25px;
-
-padding:30px;
-
-text-align:center;
+transition:.7s ease;
 
 }
 
 
 
-.compressor-stat span{
+.reveal.in{
 
-font-size:38px;
+opacity:1;
 
-font-weight:700;
+transform:none;
 
 }
 
@@ -843,15 +1406,60 @@ font-weight:700;
 
 
 
-/* MOBILE */
+/* =========================
+HOVER POLISH
+========================= */
 
 
-@media(max-width:800px){
+.panel,
+.card,
+.box,
+.output-box,
+.steps div,
+.audience div{
+
+transition:border-color .25s ease,transform .25s ease;
+
+}
 
 
-h1{
 
-font-size:48px;
+.panel:hover{
+
+border-color:#333;
+
+}
+
+
+
+
+
+/* =========================
+MOBILE
+========================= */
+
+
+@media(max-width:900px){
+
+
+nav{
+
+padding:22px 5vw;
+
+}
+
+
+.nav-right{
+
+gap:8px;
+
+}
+
+
+
+.badge{
+
+display:none;
 
 }
 
@@ -859,9 +1467,35 @@ font-size:48px;
 
 .hero{
 
+padding:50px 20px;
+
 min-height:auto;
 
-padding:50px 20px;
+}
+
+
+
+h1{
+
+font-size:52px;
+
+letter-spacing:-3px;
+
+}
+
+
+
+.hero p{
+
+font-size:18px;
+
+}
+
+
+
+.block{
+
+padding:65px 20px;
 
 }
 
@@ -871,7 +1505,7 @@ padding:50px 20px;
 
 height:650px;
 
-margin:40px 20px 0;
+margin:40px 20px;
 
 }
 
@@ -903,10 +1537,163 @@ font-size:18px;
 
 .steps,
 .audience,
-.compressor-output,
+.card-grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+
+.compressor{
+
+padding:50px 0;
+
+}
+
+
+
+.compressor-wrap{
+
+padding:0 20px;
+
+}
+
+
+
+.panel,
+.compressor-panel{
+
+padding:25px;
+
+border-radius:25px;
+
+}
+
+
+
+textarea{
+
+height:230px;
+
+padding:22px;
+
+font-size:16px;
+
+}
+
+
+
+.output,
+.compressor-output{
+
+grid-template-columns:1fr;
+
+gap:20px;
+
+}
+
+
+
+.box,
+.output-box{
+
+min-height:260px;
+
+padding:25px;
+
+}
+
+
+
+.stats,
 .compressor-stats{
 
 grid-template-columns:1fr;
+
+}
+
+
+
+.stat span,
+.compressor-stat span{
+
+font-size:34px;
+
+}
+
+
+
+.gate-panel h3{
+
+font-size:32px;
+
+}
+
+
+
+.contact{
+
+padding:60px 20px 40px;
+
+}
+
+
+
+.contact h2{
+
+font-size:36px;
+
+}
+
+
+
+.contact p{
+
+font-size:17px;
+
+}
+
+
+
+}
+
+
+
+@media(max-width:520px){
+
+
+.logo{
+
+font-size:27px;
+
+}
+
+
+
+.nav-right .btn{
+
+padding:10px 14px;
+
+font-size:12px;
+
+}
+
+
+
+h1{
+
+font-size:44px;
+
+letter-spacing:-2px;
+
+}
+
+
+
+.waitlist h2{
+
+font-size:32px;
 
 }
 
@@ -921,27 +1708,23 @@ width:100%;
 
 
 
-.compressor-panel{
+.header-btn,
+.btn{
 
-padding:25px;
-
-}
-
-
-
-textarea{
-
-height:220px;
+width:100%;
 
 }
 
 
 
-.contact h2{
+.nav-right{
 
-font-size:36px;
+flex-wrap:wrap;
+
+justify-content:flex-end;
 
 }
+
 
 
 }
