@@ -4,62 +4,77 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Paste a prompt, see Tokyra cut it down — free with a Tokyra account.">
-<meta name="theme-color" content="#0D0D1A">
+<meta name="theme-color" content="#0A0A0C">
+
 <link rel="icon" type="image/png" href="tokyra.png">
+
 <title>Tokyra — Try the compressor</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="auth.js" defer></script>
+
 <style>
   :root{
-    --ink:        #0D0D1A;
-    --ink-2:      #1A1A2A;
-    --ink-3:      #2A2A3A;
-    --hair:       #3D3D4D;
-    --paper:      #F0F0FF;
-    --paper-dim:  #C0C0D0;
-    --muted:      #9090A0;
-    --redline:    #A050F0;
-    --redline-2:  #8030D0;
-    --redline-soft: rgba(160, 80, 240, 0.14);
-    --amber:      #40A0F0;
-    --amber-soft: rgba(64, 160, 240, 0.14);
+    --ink:        #0A0A0C;
+    --ink-2:      #131418;
+    --ink-3:      #1D1F24;
+    --hair:       #2A2C31;
+    --paper:      #ECEDE8;
+    --paper-dim:  #B7B8B2;
+    --muted:      #86877F;
+    --redline:    #D6432E;
+    --redline-2:  #B93A28;
+    --redline-soft: rgba(214,67,46,0.14);
+    --amber:      #C9A227;
+    --amber-soft: rgba(201,162,39,0.14);
+
     --display: 'Big Shoulders Display', sans-serif;
     --body: 'Inter', sans-serif;
     --mono: 'IBM Plex Mono', monospace;
+
     --max: 1120px;
     --radius: 18px;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
+
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior:auto; }
-    * { animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
   }
+
   body{
     font-family:var(--body);
     background:var(--ink);
     color:var(--paper);
     -webkit-font-smoothing:antialiased;
   }
+
   body::before{
     content:"";
     position:fixed; inset:0;
     background:
-      radial-gradient(circle at 18% 0%, rgba(160, 80, 240, 0.07), transparent 40%),
-      radial-gradient(circle at 100% 20%, rgba(64, 160, 240, 0.05), transparent 45%);
+      radial-gradient(circle at 18% 0%, rgba(214,67,46,0.07), transparent 40%),
+      radial-gradient(circle at 100% 20%, rgba(201,162,39,0.05), transparent 45%);
     pointer-events:none;
     z-index:0;
   }
+
   a{ color:inherit; }
+
   :focus-visible{
     outline:2px solid var(--amber);
     outline-offset:3px;
     border-radius:4px;
   }
+
   .wrap{ max-width:var(--max); margin:0 auto; padding:0 6vw; position:relative; z-index:1; }
+
   .eyebrow{
     display:inline-flex; align-items:center; gap:8px;
     font-family:var(--mono);
@@ -72,6 +87,7 @@
     border-radius:999px;
   }
   .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--redline); flex:none; }
+
   /* ---------- NAV ---------- */
   nav{
     position:relative; z-index:2;
@@ -87,6 +103,7 @@
   }
   .logo span{ color:var(--redline); }
   .nav-right{ display:flex; align-items:center; gap:14px; }
+
   .btn{
     display:inline-flex; align-items:center; justify-content:center;
     padding:12px 22px;
@@ -101,12 +118,13 @@
   }
   .btn:hover{ transform:translateY(-2px); }
   .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
-  .btn-primary{ background:var(--paper); color:#0D0D1A; }
+  .btn-primary{ background:var(--paper); color:#0A0A0C; }
   .btn-primary:hover{ background:#fff; }
   .btn-outline{ background:transparent; color:var(--paper); border-color:var(--hair); }
   .btn-outline:hover{ border-color:var(--paper-dim); }
   .btn-redline{ background:var(--redline); color:#fff; }
   .btn-redline:hover{ background:var(--redline-2); }
+
   .badge-soft{
     font-family:var(--mono);
     font-size:12px;
@@ -116,6 +134,7 @@
     border-radius:999px;
     white-space:nowrap;
   }
+
   /* ---------- AUTH CONTROLS ---------- */
   .auth-controls{ display:flex; align-items:center; gap:10px; }
   .btn-sm{ padding:9px 16px; font-size:13.5px; }
@@ -138,6 +157,7 @@
   @media (max-width:640px){
     .auth-controls .btn-sm span.full{ display:none; }
   }
+
   /* ---------- GATE ---------- */
   .gate-panel{ text-align:center; }
   .gate-panel h3{
@@ -154,6 +174,7 @@
     margin:0 auto 26px;
   }
   .gate-actions{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
   /* ---------- HERO ---------- */
   .hero{ padding:52px 0 20px; text-align:center; }
   .hero .eyebrow{ margin-bottom:22px; }
@@ -172,6 +193,7 @@
     max-width:56ch;
     margin:0 auto;
   }
+
   /* ---------- PANEL ---------- */
   .compressor{ padding:44px 0 10px; }
   .panel{
@@ -189,6 +211,7 @@
     margin-bottom:14px;
     display:block;
   }
+
   textarea{
     width:100%;
     height:200px;
@@ -206,7 +229,9 @@
   }
   textarea::placeholder{ color:var(--muted); }
   textarea:focus{ border-color:var(--redline); }
+
   .action{ margin-top:22px; display:flex; justify-content:center; }
+
   /* ---------- OUTPUT ---------- */
   .output{
     margin-top:36px;
@@ -231,12 +256,16 @@
   }
   .box:first-child h3{ color:var(--muted); }
   .box:last-child h3{ color:var(--amber); }
+
   .text{ color:var(--paper-dim); font-size:15.5px; line-height:1.75; }
   .box:last-child .text{ color:var(--paper); }
+
   .cursor{ display:inline-block; animation:blink 1s infinite; color:var(--amber); }
   @keyframes blink{ 0%,50%{opacity:1;} 51%,100%{opacity:0;} }
+
   .copy-btn{ display:none; margin-top:20px; }
   .copy-btn.show{ display:inline-flex; }
+
   /* ---------- STATS ---------- */
   .stats{ margin-top:22px; display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
   .stat{
@@ -258,6 +287,7 @@
   .stat span{ font-family:var(--mono); font-size:32px; font-weight:600; color:var(--paper-dim); }
   .stat.after span{ color:var(--amber); }
   .stat.saved span{ color:var(--redline); }
+
   /* ---------- RATE LIMIT MESSAGE ---------- */
   .limit-msg{
     text-align:center;
@@ -274,6 +304,7 @@
   }
   .limit-msg p{ color:var(--paper-dim); font-size:15px; margin-bottom:6px; line-height:1.6; }
   .limit-msg .btn{ margin-top:18px; }
+
   /* ---------- CONTACT / FOOTER ---------- */
   .contact{ border-top:1px solid var(--hair); margin-top:80px; padding:64px 0; text-align:center; }
   .contact h2{
@@ -285,6 +316,7 @@
   .contact p{ color:var(--muted); font-size:16px; line-height:1.8; }
   .contact a.mail{ color:var(--paper); text-decoration:underline; text-decoration-color:var(--hair); text-underline-offset:4px; }
   .contact a.mail:hover{ text-decoration-color:var(--redline); }
+
   footer{
     border-top:1px solid var(--hair);
     padding:26px 6vw;
@@ -293,6 +325,7 @@
     font-size:13px;
     font-family:var(--mono);
   }
+
   /* ---------- RESPONSIVE ---------- */
   @media (max-width:900px){
     .panel{ padding:24px; }
@@ -305,33 +338,44 @@
   }
 </style>
 </head>
+
 <body>
+
 <nav>
   <div class="logo">Tok<span>y</span>ra</div>
+
   <div class="nav-right">
+
     <a class="btn btn-outline" href="index.html">
       Back to Tokyra
     </a>
+
     <a class="btn btn-outline" href="metrics.html">
       Metrics
     </a>
+
     <span class="badge-soft">
       Launching soon
     </span>
+
     <div class="auth-controls">
+
       <span class="account-badge" id="authAccountBadge"></span>
+
       <button 
         type="button" 
         class="btn btn-outline btn-sm" 
         id="authLoginBtn">
         Log in
       </button>
+
       <button 
         type="button" 
         class="btn btn-redline btn-sm" 
         id="authSignupBtn">
         <span class="full">Sign </span>up
       </button>
+
       <button 
         type="button" 
         class="btn btn-outline btn-sm" 
@@ -339,9 +383,12 @@
         style="display:none;">
         Log out
       </button>
+
     </div>
+
   </div>
 </nav>
+
 <section class="hero">
   <div class="wrap">
     <span class="eyebrow"><span class="dot"></span>Free with a Tokyra account</span>
@@ -349,25 +396,30 @@
     <p class="lede">Tokyra rewrites it to use fewer tokens without losing meaning, facts, or instructions. See the before-and-after for yourself.</p>
   </div>
 </section>
+
 <section class="compressor">
   <div class="compressor-wrap">
     <div class="panel" id="compressorPanel" style="display:none;">
       <span class="panel-label">Your prompt</span>
       <textarea id="inputPrompt" placeholder="Paste your AI prompt here..."></textarea>
+
       <div class="action">
         <button class="btn btn-redline" id="compressBtn" onclick="compressPrompt()">Compress prompt</button>
       </div>
+
       <div class="output">
         <div class="box">
           <h3>Original prompt</h3>
           <div class="text" id="originalText">Waiting for prompt…</div>
         </div>
+
         <div class="box">
           <h3>Tokyra rewrite</h3>
           <div class="text" id="optimizedText">Waiting for compression…</div>
           <button class="btn btn-outline copy-btn" id="copyBtn" onclick="copyText()">Copy rewrite</button>
         </div>
       </div>
+
       <div class="stats">
         <div class="stat before">
           <h4>Original tokens</h4>
@@ -383,6 +435,7 @@
         </div>
       </div>
     </div>
+
     <div class="panel gate-panel" id="authGate" style="display:none;">
       <h3>Log in to use the compressor</h3>
       <p>Tokyra accounts are free — creating one keeps this tool available for everyone while we're in early access.</p>
@@ -393,6 +446,7 @@
     </div>
   </div>
 </section>
+
 <section class="contact">
   <div class="wrap">
     <h2>Contact Tokyra</h2>
@@ -405,21 +459,31 @@
     </div>
   </div>
 </section>
+
 <footer>© 2026 Tokyra. All rights reserved.</footer>
+
 <script>
+// ---------- Account gate ----------
+// Both panels start hidden (display:none in the markup) so there's no
+// flash of the wrong one before Netlify Identity reports session state.
+// auth.js dispatches "tokyra:auth" on document whenever login state
+// changes (including once on page load).
 (function () {
   var compressorPanel = document.getElementById("compressorPanel");
   var authGate = document.getElementById("authGate");
   var gateSignupBtn = document.getElementById("gateSignupBtn");
   var gateLoginBtn = document.getElementById("gateLoginBtn");
+
   function showForUser(user) {
     var loggedIn = !!user;
     compressorPanel.style.display = loggedIn ? "block" : "none";
     authGate.style.display = loggedIn ? "none" : "block";
   }
+
   document.addEventListener("tokyra:auth", function (e) {
     showForUser(e.detail.user);
   });
+
   if (gateSignupBtn) {
     gateSignupBtn.addEventListener("click", function () {
       if (window.netlifyIdentity) window.netlifyIdentity.open("signup");
@@ -430,27 +494,41 @@
       if (window.netlifyIdentity) window.netlifyIdentity.open("login");
     });
   }
+
+  // Fallback: if the Identity widget fails to load for some reason,
+  // don't leave the page blank — default to showing the gate.
   setTimeout(function () {
     if (compressorPanel.style.display === "none" && authGate.style.display === "none") {
       authGate.style.display = "block";
     }
   }, 2500);
 })();
+
 async function compressPrompt(){
+
+  // Defense in depth: the panel is hidden for logged-out visitors, but
+  // guard here too in case of stale state.
   if (!window.netlifyIdentity || !window.netlifyIdentity.currentUser()) {
     document.getElementById("compressorPanel").style.display = "none";
     document.getElementById("authGate").style.display = "block";
     return;
   }
+
   const input = document.getElementById("inputPrompt").value;
   if(!input){ return; }
+
   const output = document.getElementById("optimizedText");
   const button = document.getElementById("compressBtn");
   const copy = document.getElementById("copyBtn");
   const original = document.getElementById("originalText");
+
   button.innerHTML = "Optimizing…";
   copy.classList.remove("show");
+  // textContent, not innerHTML: this is raw user-typed text. Rendering it
+  // as HTML would let anyone who pastes markup (or gets tricked into
+  // pasting someone else's "magic prompt") run it in their own session.
   original.textContent = input;
+
   output.innerHTML = `
     Analyzing prompt structure...
     <br>
@@ -459,10 +537,13 @@ async function compressPrompt(){
     Preserving meaning...
     <span class="cursor">▌</span>
   `;
+
   document.getElementById("beforeTokens").innerHTML = "0";
   document.getElementById("afterTokens").innerHTML = "0";
   document.getElementById("saved").innerHTML = "0%";
+
   try{
+
     const response = await fetch(
       "https://tokyra-compressor.tokyracompany.workers.dev/",
       {
@@ -471,6 +552,7 @@ async function compressPrompt(){
         body:JSON.stringify({ prompt:input })
       }
     );
+
     if (response.status === 429) {
       output.innerHTML = `
         <div class="limit-msg">
@@ -483,14 +565,23 @@ async function compressPrompt(){
       button.innerHTML = "Compress prompt";
       return;
     }
+
     const data = await response.json();
+
     if(!data.optimized){
       throw new Error("No AI response");
     }
+
     const optimizedPrompt = data.optimized;
     window.optimizedPrompt = optimizedPrompt;
+
+    // textContent, not innerHTML: the compressed text can echo back
+    // fragments of whatever was pasted in, so treat it as plain text
+    // the same way the original-prompt box does above.
     output.textContent = "";
+
     let i = 0;
+
     function typeText(){
       if(i < optimizedPrompt.length){
         output.textContent += optimizedPrompt.charAt(i);
@@ -502,32 +593,43 @@ async function compressPrompt(){
         button.innerHTML = "Compress prompt";
       }
     }
+
     typeText();
+
   }
+
   catch(error){
     console.log(error);
     output.innerHTML = "AI response failed. Try again.";
     button.innerHTML = "Compress prompt";
   }
+
 }
+
+// Estimate tokens — approximation: 1 token ≈ 4 characters
 function estimateTokens(text){
   return Math.ceil(text.length / 4);
 }
+
 function animateStats(originalPrompt, optimizedPrompt){
   const before = estimateTokens(originalPrompt);
   const after = estimateTokens(optimizedPrompt);
+
   let saved = 0;
   if(before > 0){
     saved = Math.round(((before-after)/before)*100);
   }
   if(saved < 0){ saved = 0; }
+
   animateNumber("beforeTokens", before);
   animateNumber("afterTokens", after);
   animateNumber("saved", saved, "%");
 }
+
 function animateNumber(id, target, suffix=""){
   let current = 0;
   const element = document.getElementById(id);
+
   const interval = setInterval(()=>{
     if(current < target){
       current += Math.ceil(target/20);
@@ -538,6 +640,7 @@ function animateNumber(id, target, suffix=""){
     }
   }, 40);
 }
+
 function copyText(){
   navigator.clipboard.writeText(window.optimizedPrompt);
   const button = document.getElementById("copyBtn");
@@ -547,5 +650,6 @@ function copyText(){
   }, 2000);
 }
 </script>
+
 </body>
 </html>
