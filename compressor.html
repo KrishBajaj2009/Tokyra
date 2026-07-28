@@ -15,7 +15,6 @@
 <link rel="icon" href="tokyra.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -28,12 +27,15 @@
 --bg:#050505;
 --surface:#0b0b0c;
 --surface2:#111214;
+
 --border:#242529;
 
---text:#fff;
+--text:#ffffff;
 --muted:#999;
 
 --green:#22c55e;
+--yellow:#eab308;
+--red:#ef4444;
 
 --mono:"IBM Plex Mono",monospace;
 --font:"Inter",sans-serif;
@@ -50,7 +52,6 @@ box-sizing:border-box;
 }
 
 
-
 body{
 
 background:
@@ -60,14 +61,13 @@ circle at top,
 #050505 45%
 );
 
-color:white;
-
 font-family:var(--font);
+
+color:white;
 
 min-height:100vh;
 
 }
-
 
 
 a{
@@ -168,6 +168,8 @@ margin:auto;
 text-align:center;
 
 }
+
+
 
 
 
@@ -313,8 +315,6 @@ border-color:white;
 
 
 
-
-
 .actions{
 
 display:flex;
@@ -359,198 +359,7 @@ background:#ddd;
 
 }
 
-
-
-</style>
-
-
-</head>
-
-
-<body>
-
-
-<nav>
-
-<div class="logo">
-Tok<span>yra</span>
-</div>
-
-
-<a href="index.html" class="back">
-← Back to Tokyra
-</a>
-
-
-</nav>
-
-
-
-<div class="wrapper">
-
-
-<div class="header">
-
-
-<div class="tag">
-
-<div class="dot"></div>
-
-AI Prompt Optimization Engine
-
-</div>
-
-
-<h1>
-Compress intelligence.
-Not meaning.
-</h1>
-
-
-<p>
-Paste any AI prompt and Tokyra removes unnecessary tokens while preserving instructions, context, and behavior.
-</p>
-
-
-</div>
-
-
-
-
-<div class="compressor">
-
-
-<div class="labels">
-
-<span>
-ORIGINAL PROMPT
-</span>
-
-
-<span>
-INPUT
-
-</span>
-
-
-</div>
-
-
-<textarea id="promptInput" placeholder="Paste your AI prompt here..."></textarea>
-
-
-
-<div class="actions">
-
-<button class="compress-btn" onclick="compressPrompt()">
-
-Compress Prompt
-
-</button>
-
-</div>
-
-
-  <div class="results">
-
-
-<div class="result-box">
-
-
-<div class="result-header">
-
-<span>
-TOKYRA OPTIMIZED
-</span>
-
-
-<button onclick="copyOutput()" class="copy">
-
-Copy
-
-</button>
-
-
-</div>
-
-
-<div id="output" class="output">
-
-Your optimized prompt will appear here.
-
-</div>
-
-
-</div>
-
-
-
-
-<div class="stats">
-
-
-<div class="stat">
-
-<span>
-ORIGINAL TOKENS
-</span>
-
-<strong id="originalTokens">
-0
-</strong>
-
-</div>
-
-
-
-
-<div class="stat">
-
-<span>
-TOKYRA TOKENS
-</span>
-
-<strong id="compressedTokens">
-0
-</strong>
-
-</div>
-
-
-
-
-<div class="stat">
-
-<span>
-TOKENS SAVED
-</span>
-
-<strong id="savedTokens">
-0%
-</strong>
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-<style>
-
-
-.results{
+  .results{
 
 margin-top:45px;
 
@@ -642,13 +451,15 @@ white-space:pre-wrap;
 
 
 
-.stats{
+
+
+.metrics{
 
 display:grid;
 
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(5,1fr);
 
-gap:20px;
+gap:18px;
 
 margin-top:30px;
 
@@ -656,15 +467,17 @@ margin-top:30px;
 
 
 
-.stat{
+
+
+.metric{
 
 background:#050505;
 
 border:1px solid var(--border);
 
-border-radius:25px;
+border-radius:22px;
 
-padding:30px;
+padding:25px;
 
 text-align:center;
 
@@ -672,25 +485,29 @@ text-align:center;
 
 
 
-.stat span{
+
+
+.metric span{
 
 display:block;
 
 font-family:var(--mono);
 
-font-size:12px;
+font-size:11px;
 
 color:#777;
 
-margin-bottom:15px;
+margin-bottom:12px;
 
 }
 
 
 
-.stat strong{
 
-font-size:38px;
+
+.metric strong{
+
+font-size:32px;
 
 letter-spacing:-1px;
 
@@ -698,117 +515,21 @@ letter-spacing:-1px;
 
 
 
-</style>
-<script>
 
 
-const WORKER_URL = "https://tokyra-compressor.tokyracompany.workers.dev";
+.metric.green strong{
 
-
-async function compressPrompt(){
-
-
-const input = document.getElementById("promptInput").value.trim();
-
-
-const output = document.getElementById("output");
-
-const button = document.querySelector(".compress-btn");
-
-
-
-if(!input){
-
-output.innerText = "Please enter a prompt first.";
-
-return;
+color:var(--green);
 
 }
 
 
 
-button.innerText = "Compressing...";
-
-button.disabled = true;
 
 
+.metric.yellow strong{
 
-output.innerText = "Tokyra is optimizing your prompt...";
-
-
-
-try{
-
-
-const response = await fetch(WORKER_URL,{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-prompt:input
-
-})
-
-});
-
-
-
-const data = await response.json();
-
-
-
-if(!response.ok){
-
-throw new Error(data.error || "Compression failed");
-
-}
-
-
-
-const optimized = data.optimized || data.compressed || data.output || "";
-
-
-
-if(!optimized){
-
-throw new Error("No optimized prompt returned");
-
-}
-
-
-
-output.innerText = optimized;
-
-
-
-updateStats(input, optimized);
-
-
-
-}
-
-catch(error){
-
-
-output.innerText = 
-"Error: " + error.message;
-
-
-}
-
-
-
-button.innerText = "Compress Prompt";
-
-button.disabled = false;
-
+color:var(--yellow);
 
 }
 
@@ -816,53 +537,17 @@ button.disabled = false;
 
 
 
-function estimateTokens(text){
+.status{
 
+margin-top:25px;
 
-return Math.ceil(text.length / 4);
+font-family:var(--mono);
 
+font-size:13px;
 
-}
+color:#777;
 
-
-
-
-
-function updateStats(original, compressed){
-
-
-const originalTokens = estimateTokens(original);
-
-const compressedTokens = estimateTokens(compressed);
-
-
-const saved = Math.max(
-
-0,
-
-Math.round(
-
-((originalTokens - compressedTokens) / originalTokens) * 100
-
-)
-
-);
-
-
-
-document.getElementById("originalTokens").innerText =
-originalTokens;
-
-
-
-document.getElementById("compressedTokens").innerText =
-compressedTokens;
-
-
-
-document.getElementById("savedTokens").innerText =
-saved + "%";
-
+text-align:center;
 
 }
 
@@ -870,37 +555,31 @@ saved + "%";
 
 
 
-function copyOutput(){
+.status.loading{
 
-
-const text =
-document.getElementById("output").innerText;
-
-
-
-navigator.clipboard.writeText(text);
-
-
-
-const button=document.querySelector(".copy");
-
-
-button.innerText="Copied!";
-
-
-setTimeout(()=>{
-
-button.innerText="Copy";
-
-},1500);
-
+color:var(--yellow);
 
 }
 
 
 
-</script>
-<style>
+.status.success{
+
+color:var(--green);
+
+}
+
+
+
+.status.error{
+
+color:var(--red);
+
+}
+
+
+
+
 
 
 footer{
@@ -924,7 +603,31 @@ font-size:13px;
 
 
 
-@media(max-width:900px){
+
+
+@media(max-width:1100px){
+
+
+.metrics{
+
+grid-template-columns:repeat(3,1fr);
+
+}
+
+
+}
+
+
+
+@media(max-width:700px){
+
+
+nav{
+
+padding:0 20px;
+
+}
+
 
 
 .wrapper{
@@ -940,14 +643,6 @@ padding:50px 20px;
 padding:25px;
 
 border-radius:25px;
-
-}
-
-
-
-.stats{
-
-grid-template-columns:1fr;
 
 }
 
@@ -983,57 +678,17 @@ font-size:16px;
 
 
 
-.labels{
-
-font-size:11px;
-
-}
-
-
-
-}
-
-
-@media(max-width:600px){
-
-
-nav{
-
-padding:0 20px;
-
-}
-
-
-
-.logo{
-
-font-size:25px;
-
-}
-
-
-
-.back{
-
-padding:10px 16px;
-
-font-size:13px;
-
-}
-
-
-
-.compressor{
-
-margin-top:45px;
-
-}
-
-
-
 .compress-btn{
 
 width:100%;
+
+}
+
+
+
+.metrics{
+
+grid-template-columns:1fr;
 
 }
 
@@ -1049,20 +704,532 @@ font-size:15px;
 
 
 
-.stat strong{
-
-font-size:32px;
-
-}
-
-
-
 }
 
 
 
 </style>
 
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+<div class="logo">
+Tok<span>yra</span>
+</div>
+
+
+<a href="index.html" class="back">
+← Back to Tokyra
+</a>
+
+
+</nav>
+
+
+
+
+
+<div class="wrapper">
+
+
+<div class="header">
+
+
+<div class="tag">
+
+<div class="dot"></div>
+
+AI Prompt Optimization Engine
+
+</div>
+
+
+
+<h1>
+Compress intelligence.
+Not meaning.
+</h1>
+
+
+
+<p>
+
+Paste any AI prompt and Tokyra removes unnecessary tokens while preserving instructions, context, and behavior.
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+<div class="compressor">
+
+
+
+<div class="labels">
+
+<span>
+ORIGINAL PROMPT
+</span>
+
+
+<span>
+TOKYRA ENGINE
+</span>
+
+
+</div>
+
+
+
+<textarea 
+id="promptInput"
+placeholder="Paste your AI prompt here..."
+></textarea>
+
+
+
+
+<div class="actions">
+
+<button 
+class="compress-btn"
+onclick="compressPrompt()"
+>
+
+Compress Prompt
+
+</button>
+
+
+</div>
+
+
+
+
+<div 
+class="status"
+id="status"
+>
+
+Ready.
+
+</div>
+
+
+
+
+<div class="results">
+
+
+
+<div class="result-box">
+
+
+
+<div class="result-header">
+
+
+<span>
+TOKYRA OPTIMIZED
+</span>
+
+
+
+<button 
+onclick="copyOutput()" 
+class="copy"
+>
+
+Copy
+
+</button>
+
+
+</div>
+
+
+
+
+<div 
+id="output"
+class="output"
+>
+
+Your optimized prompt will appear here.
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div class="metrics">
+
+
+
+<div class="metric">
+
+<span>
+ORIGINAL TOKENS
+</span>
+
+<strong id="originalTokens">
+0
+</strong>
+
+</div>
+
+
+
+
+
+<div class="metric">
+
+<span>
+TOKYRA TOKENS
+</span>
+
+<strong id="optimizedTokens">
+0
+</strong>
+
+</div>
+
+
+
+
+
+<div class="metric green">
+
+<span>
+TOKENS SAVED
+</span>
+
+<strong id="savedTokens">
+0
+</strong>
+
+</div>
+
+
+
+
+
+<div class="metric green">
+
+<span>
+COMPRESSION
+</span>
+
+<strong id="compressionPercent">
+0%
+</strong>
+
+</div>
+
+
+
+
+
+<div class="metric yellow">
+
+<span>
+FIDELITY
+</span>
+
+<strong id="fidelity">
+0%
+</strong>
+
+</div>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+<script>
+
+const WORKER_URL =
+"https://tokyra-compressor.tokyracompany.workers.dev";
+
+
+async function compressPrompt(){
+
+
+const input =
+document
+.getElementById("promptInput")
+.value
+.trim();
+
+
+
+const output =
+document.getElementById("output");
+
+
+const button =
+document.querySelector(".compress-btn");
+
+
+const status =
+document.getElementById("status");
+
+
+
+if(!input){
+
+output.innerText =
+"Please enter a prompt first.";
+
+status.innerText =
+"Waiting for input.";
+
+status.className =
+"status error";
+
+return;
+
+}
+
+
+
+
+button.disabled=true;
+
+button.innerText=
+"Compressing...";
+
+
+
+status.innerText =
+"Tokyra is optimizing your prompt...";
+
+status.className =
+"status loading";
+
+
+
+output.innerText =
+"Running compression engine...";
+
+
+
+try{
+
+
+const response =
+await fetch(
+WORKER_URL,
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:
+JSON.stringify(
+{
+prompt:input
+}
+)
+
+}
+);
+
+
+
+const data =
+await response.json();
+
+
+
+
+
+if(!response.ok){
+
+throw new Error(
+data.error ||
+"Compression failed"
+);
+
+}
+
+
+
+
+if(!data.optimized){
+
+throw new Error(
+"No optimized output returned"
+);
+
+}
+
+
+
+
+
+output.innerText =
+data.optimized;
+
+
+
+document
+.getElementById("originalTokens")
+.innerText =
+data.originalTokens || 0;
+
+
+
+document
+.getElementById("optimizedTokens")
+.innerText =
+data.optimizedTokens || 0;
+
+
+
+document
+.getElementById("savedTokens")
+.innerText =
+data.tokensSaved || 0;
+
+
+
+document
+.getElementById("compressionPercent")
+.innerText =
+(data.compressionPercent || 0)
++
+"%";
+
+
+
+document
+.getElementById("fidelity")
+.innerText =
+(data.quality?.fidelity || 0)
++
+"%";
+
+
+
+
+status.innerText =
+"Compression complete.";
+
+status.className =
+"status success";
+
+
+
+
+}
+
+
+
+catch(error){
+
+
+output.innerText =
+"Error: " +
+error.message;
+
+
+
+status.innerText =
+"Compression failed.";
+
+status.className =
+"status error";
+
+
+}
+
+
+
+button.disabled=false;
+
+button.innerText =
+"Compress Prompt";
+
+
+}
+
+
+
+
+
+
+
+function copyOutput(){
+
+
+const text =
+document
+.getElementById("output")
+.innerText;
+
+
+
+navigator.clipboard.writeText(text);
+
+
+
+const button =
+document.querySelector(".copy");
+
+
+
+button.innerText =
+"Copied!";
+
+
+
+setTimeout(
+()=>{
+
+button.innerText =
+"Copy";
+
+},
+1500
+);
+
+
+
+}
+
+
+</script>
 
 
 
@@ -1073,8 +1240,79 @@ font-size:32px;
 </footer>
 
 
-
-
 </body>
 
 </html>
+<div class="metrics">
+
+<div class="metric">
+<span>
+ORIGINAL TOKENS
+</span>
+<strong id="originalTokens">
+0
+</strong>
+</div>
+
+
+<div class="metric">
+<span>
+TOKYRA TOKENS
+</span>
+<strong id="optimizedTokens">
+0
+</strong>
+</div>
+
+
+<div class="metric green">
+<span>
+TOKENS SAVED
+</span>
+<strong id="savedTokens">
+0
+</strong>
+</div>
+
+
+<div class="metric green">
+<span>
+COMPRESSION
+</span>
+<strong id="compressionPercent">
+0%
+</strong>
+</div>
+
+
+<div class="metric yellow">
+<span>
+FIDELITY
+</span>
+<strong id="fidelity">
+0%
+</strong>
+</div>
+
+
+<div class="metric yellow">
+<span>
+CFS SCORE
+</span>
+<strong id="cfs">
+0
+</strong>
+</div>
+
+
+<div class="metric">
+<span>
+LATENCY
+</span>
+<strong id="latency">
+0ms
+</strong>
+</div>
+
+
+</div>
