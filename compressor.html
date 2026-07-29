@@ -666,11 +666,46 @@ METRICS
 
 display:grid;
 
-grid-template-columns:repeat(4,1fr);
+grid-template-columns:repeat(12,1fr);
 
 gap:20px;
 
 margin-top:30px;
+
+}
+
+
+/* Top row: 4 equal boxes */
+
+.metric:nth-child(1),
+.metric:nth-child(2),
+.metric:nth-child(3),
+.metric:nth-child(4){
+
+grid-column:span 3;
+
+}
+
+
+/* Bottom row: centered 3 boxes */
+
+.metric:nth-child(5){
+
+grid-column:3 / span 3;
+
+}
+
+
+.metric:nth-child(6){
+
+grid-column:6 / span 3;
+
+}
+
+
+.metric:nth-child(7){
+
+grid-column:9 / span 3;
 
 }
 
