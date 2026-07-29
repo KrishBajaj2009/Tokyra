@@ -6,10 +6,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="description"
-content="Tokyra metrics dashboard showing token reduction, fidelity, API performance, and AI efficiency metrics.">
+<meta name="description" content="Tokyra metrics dashboard showing AI compression performance, token savings, and efficiency scores.">
 
-<meta name="theme-color" content="#050505">
+<meta name="theme-color" content="#060312">
 
 <link rel="icon" href="tokyra.png">
 
@@ -19,7 +18,7 @@ content="Tokyra metrics dashboard showing token reduction, fidelity, API perform
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -31,21 +30,44 @@ content="Tokyra metrics dashboard showing token reduction, fidelity, API perform
 
 :root{
 
---bg:#050505;
+--void:#060312;
 
---surface:#0b0b0b;
+--surface:#0d0a1e;
 
---surface2:#111111;
+--surface-2:#141029;
 
---border:#242424;
+--border:#241f3d;
 
---text:#ffffff;
+--border-strong:#3d3468;
 
---muted:#999999;
+--text:#f6f4ff;
+
+--muted:#a79fc9;
+
+--muted-dim:#726a92;
+
+--purple:#a855f7;
+
+--blue:#38bdf8;
 
 --green:#22c55e;
 
---blue:#3b82f6;
+--yellow:#eab308;
+
+--red:#ef4444;
+
+--gradient:linear-gradient(
+115deg,
+# a855f7 0%,
+#38bdf8 100%
+);
+
+--gradient-text:linear-gradient(
+115deg,
+#e9d5ff,
+#a855f7,
+#38bdf8
+);
 
 --radius:24px;
 
@@ -53,45 +75,64 @@ content="Tokyra metrics dashboard showing token reduction, fidelity, API perform
 
 --font:"Inter",sans-serif;
 
+--display:"Space Grotesk",sans-serif;
+
 --mono:"IBM Plex Mono",monospace;
 
-}
+--ease:cubic-bezier(.16,1,.3,1);
 
+}
 
 
 *{
-
 margin:0;
 padding:0;
 box-sizing:border-box;
-
 }
-
 
 
 html{
-
 scroll-behavior:smooth;
-
 }
-
 
 
 body{
 
-background:
-
-radial-gradient(
-circle at top,
-#1b1b1b 0%,
-#050505 40%
-);
+background:var(--void);
 
 font-family:var(--font);
 
-color:white;
+color:var(--text);
 
 overflow-x:hidden;
+
+}
+
+
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+inset:0;
+
+pointer-events:none;
+
+background:
+
+radial-gradient(
+circle at 15% 0%,
+rgba(168,85,247,.16),
+transparent 45%
+),
+
+radial-gradient(
+circle at 85% 10%,
+rgba(56,189,248,.12),
+transparent 45%
+);
 
 }
 
@@ -115,9 +156,11 @@ margin:auto;
 
 padding:0 5vw;
 
+position:relative;
+
+z-index:1;
+
 }
-
-
 
 
 
@@ -126,7 +169,7 @@ padding:0 5vw;
 
 nav{
 
-height:90px;
+height:84px;
 
 display:flex;
 
@@ -140,15 +183,25 @@ margin:auto;
 
 padding:0 5vw;
 
+border-bottom:1px solid transparent;
+
 }
 
 
 
 .logo{
 
-font-size:30px;
+display:flex;
 
-font-weight:800;
+align-items:center;
+
+gap:10px;
+
+font-family:var(--display);
+
+font-size:24px;
+
+font-weight:700;
 
 letter-spacing:-1px;
 
@@ -158,7 +211,16 @@ letter-spacing:-1px;
 
 .logo span{
 
-color:#777;
+background:linear-gradient(
+115deg,
+#e9d5ff,
+#a855f7,
+#38bdf8
+);
+
+-webkit-background-clip:text;
+
+color:transparent;
 
 }
 
@@ -170,11 +232,19 @@ display:flex;
 
 align-items:center;
 
-gap:25px;
+gap:30px;
 
 font-size:14px;
 
-color:#999;
+color:var(--muted);
+
+}
+
+
+
+.nav-links a{
+
+transition:.25s;
 
 }
 
@@ -190,17 +260,20 @@ color:white;
 
 .nav-btn{
 
-background:white;
+background:
+linear-gradient(
+115deg,
+#a855f7,
+#38bdf8
+);
 
-color:black;
+color:#090417!important;
 
-padding:12px 24px;
+padding:13px 25px;
 
 border-radius:999px;
 
 font-weight:700;
-
-transition:.25s;
 
 }
 
@@ -208,31 +281,13 @@ transition:.25s;
 
 .nav-btn:hover{
 
-background:#ddd;
-
 transform:translateY(-2px);
 
-}
-
-
-
-.badge{
-
-border:1px solid var(--border);
-
-padding:9px 16px;
-
-border-radius:999px;
-
-font-family:var(--mono);
-
-font-size:12px;
-
-color:#888;
+box-shadow:
+0 10px 30px
+rgba(168,85,247,.35);
 
 }
-
-
 
 
 
@@ -241,7 +296,7 @@ color:#888;
 
 .hero{
 
-padding:100px 0 70px;
+padding:100px 0 80px;
 
 text-align:center;
 
@@ -257,17 +312,19 @@ align-items:center;
 
 gap:10px;
 
+font-family:var(--mono);
+
+font-size:13px;
+
+color:var(--muted);
+
 border:1px solid var(--border);
+
+background:rgba(20,16,41,.5);
 
 padding:9px 16px;
 
 border-radius:999px;
-
-font-family:var(--mono);
-
-font-size:12px;
-
-color:#888;
 
 margin-bottom:25px;
 
@@ -281,9 +338,13 @@ width:7px;
 
 height:7px;
 
+border-radius:50%;
+
 background:var(--green);
 
-border-radius:50%;
+box-shadow:
+0 0 15px
+var(--green);
 
 }
 
@@ -291,9 +352,11 @@ border-radius:50%;
 
 h1{
 
+font-family:var(--display);
+
 font-size:clamp(48px,7vw,80px);
 
-letter-spacing:-5px;
+letter-spacing:-4px;
 
 line-height:1;
 
@@ -303,9 +366,23 @@ margin-bottom:25px;
 
 
 
+.grad{
+
+background:var(--gradient-text);
+
+-webkit-background-clip:text;
+
+background-clip:text;
+
+color:transparent;
+
+}
+
+
+
 .hero p{
 
-max-width:700px;
+max-width:750px;
 
 margin:auto;
 
@@ -319,16 +396,9 @@ color:var(--muted);
 
 
 
-
-
-/* SECTIONS */
-
-
 .section{
 
 padding:100px 0;
-
-border-top:1px solid var(--border);
 
 }
 
@@ -348,15 +418,13 @@ margin-bottom:55px;
 
 font-family:var(--mono);
 
-font-size:12px;
+font-size:13px;
 
-color:#777;
+color:var(--blue);
 
 letter-spacing:.1em;
 
-margin-bottom:15px;
-
-text-transform:uppercase;
+margin-bottom:18px;
 
 }
 
@@ -364,9 +432,11 @@ text-transform:uppercase;
 
 .section h2{
 
-font-size:48px;
+font-family:var(--display);
 
-letter-spacing:-3px;
+font-size:50px;
+
+letter-spacing:-2px;
 
 line-height:1.1;
 
@@ -378,203 +448,17 @@ margin-bottom:20px;
 
 .section-header p{
 
-color:var(--muted);
-
 font-size:18px;
 
 line-height:1.7;
+
+color:var(--muted);
 
 }
 
 
 
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<nav>
-
-
-<div class="logo">
-Tok<span>yra</span>
-</div>
-
-
-<div class="nav-links">
-
-<a href="index.html">
-Product
-</a>
-
-
-<a href="compressor.html">
-Compressor
-</a>
-
-
-<a href="metrics.html">
-Metrics
-</a>
-
-
-<a href="compressor.html" class="nav-btn">
-Try Tokyra
-</a>
-
-
-</div>
-
-
-</nav>
-<!-- HERO -->
-
-<header class="hero">
-
-<div class="container">
-
-
-<div class="tag">
-
-<span class="tag-dot"></span>
-
-Live AI efficiency metrics
-
-</div>
-
-
-<h1>
-Measure every saved token.
-</h1>
-
-
-<p>
-
-Tokyra tracks compression performance,
-fidelity preservation, API reliability,
-and estimated AI cost improvements from
-real production usage.
-
-</p>
-
-
-</div>
-
-</header>
-
-
-
-
-
-<!-- OVERVIEW -->
-
-
-<section class="section">
-
-
-<div class="container">
-
-
-<div class="section-header">
-
-
-<div class="label">
-Overview
-</div>
-
-
-<h2>
-AI efficiency at a glance.
-</h2>
-
-
-<p>
-Tokyra measures optimization quality using
-compression, preservation, and system performance.
-</p>
-
-
-</div>
-
-
-
-
-<div class="metric-grid">
-
-
-
-<div class="metric-card">
-
-
-<span>
-Total Runs
-</span>
-
-
-<strong id="totalRuns">
-0
-</strong>
-
-
-</div>
-
-
-
-
-
-<div class="metric-card">
-
-
-<span>
-Average Reduction
-</span>
-
-
-<strong id="avgReduction">
-0%
-</strong>
-
-
-</div>
-
-
-
-
-
-<div class="metric-card">
-
-
-<span>
-Average Fidelity
-</span>
-
-
-<strong id="avgFidelity">
-0%
-</strong>
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-<style>
+/* OVERVIEW CARDS */
 
 
 .metric-grid{
@@ -591,15 +475,32 @@ gap:25px;
 
 .metric-card{
 
-background:var(--surface);
+background:
+linear-gradient(
+150deg,
+var(--surface-2),
+var(--surface)
+);
 
 border:1px solid var(--border);
 
 border-radius:var(--radius);
 
-padding:35px;
+padding:40px;
 
 text-align:center;
+
+transition:.35s var(--ease);
+
+}
+
+
+
+.metric-card:hover{
+
+transform:translateY(-5px);
+
+border-color:var(--border-strong);
 
 }
 
@@ -613,11 +514,7 @@ font-family:var(--mono);
 
 font-size:12px;
 
-color:#777;
-
-text-transform:uppercase;
-
-letter-spacing:.1em;
+color:var(--muted-dim);
 
 margin-bottom:20px;
 
@@ -627,101 +524,26 @@ margin-bottom:20px;
 
 .metric-card strong{
 
-font-size:42px;
+font-family:var(--display);
+
+font-size:44px;
 
 letter-spacing:-2px;
+
+background:var(--gradient-text);
+
+-webkit-background-clip:text;
+
+color:transparent;
 
 }
 
 
 
+  <style>
 
 
-</style>
-
-
-
-
-
-<!-- LIVE PERFORMANCE -->
-
-
-<section class="section">
-
-
-<div class="container">
-
-
-<div class="section-header">
-
-
-<div class="label">
-Live performance
-</div>
-
-
-<h2>
-Real compressor data.
-</h2>
-
-
-<p>
-These values are loaded directly from
-Tokyra's Worker API.
-</p>
-
-
-</div>
-
-
-
-<div class="status-box">
-
-
-<div class="status-indicator">
-
-<span id="statusDot"></span>
-
-<p id="statusText">
-Checking API...
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<div id="statsContainer">
-
-
-<div class="loading">
-
-Loading metrics...
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-<style>
+/* STATUS */
 
 
 .status-box{
@@ -732,7 +554,7 @@ border:1px solid var(--border);
 
 border-radius:var(--radius);
 
-padding:25px;
+padding:30px;
 
 margin-bottom:30px;
 
@@ -752,7 +574,7 @@ font-family:var(--mono);
 
 font-size:13px;
 
-color:#888;
+color:var(--muted);
 
 }
 
@@ -760,13 +582,13 @@ color:#888;
 
 #statusDot{
 
-height:10px;
-
 width:10px;
+
+height:10px;
 
 border-radius:50%;
 
-background:#888;
+background:var(--muted-dim);
 
 }
 
@@ -774,7 +596,11 @@ background:#888;
 
 #statusDot.online{
 
-background:#22c55e;
+background:var(--green);
+
+box-shadow:
+0 0 15px
+rgba(34,197,94,.8);
 
 }
 
@@ -782,30 +608,17 @@ background:#22c55e;
 
 #statusDot.error{
 
-background:#ef4444;
+background:var(--red);
+
+box-shadow:
+0 0 15px
+rgba(239,68,68,.7);
 
 }
 
 
 
-.loading{
-
-background:var(--surface);
-
-border:1px dashed var(--border);
-
-border-radius:var(--radius);
-
-padding:35px;
-
-text-align:center;
-
-color:#777;
-
-}
-
-
-
+/* LIVE METRICS */
 
 
 .live-grid{
@@ -814,7 +627,7 @@ display:grid;
 
 grid-template-columns:repeat(3,1fr);
 
-gap:20px;
+gap:25px;
 
 }
 
@@ -822,13 +635,18 @@ gap:20px;
 
 .live-card{
 
-background:var(--surface);
+background:
+linear-gradient(
+150deg,
+var(--surface-2),
+var(--surface)
+);
 
 border:1px solid var(--border);
 
-border-radius:22px;
+border-radius:var(--radius);
 
-padding:30px;
+padding:35px;
 
 }
 
@@ -840,11 +658,11 @@ font-family:var(--mono);
 
 font-size:12px;
 
-color:#777;
+color:var(--muted-dim);
 
 text-transform:uppercase;
 
-margin-bottom:15px;
+margin-bottom:18px;
 
 }
 
@@ -852,139 +670,15 @@ margin-bottom:15px;
 
 .live-card strong{
 
-font-size:32px;
+font-family:var(--display);
+
+font-size:38px;
 
 }
 
 
 
-</style>
-
-
-
-
-
-<!-- COST IMPACT -->
-
-
-<section class="section">
-
-
-<div class="container">
-
-
-<div class="section-header">
-
-
-<div class="label">
-Cost impact
-</div>
-
-
-<h2>
-Every token saved compounds.
-</h2>
-
-
-<p>
-Reducing unnecessary input tokens lowers
-AI inference costs across every request.
-</p>
-
-
-</div>
-
-
-
-
-<div class="cost-grid">
-
-
-
-<div class="cost-card">
-
-
-<h3>
-Tokens optimized
-</h3>
-
-
-<strong id="tokensSaved">
-0
-</strong>
-
-
-<p>
-Total tokens removed
-</p>
-
-
-</div>
-
-
-
-
-
-<div class="cost-card">
-
-
-<h3>
-Estimated savings
-</h3>
-
-
-<strong id="estimatedSavings">
-$0.00
-</strong>
-
-
-<p>
-Based on optimized usage
-</p>
-
-
-</div>
-
-
-
-
-
-<div class="cost-card">
-
-
-<h3>
-Efficiency score
-</h3>
-
-
-<strong id="efficiencyScore">
-0
-</strong>
-
-
-<p>
-Compression + fidelity balance
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-<style>
+/* COST */
 
 
 .cost-grid{
@@ -1015,7 +709,9 @@ padding:35px;
 
 .cost-card h3{
 
-font-size:18px;
+font-family:var(--display);
+
+font-size:24px;
 
 margin-bottom:15px;
 
@@ -1025,7 +721,9 @@ margin-bottom:15px;
 
 .cost-card strong{
 
-font-size:40px;
+font-family:var(--display);
+
+font-size:42px;
 
 letter-spacing:-2px;
 
@@ -1035,71 +733,15 @@ letter-spacing:-2px;
 
 .cost-card p{
 
-margin-top:12px;
+color:var(--muted);
 
-color:#777;
+margin-top:12px;
 
 }
 
 
 
-</style>
-<!-- LATEST COMPRESSION -->
-
-<section class="section">
-
-
-<div class="container">
-
-
-<div class="section-header">
-
-
-<div class="label">
-Latest execution
-</div>
-
-
-<h2>
-Most recent optimization.
-</h2>
-
-
-<p>
-The latest prompt processed through the Tokyra
-compression engine.
-</p>
-
-
-</div>
-
-
-
-
-<div id="latestContainer">
-
-
-<div class="loading">
-
-No compression data available.
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-<style>
+/* LATEST */
 
 
 .latest-box{
@@ -1130,7 +772,7 @@ gap:20px;
 
 .latest-stat{
 
-background:var(--surface2);
+background:var(--surface-2);
 
 border:1px solid var(--border);
 
@@ -1152,9 +794,7 @@ font-family:var(--mono);
 
 font-size:11px;
 
-color:#777;
-
-text-transform:uppercase;
+color:var(--muted-dim);
 
 margin-bottom:15px;
 
@@ -1164,132 +804,15 @@ margin-bottom:15px;
 
 .latest-stat strong{
 
-font-size:30px;
+font-family:var(--display);
+
+font-size:32px;
 
 }
 
 
 
-</style>
-
-
-
-
-
-<!-- PROOF -->
-
-
-<section class="section">
-
-
-<div class="container">
-
-
-<div class="section-header">
-
-
-<div class="label">
-Verification
-</div>
-
-
-<h2>
-Same intent. Fewer tokens.
-</h2>
-
-
-<p>
-Tokyra removes unnecessary language while preserving
-the instructions that affect model behavior.
-</p>
-
-
-</div>
-
-
-
-
-<div class="proof">
-
-
-<div class="proof-side">
-
-
-<h3>
-Original prompt
-</h3>
-
-
-<p>
-
-You are a highly helpful customer support assistant.
-Always respond professionally and provide detailed,
-accurate answers. Make sure to carefully analyze
-each request and include all important information
-while following company guidelines.
-
-</p>
-
-
-</div>
-
-
-
-
-
-<div class="proof-side">
-
-
-<h3>
-Tokyra optimized
-</h3>
-
-
-<p>
-
-Act as professional customer support assistant.
-Provide accurate answers. Follow company guidelines.
-Include required information.
-
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-<div class="proof-footer">
-
-
-<span>
-Token reduction
-</span>
-
-
-<strong>
-65%
-</strong>
-
-
-</div>
-
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-<style>
+/* PROOF */
 
 
 .proof{
@@ -1332,9 +855,9 @@ font-family:var(--mono);
 
 font-size:12px;
 
-text-transform:uppercase;
+color:var(--muted-dim);
 
-color:#777;
+text-transform:uppercase;
 
 margin-bottom:20px;
 
@@ -1348,7 +871,7 @@ font-size:17px;
 
 line-height:1.8;
 
-color:#aaa;
+color:var(--muted);
 
 }
 
@@ -1356,19 +879,22 @@ color:#aaa;
 
 .proof-footer{
 
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:25px 40px;
+
 background:var(--surface);
 
 border:1px solid var(--border);
 
 border-top:none;
 
-border-radius:0 0 var(--radius) var(--radius);
-
-padding:25px 40px;
-
-display:flex;
-
-justify-content:space-between;
+border-radius:
+0 0 var(--radius) var(--radius);
 
 font-family:var(--mono);
 
@@ -1378,22 +904,454 @@ font-family:var(--mono);
 
 .proof-footer strong{
 
+font-size:28px;
+
 color:var(--green);
 
 }
 
 
 
+/* METHOD */
+
+
+.method-grid{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:25px;
+
+}
+
+
+
+.method-card{
+
+background:var(--surface);
+
+border:1px solid var(--border);
+
+border-radius:var(--radius);
+
+padding:35px;
+
+}
+
+
+
+.method-card h3{
+
+font-family:var(--display);
+
+font-size:26px;
+
+margin-bottom:15px;
+
+}
+
+
+
+.method-card p{
+
+color:var(--muted);
+
+line-height:1.7;
+
+}
+
+
+
+.method-card code{
+
+display:block;
+
+background:#090714;
+
+border:1px solid var(--border);
+
+padding:15px;
+
+margin-top:20px;
+
+border-radius:14px;
+
+font-family:var(--mono);
+
+color:#d8b4fe;
+
+}
+
+
+
+/* FOOTER */
+
+
+footer{
+
+border-top:1px solid var(--border);
+
+padding:35px 0;
+
+text-align:center;
+
+color:var(--muted-dim);
+
+font-family:var(--mono);
+
+font-size:13px;
+
+}
+
+
+
+/* RESPONSIVE */
+
+
+@media(max-width:1000px){
+
+
+.metric-grid,
+.live-grid,
+.cost-grid,
+.method-grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+.latest-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+
+.proof{
+
+grid-template-columns:1fr;
+
+}
+
+
+.proof-side + .proof-side{
+
+border-left:none;
+
+border-top:1px solid var(--border);
+
+}
+
+
+}
+
+
+
+@media(max-width:700px){
+
+
+.nav-links a:not(.nav-btn){
+
+display:none;
+
+}
+
+
+.section{
+
+padding:70px 0;
+
+}
+
+
+.section h2{
+
+font-size:38px;
+
+}
+
+
+h1{
+
+font-size:48px;
+
+letter-spacing:-2px;
+
+}
+
+
+.latest-grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+.metric-card strong{
+
+font-size:36px;
+
+}
+
+
+}
+
+
 
 
 </style>
 
+</head>
+
+
+<body>
+
+
+<nav>
+
+
+<div class="logo">
+
+Tok<span>yra</span>
+
+</div>
+
+
+
+<div class="nav-links">
+
+
+<a href="index.html">
+Product
+</a>
+
+
+<a href="compressor.html">
+Compressor
+</a>
+
+
+<a href="metrics.html">
+Metrics
+</a>
+
+
+
+<a href="compressor.html" class="nav-btn">
+Try Tokyra
+</a>
+
+
+</div>
+
+
+</nav>
+
+
+
+
+<header class="hero">
+
+
+<div class="container">
+
+
+<div class="tag">
+
+<span class="tag-dot"></span>
+
+Live AI efficiency metrics
+
+</div>
+
+
+
+<h1>
+
+Measure every saved <span class="grad">token.</span>
+
+</h1>
+
+
+
+<p>
+
+Tokyra tracks compression performance,
+fidelity preservation, API reliability,
+and AI cost efficiency from every optimization.
+
+</p>
+
+
+</div>
+
+
+</header>
+
+
+
+<section class="section">
+
+
+<div class="container">
+
+
+<div class="section-header">
+
+<div class="label">
+OVERVIEW
+</div>
+
+
+<h2>
+AI efficiency at a glance.
+</h2>
+
+
+<p>
+Monitor how much Tokyra reduces prompts while
+maintaining the original intent and instructions.
+</p>
+
+
+</div>
+
+
+
+<div class="metric-grid">
+
+
+
+<div class="metric-card">
+
+<span>
+TOTAL RUNS
+</span>
+
+<strong id="totalRuns">
+0
+</strong>
+
+</div>
+
+
+
+<div class="metric-card">
+
+<span>
+AVG REDUCTION
+</span>
+
+<strong id="avgReduction">
+0%
+</strong>
+
+</div>
+
+
+
+<div class="metric-card">
+
+<span>
+AVG FIDELITY
+</span>
+
+<strong id="avgFidelity">
+0%
+</strong>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+</section>
+<section class="section">
+
+
+<div class="container">
+
+
+<div class="section-header">
+
+
+<div class="label">
+LIVE PERFORMANCE
+</div>
+
+
+<h2>
+Real compressor data.
+</h2>
+
+
+<p>
+Metrics are loaded directly from the Tokyra
+compression engine API.
+</p>
+
+
+</div>
+
+
+
+
+<div class="status-box">
+
+
+<div class="status-indicator">
+
+
+<span id="statusDot"></span>
+
+
+<p id="statusText">
+Checking API connection...
+</p>
+
+
+</div>
+
+
+</div>
 
 
 
 
 
-<!-- TRANSPARENCY -->
+<div id="statsContainer">
+
+
+<div class="latest-box">
+
+<center>
+
+Loading metrics...
+
+</center>
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
 
 
 <section class="section">
@@ -1406,7 +1364,295 @@ color:var(--green);
 
 
 <div class="label">
-Methodology
+COST IMPACT
+</div>
+
+
+<h2>
+Every token saved compounds.
+</h2>
+
+
+<p>
+Reducing unnecessary tokens lowers inference
+costs across every AI request.
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="cost-grid">
+
+
+
+<div class="cost-card">
+
+
+<h3>
+Tokens Optimized
+</h3>
+
+
+<strong id="tokensSaved">
+0
+</strong>
+
+
+<p>
+Total tokens removed.
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="cost-card">
+
+
+<h3>
+Estimated Savings
+</h3>
+
+
+<strong id="estimatedSavings">
+$0.00
+</strong>
+
+
+<p>
+Estimated API cost reduction.
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="cost-card">
+
+
+<h3>
+Efficiency Score
+</h3>
+
+
+<strong id="efficiencyScore">
+0
+</strong>
+
+
+<p>
+Compression + fidelity balance.
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<section class="section">
+
+
+<div class="container">
+
+
+<div class="section-header">
+
+
+<div class="label">
+LATEST EXECUTION
+</div>
+
+
+<h2>
+Most recent optimization.
+</h2>
+
+
+<p>
+The latest prompt processed by Tokyra.
+</p>
+
+
+</div>
+
+
+
+<div id="latestContainer">
+
+
+<div class="latest-box">
+
+
+<center>
+
+No compression data available.
+
+</center>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="section">
+
+
+<div class="container">
+
+
+<div class="section-header">
+
+
+<div class="label">
+VERIFICATION
+</div>
+
+
+<h2>
+Same intent. Fewer tokens.
+</h2>
+
+
+<p>
+Tokyra removes unnecessary language while
+preserving instructions that affect model behavior.
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="proof">
+
+
+<div class="proof-side">
+
+
+<h3>
+Original Prompt
+</h3>
+
+
+<p>
+
+You are an extremely helpful AI assistant.
+Always provide detailed, accurate, and
+professional responses. Carefully analyze every
+request and include all relevant information
+while maintaining the highest quality response.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="proof-side">
+
+
+<h3>
+Tokyra Optimized
+</h3>
+
+
+<p>
+
+Act as an accurate AI assistant.
+Analyze requests carefully and provide
+relevant detailed responses.
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+<div class="proof-footer">
+
+
+<span>
+Token Reduction
+</span>
+
+
+<strong>
+65%
+</strong>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<section class="section">
+
+
+<div class="container">
+
+
+<div class="section-header">
+
+
+<div class="label">
+METHODOLOGY
 </div>
 
 
@@ -1416,8 +1662,8 @@ Measured, not marketed.
 
 
 <p>
-Tokyra separates compression quality from
-simple text deletion.
+Tokyra evaluates compression quality instead
+of simply deleting text.
 </p>
 
 
@@ -1426,7 +1672,9 @@ simple text deletion.
 
 
 
+
 <div class="method-grid">
+
 
 
 <div class="method-card">
@@ -1439,14 +1687,14 @@ Compression Ratio
 
 <p>
 
-Measures how many tokens are removed from
-the original request.
+Measures how many tokens are removed
+from the original prompt.
 
 </p>
 
 
 <code>
-1 - optimized/original
+1 - optimized / original
 </code>
 
 
@@ -1497,13 +1745,13 @@ Checks preservation of:
 
 
 <h3>
-Combined Score
+CFS Score
 </h3>
 
 
 <p>
 
-Balances compression gains with
+Balances token savings with
 instruction preservation.
 
 </p>
@@ -1521,6 +1769,7 @@ CFS = compression × fidelity
 </div>
 
 
+
 </div>
 
 
@@ -1530,230 +1779,15 @@ CFS = compression × fidelity
 
 
 
-<style>
-
-
-.method-grid{
-
-display:grid;
-
-grid-template-columns:repeat(3,1fr);
-
-gap:25px;
-
-}
-
-
-
-.method-card{
-
-background:var(--surface);
-
-border:1px solid var(--border);
-
-border-radius:var(--radius);
-
-padding:35px;
-
-}
-
-
-
-.method-card h3{
-
-font-size:26px;
-
-margin-bottom:15px;
-
-}
-
-
-
-.method-card p{
-
-color:#999;
-
-line-height:1.7;
-
-}
-
-
-
-.method-card code{
-
-display:block;
-
-margin-top:20px;
-
-font-family:var(--mono);
-
-background:#111;
-
-padding:12px;
-
-border-radius:12px;
-
-color:#ccc;
-
-}
-
-
-
-</style>
-<!-- FOOTER -->
-
 <footer>
-
 
 <div class="container">
 
-
 Tokyra © 2026 — AI efficiency infrastructure
-
 
 </div>
 
-
 </footer>
-
-
-
-
-
-<style>
-
-
-footer{
-
-border-top:1px solid var(--border);
-
-padding:35px 0;
-
-text-align:center;
-
-color:#666;
-
-font-family:var(--mono);
-
-font-size:13px;
-
-}
-
-
-
-
-
-@media(max-width:900px){
-
-
-.nav-links a:not(.nav-btn){
-
-display:none;
-
-}
-
-
-
-.metric-grid,
-.live-grid,
-.cost-grid,
-.method-grid{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.latest-grid{
-
-grid-template-columns:repeat(2,1fr);
-
-}
-
-
-
-.proof{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.proof-side + .proof-side{
-
-border-left:none;
-
-border-top:1px solid var(--border);
-
-}
-
-
-
-.section h2{
-
-font-size:38px;
-
-}
-
-
-
-h1{
-
-letter-spacing:-3px;
-
-}
-
-
-
-}
-
-
-
-
-@media(max-width:600px){
-
-
-
-.latest-grid{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-nav{
-
-padding:25px 5vw;
-
-}
-
-
-
-.hero{
-
-padding-top:60px;
-
-}
-
-
-
-.metric-card strong{
-
-font-size:34px;
-
-}
-
-
-}
-
-
-
-</style>
-
-
 
 
 
@@ -1774,12 +1808,11 @@ API + "/latest";
 
 
 
-
-
 const statusDot =
 document.getElementById(
 "statusDot"
 );
+
 
 
 const statusText =
@@ -1788,17 +1821,18 @@ document.getElementById(
 );
 
 
+
 const statsContainer =
 document.getElementById(
 "statsContainer"
 );
 
 
+
 const latestContainer =
 document.getElementById(
 "latestContainer"
 );
-
 
 
 
@@ -1815,7 +1849,9 @@ await fetch(statsURL);
 
 
 if(!response.ok)
-throw new Error();
+throw new Error(
+"API error"
+);
 
 
 
@@ -1824,15 +1860,13 @@ await response.json();
 
 
 
-statusDot.classList.add(
-"online"
-);
+statusDot.className =
+"online";
 
 
 
-statusText.textContent =
+statusText.innerText =
 "API online — live metrics loaded";
-
 
 
 
@@ -1841,17 +1875,16 @@ data.totals || {};
 
 
 
-
 document.getElementById(
 "totalRuns"
-).textContent =
+).innerText =
 totals.compressionsRun || 0;
 
 
 
 document.getElementById(
 "avgReduction"
-).textContent =
+).innerText =
 (totals.avgCompressionPercent || 0)
 +
 "%";
@@ -1860,7 +1893,7 @@ document.getElementById(
 
 document.getElementById(
 "avgFidelity"
-).textContent =
+).innerText =
 Math.round(
 (totals.avgFidelity || 0) * 100
 )
@@ -1873,14 +1906,13 @@ Math.round(
 
 statsContainer.innerHTML = `
 
-
 <div class="live-grid">
 
 
 <div class="live-card">
 
 <h3>
-Compression runs
+Compression Runs
 </h3>
 
 <strong>
@@ -1888,7 +1920,6 @@ ${totals.compressionsRun || 0}
 </strong>
 
 </div>
-
 
 
 
@@ -1925,12 +1956,12 @@ ${totals.repairCount || 0}
 
 </div>
 
-
 `;
 
 
 
 }
+
 
 catch(error){
 
@@ -1939,26 +1970,27 @@ console.log(error);
 
 
 
-statusDot.classList.add(
-"error"
-);
+statusDot.className =
+"error";
 
 
 
-statusText.textContent =
+statusText.innerText =
 "API unavailable";
 
 
 
 statsContainer.innerHTML = `
 
+<div class="latest-box">
 
-<div class="loading">
+<center>
 
 Unable to load live metrics.
 
-</div>
+</center>
 
+</div>
 
 `;
 
@@ -1966,15 +1998,6 @@ Unable to load live metrics.
 
 
 }
-
-
-
-
-
-
-
-
-
 async function loadLatest(){
 
 
@@ -1987,12 +2010,15 @@ await fetch(latestURL);
 
 
 if(!response.ok)
-throw new Error();
+throw new Error(
+"Latest endpoint failed"
+);
 
 
 
 const data =
 await response.json();
+
 
 
 
@@ -2008,7 +2034,7 @@ latestContainer.innerHTML = `
 <div class="latest-stat">
 
 <span>
-Original tokens
+Original Tokens
 </span>
 
 <strong>
@@ -2019,10 +2045,11 @@ ${data.originalTokens || 0}
 
 
 
+
 <div class="latest-stat">
 
 <span>
-Optimized tokens
+Optimized Tokens
 </span>
 
 <strong>
@@ -2033,10 +2060,11 @@ ${data.optimizedTokens || 0}
 
 
 
+
 <div class="latest-stat">
 
 <span>
-Saved
+Tokens Saved
 </span>
 
 <strong>
@@ -2044,6 +2072,7 @@ ${data.tokensSaved || 0}
 </strong>
 
 </div>
+
 
 
 
@@ -2071,22 +2100,25 @@ ${data.compressionPercent || 0}%
 
 
 
+
+
 if(data.tokensSaved){
 
 
 document.getElementById(
 "tokensSaved"
-).textContent =
+).innerText =
 data.tokensSaved;
 
 
 
 document.getElementById(
 "estimatedSavings"
-).textContent =
+).innerText =
 "$" +
 (
-Number(data.tokensSaved) *
+Number(data.tokensSaved)
+*
 0.000002
 ).toFixed(2);
 
@@ -2094,9 +2126,11 @@ Number(data.tokensSaved) *
 
 document.getElementById(
 "efficiencyScore"
-).textContent =
+).innerText =
 Math.round(
-(data.estimatedCFS || 0) * 100
+(data.estimatedCFS || 0)
+*
+100
 );
 
 
@@ -2104,7 +2138,9 @@ Math.round(
 }
 
 
+
 }
+
 
 catch(error){
 
@@ -2116,20 +2152,28 @@ console.log(error);
 latestContainer.innerHTML = `
 
 
-<div class="loading">
+<div class="latest-box">
+
+
+<center>
 
 No recent compression available.
+
+</center>
+
 
 </div>
 
 
 `;
 
-}
 
 
 }
 
+
+
+}
 
 
 
@@ -2142,7 +2186,6 @@ loadLatest();
 
 
 </script>
-
 
 
 </body>
