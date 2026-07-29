@@ -781,6 +781,12 @@ grid-column:8 / span 3;
 
 }
 
+/* Method 1: Half-Column Nudge for dead center alignment */
+.metric:nth-child(5),
+.metric:nth-child(6),
+.metric:nth-child(7) {
+transform: translateX(calc(50% + 10px));
+}
 
 
 
@@ -817,7 +823,12 @@ border-color:var(--border2);
 
 }
 
-
+/* Update hover state for bottom three to maintain the center nudge */
+.metric:nth-child(5):hover,
+.metric:nth-child(6):hover,
+.metric:nth-child(7):hover {
+transform: translateY(-5px) translateX(calc(50% + 10px));
+}
 
 .metric span{
 
@@ -1164,16 +1175,10 @@ Your optimized prompt will appear here.
 
 
 
-<!-- ALL 7 METRICS IN ONE GRID -->
-
-
 <div class="metrics">
 
 
 
-
-
-<!-- TOP ROW -->
 
 
 <div class="metric">
@@ -1275,9 +1280,6 @@ COMPRESSION
 
 
 
-
-
-<!-- BOTTOM ROW -->
 
 
 <div class="metric yellow">
@@ -1447,6 +1449,17 @@ grid-column:auto;
 
 }
 
+/* Reset the center nudge on mobile grids */
+.metric:nth-child(5),
+.metric:nth-child(6),
+.metric:nth-child(7) {
+transform: none;
+}
+.metric:nth-child(5):hover,
+.metric:nth-child(6):hover,
+.metric:nth-child(7):hover {
+transform: translateY(-5px);
+}
 
 }
 
