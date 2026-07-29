@@ -1,93 +1,313 @@
 /*
-  Tokyra accounts — powered by Netlify Identity.
+    Tokyra Authentication System
+    Powered by Netlify Identity
 
-  Requires the Netlify Identity widget script to be loaded BEFORE this
-  file, and requires Identity to be turned on for this site in the
-  Netlify dashboard (Project configuration -> Identity -> Enable Identity,
-  Registration set to "Open").
-
-  This file:
-  - Wires up any #authLoginBtn / #authSignupBtn / #authLogoutBtn buttons
-  - Shows an "email" badge (#authAccountBadge) when someone is logged in
-  - Fires a `tokyra:auth` CustomEvent on `document` whenever auth state
-    changes, with `detail.user` set to the Netlify Identity user object
-    (or null when logged out) — pages can listen for this to gate content.
+    Features:
+    - Login / Signup / Logout buttons
+    - Account badge
+    - Global auth state events
+    - User session helpers
 */
-(function () {
-  function setup() {
-    var widget = window.netlifyIdentity;
-    if (!widget) {
-      console.warn("Netlify Identity widget did not load.");
-      return;
-    }
 
-    var loginBtn = document.getElementById("authLoginBtn");
-    var signupBtn = document.getElementById("authSignupBtn");
-    var logoutBtn = document.getElementById("authLogoutBtn");
-    var badge = document.getElementById("authAccountBadge");
 
-    function render(user) {
-      var loggedIn = !!user;
+(function(){
 
-      if (loginBtn) loginBtn.style.display = loggedIn ? "none" : "inline-flex";
-      if (signupBtn) signupBtn.style.display = loggedIn ? "none" : "inline-flex";
-      if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-flex" : "none";
+"use strict";
 
-      if (badge) {
-        if (loggedIn) {
-          var email = (user.email || "").split("@")[0];
-          badge.textContent = email;
-          badge.style.display = "inline-flex";
-        } else {
-          badge.textContent = "";
-          badge.style.display = "none";
-        }
-      }
 
-      document.dispatchEvent(
-        new CustomEvent("tokyra:auth", { detail: { user: user || null } })
-      );
-    }
+if(window.TokyraAuthLoaded){
+    return;
+}
 
-    if (loginBtn) {
-      loginBtn.addEventListener("click", function () {
-        widget.open("login");
-      });
-    }
-    if (signupBtn) {
-      signupBtn.addEventListener("click", function () {
-        widget.open("signup");
-      });
-    }
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", function () {
-        widget.logout();
-      });
-    }
+window.TokyraAuthLoaded = true;
 
-    widget.on("init", function (user) {
-      render(user);
-    });
-    widget.on("login", function (user) {
-      render(user);
-      widget.close();
-    });
-    widget.on("logout", function () {
-      render(null);
-    });
-    widget.on("error", function (err) {
-      console.error("Netlify Identity error:", err);
-    });
 
-    // init() re-checks the current session and also handles the
-    // confirmation / recovery / invite tokens Netlify appends to the
-    // URL hash after someone clicks a link in an auth email.
-    widget.init();
-  }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setup);
-  } else {
-    setup();
-  }
+function setup(){
+
+
+const widget = window.netlifyIdentity;
+
+
+if(!widget){
+
+console.warn(
+"Tokyra Auth: Netlify Identity unavailable."
+);
+
+return;
+
+}
+
+
+
+const loginBtn =
+document.getElementById(
+"authLoginBtn"
+);
+
+
+const signupBtn =
+document.getElementById(
+"authSignupBtn"
+);
+
+
+const logoutBtn =
+document.getElementById(
+"authLogoutBtn"
+);
+
+
+const badge =
+document.getElementById(
+"authAccountBadge"
+);
+
+
+
+
+function updateUI(user){
+
+
+const loggedIn =
+Boolean(user);
+
+
+
+if(loginBtn)
+loginBtn.style.display =
+loggedIn ? "none" : "inline-flex";
+
+
+
+if(signupBtn)
+signupBtn.style.display =
+loggedIn ? "none" : "inline-flex";
+
+
+
+if(logoutBtn)
+logoutBtn.style.display =
+loggedIn ? "inline-flex" : "none";
+
+
+
+
+
+if(badge){
+
+
+if(loggedIn){
+
+
+const name =
+user.email
+? user.email.split("@")[0]
+: "Account";
+
+
+badge.textContent =
+name;
+
+
+badge.style.display =
+"inline-flex";
+
+
+}
+
+else{
+
+
+badge.textContent =
+"";
+
+
+badge.style.display =
+"none";
+
+
+}
+
+
+}
+
+
+
+
+window.TokyraUser =
+user || null;
+
+
+
+
+document.dispatchEvent(
+
+new CustomEvent(
+"tokyra:auth",
+{
+detail:{
+user:user || null
+}
+}
+
+)
+
+);
+
+
+}
+
+
+
+
+
+/*
+BUTTONS
+*/
+
+
+if(loginBtn){
+
+loginBtn.onclick =
+()=>widget.open("login");
+
+}
+
+
+
+if(signupBtn){
+
+signupBtn.onclick =
+()=>widget.open("signup");
+
+}
+
+
+
+if(logoutBtn){
+
+logoutBtn.onclick =
+()=>widget.logout();
+
+}
+
+
+
+
+/*
+NETLIFY EVENTS
+*/
+
+
+widget.on(
+"init",
+user=>{
+
+updateUI(user);
+
+}
+
+);
+
+
+
+widget.on(
+"login",
+user=>{
+
+
+updateUI(user);
+
+
+document.dispatchEvent(
+
+new CustomEvent(
+"tokyra:login",
+{
+detail:{user}
+}
+
+)
+
+);
+
+
+widget.close();
+
+
+}
+
+);
+
+
+
+widget.on(
+"logout",
+()=>{
+
+
+updateUI(null);
+
+
+document.dispatchEvent(
+
+new CustomEvent(
+"tokyra:logout"
+
+)
+
+);
+
+
+}
+
+);
+
+
+
+widget.on(
+"error",
+error=>{
+
+console.error(
+"Tokyra Identity Error:",
+error
+);
+
+}
+
+);
+
+
+
+
+widget.init();
+
+
+}
+
+
+
+
+if(
+document.readyState === "loading"
+){
+
+document.addEventListener(
+"DOMContentLoaded",
+setup
+);
+
+}
+
+else{
+
+setup();
+
+}
+
+
+
 })();
