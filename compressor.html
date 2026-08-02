@@ -12,19 +12,12 @@
 Tokyra Compressor — AI Efficiency Infrastructure
 </title>
 
-
 <link rel="icon" href="tokyra.png">
-
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-
-<script src="auth.js" defer></script>
-
 
 <style>
 
@@ -48,19 +41,15 @@ Tokyra Compressor — AI Efficiency Infrastructure
 --yellow:#eab308;
 --red:#ef4444;
 
-
 --gradient:
 linear-gradient(115deg,#a855f7,#38bdf8);
-
 
 --gradient-text:
 linear-gradient(115deg,#e9d5ff,#a855f7,#38bdf8);
 
-
 --font:"Inter",sans-serif;
 --display:"Space Grotesk",sans-serif;
 --mono:"IBM Plex Mono",monospace;
-
 
 --radius:22px;
 --max:1200px;
@@ -172,8 +161,7 @@ color:white;
 
 
 
-/* SCROLLBAR */
-
+/* scrollbar */
 
 ::-webkit-scrollbar {
 
@@ -206,9 +194,7 @@ background:var(--muted-dim);
 
 
 
-
-
-/* NAVIGATION */
+/* NAV */
 
 
 nav {
@@ -220,7 +206,6 @@ display:flex;
 align-items:center;
 
 justify-content:space-between;
-
 
 max-width:var(--max);
 
@@ -293,6 +278,7 @@ transition:.25s;
 }
 
 
+
 .back:hover {
 
 border-color:var(--blue);
@@ -302,8 +288,6 @@ color:white;
 transform:translateY(-2px);
 
 }
-
-
 
 
 
@@ -402,7 +386,6 @@ color:transparent;
 }
 
 
-
 .header p {
 
 font-size:20px;
@@ -411,9 +394,9 @@ line-height:1.7;
 
 color:var(--muted);
 
-}
-  /* COMPRESSOR PANEL */
+}<style>
 
+/* COMPRESSOR */
 
 .compressor {
 
@@ -427,7 +410,6 @@ linear-gradient(
 var(--surface2),
 var(--surface)
 );
-
 
 border:1px solid var(--border);
 
@@ -519,8 +501,8 @@ box-shadow:
 
 
 
-/* VOICE MICROPHONE BUTTON */
 
+/* VOICE */
 
 .voice-btn {
 
@@ -530,29 +512,21 @@ right:22px;
 
 bottom:22px;
 
-
 width:52px;
 
 height:52px;
 
-
 border-radius:50%;
-
 
 border:1px solid var(--border2);
 
-
 background:var(--surface2);
-
 
 color:white;
 
-
 font-size:22px;
 
-
 cursor:pointer;
-
 
 transition:.25s;
 
@@ -576,7 +550,6 @@ background:var(--red);
 
 border-color:var(--red);
 
-
 box-shadow:
 
 0 0 25px rgba(239,68,68,.5);
@@ -587,8 +560,7 @@ box-shadow:
 
 
 
-
-/* BUTTON & STATUS */
+/* BUTTON */
 
 
 .actions {
@@ -632,6 +604,7 @@ transition:.3s;
 transform:translateY(-3px);
 
 box-shadow:
+
 0 15px 40px rgba(168,85,247,.45);
 
 }
@@ -647,6 +620,10 @@ cursor:not-allowed;
 }
 
 
+
+
+
+/* STATUS */
 
 .status {
 
@@ -690,7 +667,6 @@ color:#ff7b7b;
 
 
 
-
 /* RESULTS */
 
 
@@ -726,15 +702,11 @@ align-items:center;
 
 justify-content:space-between;
 
-
 padding:0 25px;
-
 
 background:var(--surface2);
 
-
 border-bottom:1px solid var(--border);
-
 
 font-family:var(--mono);
 
@@ -791,6 +763,7 @@ white-space:pre-wrap;
 color:#ddd;
 
 }
+
 
 
 
@@ -857,7 +830,6 @@ rgba(20,16,41,.95),
 rgba(13,10,30,.95)
 );
 
-
 border:1px solid var(--border);
 
 border-radius:22px;
@@ -908,7 +880,6 @@ font-size:36px;
 
 letter-spacing:-1px;
 
-
 background:var(--gradient-text);
 
 -webkit-background-clip:text;
@@ -924,6 +895,7 @@ color:transparent;
 .metric.green strong {
 
 background:
+
 linear-gradient(
 115deg,
 #4ade80,
@@ -941,6 +913,7 @@ background-clip:text;
 .metric.yellow strong {
 
 background:
+
 linear-gradient(
 115deg,
 #fde047,
@@ -952,8 +925,6 @@ linear-gradient(
 background-clip:text;
 
 }
-
-
 
 
 
@@ -977,10 +948,55 @@ color:var(--muted-dim);
 
 }
 
-</style>
 
-</head>
 
+
+
+/* MOBILE */
+
+
+@media(max-width:900px){
+
+.compressor{
+
+padding:25px;
+
+}
+
+
+.metrics{
+
+display:grid;
+
+grid-template-columns:1fr;
+
+}
+
+
+.metric,
+.metric:nth-child(1),
+.metric:nth-child(2),
+.metric:nth-child(3),
+.metric:nth-child(4),
+.metric:nth-child(5),
+.metric:nth-child(6),
+.metric:nth-child(7){
+
+grid-column:auto;
+
+}
+
+
+h1{
+
+letter-spacing:-2px;
+
+}
+
+}
+
+
+</style></head>
 
 <body>
 
@@ -1004,7 +1020,8 @@ color:var(--muted-dim);
 </defs>
 
 
-<path d="M32 12 L78 46 Q84 50 78 54 L32 88 Q26 92 28 84 L46 50 L28 16 Q26 8 32 12Z" fill="url(#navGrad)" />
+<path d="M32 12 L78 46 Q84 50 78 54 L32 88 Q26 92 28 84 L46 50 L28 16 Q26 8 32 12Z"
+fill="url(#navGrad)" />
 
 </svg>
 
@@ -1018,14 +1035,23 @@ Tok<span>yra</span>
 
 
 <a href="index.html" class="back">
+
 ← Back to Tokyra
+
 </a>
 
 
 </nav>
+
+
+
+
+
 <div class="wrapper">
 
+
 <div class="container">
+
 
 
 <div class="header">
@@ -1062,7 +1088,10 @@ Paste any AI prompt and Tokyra removes unnecessary tokens while preserving instr
 </p>
 
 
+
 </div>
+
+
 
 
 
@@ -1090,7 +1119,6 @@ TOKYRA ENGINE
 
 
 
-
 <div class="input-wrapper">
 
 
@@ -1101,7 +1129,6 @@ id="promptInput"
 placeholder="Paste your AI prompt here..."
 
 ></textarea>
-
 
 
 
@@ -1151,11 +1178,14 @@ Compress Prompt
 
 
 
+
 <div id="status" class="status">
 
 Ready.
 
 </div>
+
+
 
 
 
@@ -1202,6 +1232,7 @@ Copy
 
 
 
+
 <div
 
 id="output"
@@ -1217,6 +1248,7 @@ Your optimized prompt will appear here.
 
 
 </div>
+
 
 
 
@@ -1371,17 +1403,24 @@ LATENCY
 
 
 
-</div>
 
-
-</div>
 
 
 
 </div>
 
 
+
 </div>
+
+
+
+</div>
+
+
+
+</div>
+
 
 
 
@@ -1391,59 +1430,36 @@ LATENCY
 
 © 2026 Tokyra. All rights reserved.
 
-</footer>
-
-
-
-
-
-
-<script>
-
-
-/* =========================
-
-NAV EFFECT
-
-========================= */
+</footer><script>
 
 
 const nav =
 document.getElementById("nav");
 
 
-
 window.addEventListener(
 "scroll",
 ()=>{
 
-
 if(window.scrollY > 20){
-
 
 nav.style.background =
 "rgba(6,3,18,.72)";
 
-
 nav.style.backdropFilter =
 "blur(16px)";
-
 
 }
 
 else{
 
-
 nav.style.background =
 "transparent";
-
 
 nav.style.backdropFilter =
 "none";
 
-
 }
-
 
 });
 
@@ -1451,13 +1467,7 @@ nav.style.backdropFilter =
 
 
 
-
-
-/* =========================
-
-VOICE INPUT SYSTEM
-
-========================= */
+/* VOICE INPUT */
 
 
 const voiceBtn =
@@ -1470,21 +1480,16 @@ document.getElementById("promptInput");
 
 
 const SpeechRecognition =
-
 window.SpeechRecognition ||
-
 window.webkitSpeechRecognition;
-
 
 
 
 if(SpeechRecognition){
 
 
-
 const recognition =
 new SpeechRecognition();
-
 
 
 recognition.lang =
@@ -1500,29 +1505,18 @@ true;
 
 
 
-
-
-
 voiceBtn.onclick = ()=>{
 
-
 recognition.start();
-
 
 voiceBtn.classList.add(
 "listening"
 );
 
-
 voiceBtn.innerHTML =
 "🔴";
 
-
 };
-
-
-
-
 
 
 
@@ -1530,85 +1524,62 @@ recognition.onresult =
 (event)=>{
 
 
-let transcript = "";
-
+let transcript="";
 
 
 for(
-let i = event.resultIndex;
-i < event.results.length;
+let i=event.resultIndex;
+i<event.results.length;
 i++
 ){
 
-
 transcript +=
-
 event.results[i][0].transcript;
 
-
 }
-
 
 
 promptInput.value =
 transcript;
 
-
 };
-
-
-
-
 
 
 
 recognition.onend =
 ()=>{
 
-
 voiceBtn.classList.remove(
 "listening"
 );
 
-
 voiceBtn.innerHTML =
 "🎙️";
 
-
 };
-
-
-
-
 
 
 
 recognition.onerror =
 ()=>{
 
-
 voiceBtn.classList.remove(
 "listening"
 );
 
-
 voiceBtn.innerHTML =
 "🎙️";
-
 
 };
 
 
-
 }
 
-else {
-
+else{
 
 voiceBtn.style.display =
 "none";
 
-
 }
 
 
@@ -1616,11 +1587,9 @@ voiceBtn.style.display =
 
 
 
-/* =========================
 
-TOKYRA API
 
-========================= */
+/* TOKYRA API */
 
 
 const WORKER_URL =
@@ -1628,36 +1597,25 @@ const WORKER_URL =
 
 
 
+
+
 async function compressPrompt(){
 
 
 const input =
-
-document
-.getElementById("promptInput")
-.value
-.trim();
+promptInput.value.trim();
 
 
 const output =
-
-document
-.getElementById("output");
-
+document.getElementById("output");
 
 
 const button =
-
-document
-.querySelector(".compress-btn");
-
+document.querySelector(".compress-btn");
 
 
 const status =
-
-document
-.getElementById("status");
-
+document.getElementById("status");
 
 
 
@@ -1678,7 +1636,6 @@ status.className =
 
 return;
 
-
 }
 
 
@@ -1689,7 +1646,6 @@ true;
 
 button.innerText =
 "Compressing...";
-
 
 
 status.innerText =
@@ -1707,37 +1663,35 @@ output.innerText =
 
 
 
+const start =
+Date.now();
+
+
+
+
 try{
 
 
 const response =
-
 await fetch(
 
 WORKER_URL,
 
 {
 
-
 method:"POST",
-
 
 headers:{
 
-"Content-Type":
-"application/json"
+"Content-Type":"application/json"
 
 },
 
-
-body:
-
-JSON.stringify({
+body:JSON.stringify({
 
 prompt:input
 
 })
-
 
 }
 
@@ -1745,45 +1699,82 @@ prompt:input
 
 
 
+let data;
 
-const data =
+
+try{
+
+data =
 await response.json();
 
+}
 
-
-if(!response.ok)
+catch{
 
 throw new Error(
+"Invalid server response"
+);
+
+}
+
+
+
+
+
+if(!response.ok){
+
+
+if(response.status===429){
+
+throw new Error(
+"Rate limit reached. Try again later."
+);
+
+}
+
+
+throw new Error(
+
+data.message ||
 data.error ||
 "Compression failed"
+
 );
+
+
+}
+
+
+
 
 
 
 output.innerText =
-data.optimized;
+data.optimized || "No output returned";
 
 
-document
-.getElementById("originalTokens")
+
+
+
+document.getElementById("originalTokens")
 .innerText =
 data.originalTokens || 0;
 
 
-document
-.getElementById("optimizedTokens")
+
+document.getElementById("optimizedTokens")
 .innerText =
 data.optimizedTokens || 0;
 
 
-document
-.getElementById("savedTokens")
+
+document.getElementById("savedTokens")
 .innerText =
 data.tokensSaved || 0;
 
 
-document
-.getElementById("compressionPercent")
+
+document.getElementById("compressionPercent")
 .innerText =
 (data.compressionPercent || 0)
 +
@@ -1791,28 +1782,33 @@ document
 
 
 
-document
-.getElementById("fidelity")
+
+
+document.getElementById("fidelity")
 .innerText =
-(data.quality?.fidelity || 0)
+(data.fidelityPercent || 0)
 +
-"%";
+%";
 
 
 
-document
-.getElementById("cfs")
+
+
+document.getElementById("cfs")
 .innerText =
-data.cfs || 0;
+data.cfsScore || 0;
 
 
 
-document
-.getElementById("latency")
+
+
+document.getElementById("latency")
 .innerText =
-(data.latencyMs || 0)
+(data.latencyMs || (Date.now()-start))
 +
 "ms";
+
+
 
 
 
@@ -1826,6 +1822,7 @@ status.className =
 
 
 }
+
 catch(error){
 
 
@@ -1833,9 +1830,7 @@ console.error(error);
 
 
 output.innerText =
-"Error: "
-+
-error.message;
+"Error: " + error.message;
 
 
 status.innerText =
@@ -1849,6 +1844,8 @@ status.className =
 }
 
 
+
+
 button.disabled =
 false;
 
@@ -1858,16 +1855,21 @@ button.innerText =
 
 
 }
-  /* =========================
-   COPY BUTTON
-========================= */
+
+
+
+
+
+
+
+
+/* COPY */
 
 
 function copyOutput(){
 
 
 const text =
-
 document
 .getElementById("output")
 .innerText;
@@ -1879,9 +1881,7 @@ navigator.clipboard.writeText(text);
 
 
 const button =
-
-document
-.querySelector(".copy");
+document.querySelector(".copy");
 
 
 
@@ -1900,9 +1900,7 @@ button.innerText =
 },1500);
 
 
-
 }
-
 
 
 
