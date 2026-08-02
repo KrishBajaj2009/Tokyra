@@ -15,19 +15,16 @@ content="Tokyra metrics dashboard showing token optimization, fidelity, and AI e
 
 <title>Tokyra — Metrics</title>
 
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="auth.js" defer></script>
 
 
 <style>
-
 
 :root{
 
@@ -64,7 +61,6 @@ linear-gradient(115deg,#e9d5ff,#a855f7,#38bdf8);
 }
 
 
-
 *{
 margin:0;
 padding:0;
@@ -72,11 +68,9 @@ box-sizing:border-box;
 }
 
 
-
 html{
 scroll-behavior:smooth;
 }
-
 
 
 body{
@@ -119,7 +113,6 @@ transparent 40%
 }
 
 
-
 a{
 
 color:inherit;
@@ -127,7 +120,6 @@ color:inherit;
 text-decoration:none;
 
 }
-
 
 
 .container{
@@ -139,7 +131,6 @@ margin:auto;
 padding:0 5vw;
 
 }
-
 
 
 /* NAV */
@@ -164,7 +155,6 @@ padding:0 5vw;
 }
 
 
-
 .logo{
 
 font-family:var(--display);
@@ -178,7 +168,6 @@ letter-spacing:-1px;
 }
 
 
-
 .logo span{
 
 background:var(--gradient);
@@ -188,7 +177,6 @@ background:var(--gradient);
 color:transparent;
 
 }
-
 
 
 .nav-links{
@@ -206,13 +194,11 @@ color:var(--muted);
 }
 
 
-
 .nav-links a:hover{
 
 color:white;
 
 }
-
 
 
 .nav-btn{
@@ -232,7 +218,6 @@ transition:.3s;
 }
 
 
-
 .nav-btn:hover{
 
 transform:translateY(-3px);
@@ -241,8 +226,7 @@ box-shadow:
 0 10px 30px rgba(168,85,247,.4);
 
 }
-
-
+<style>
 
 /* HERO */
 
@@ -254,7 +238,6 @@ padding:110px 0 80px;
 text-align:center;
 
 }
-
 
 
 .tag{
@@ -284,7 +267,6 @@ margin-bottom:30px;
 }
 
 
-
 .tag-dot{
 
 width:8px;
@@ -299,7 +281,6 @@ box-shadow:
 0 0 15px var(--blue);
 
 }
-
 
 
 h1{
@@ -317,7 +298,6 @@ margin-bottom:25px;
 }
 
 
-
 .grad{
 
 background:var(--gradient-text);
@@ -327,7 +307,6 @@ background:var(--gradient-text);
 color:transparent;
 
 }
-
 
 
 .hero p{
@@ -345,8 +324,7 @@ color:var(--muted);
 }
 
 
-
-/* SECTION */
+/* SECTIONS */
 
 
 .section{
@@ -358,7 +336,6 @@ border-top:1px solid var(--border);
 }
 
 
-
 .section-header{
 
 max-width:750px;
@@ -366,7 +343,6 @@ max-width:750px;
 margin-bottom:55px;
 
 }
-
 
 
 .label{
@@ -384,7 +360,6 @@ margin-bottom:15px;
 }
 
 
-
 .section h2{
 
 font-family:var(--display);
@@ -400,7 +375,6 @@ margin-bottom:20px;
 }
 
 
-
 .section-header p{
 
 font-size:18px;
@@ -412,168 +386,7 @@ color:var(--muted);
 }
 
 
-</style>
-
-</head>
-
-
-<body>
-
-
-<nav>
-
-
-<div class="logo">
-Tok<span>yra</span>
-</div>
-
-
-<div class="nav-links">
-
-<a href="index.html">
-Product
-</a>
-
-
-<a href="compressor.html">
-Compressor
-</a>
-
-
-<a href="metrics.html">
-Metrics
-</a>
-
-
-<a href="compressor.html" class="nav-btn">
-Try Tokyra
-</a>
-
-
-</div>
-
-
-</nav>
-
-
-
-<header class="hero">
-
-<div class="container">
-
-
-<div class="tag">
-
-<span class="tag-dot"></span>
-
-Live AI efficiency metrics
-
-</div>
-
-
-<h1>
-Measure every <span class="grad">saved token.</span>
-</h1>
-
-
-<p>
-
-Tokyra tracks compression performance,
-fidelity preservation, API reliability,
-and estimated AI cost improvements
-from real optimization runs.
-
-</p>
-
-
-</div>
-
-
-</header>
-<!-- OVERVIEW -->
-
-<section class="section">
-
-<div class="container">
-
-
-<div class="section-header">
-
-<div class="label">
-Overview
-</div>
-
-
-<h2>
-AI efficiency at a glance.
-</h2>
-
-
-<p>
-Tokyra measures optimization quality using
-compression ratio, fidelity preservation,
-and system performance.
-</p>
-
-
-</div>
-
-
-
-<div class="metric-grid">
-
-
-<div class="metric-card">
-
-<span>
-TOTAL RUNS
-</span>
-
-<strong id="totalRuns">
-0
-</strong>
-
-</div>
-
-
-
-<div class="metric-card">
-
-<span>
-AVERAGE REDUCTION
-</span>
-
-<strong id="avgReduction">
-0%
-</strong>
-
-</div>
-
-
-
-<div class="metric-card">
-
-<span>
-AVERAGE FIDELITY
-</span>
-
-<strong id="avgFidelity">
-0%
-</strong>
-
-</div>
-
-
-</div>
-
-
-</div>
-
-</section>
-
-
-
-<style>
+/* METRICS */
 
 
 .metric-grid{
@@ -660,12 +473,182 @@ color:transparent;
 
 
 
+</head>
 
 
-<!-- LIVE PERFORMANCE -->
+<body>
+
+
+<nav>
+
+
+<div class="logo">
+
+Tok<span>yra</span>
+
+</div>
+
+
+
+<div class="nav-links">
+
+
+<a href="index.html">
+Product
+</a>
+
+
+<a href="compressor.html">
+Compressor
+</a>
+
+
+<a href="metrics.html">
+Metrics
+</a>
+
+
+<a href="compressor.html" class="nav-btn">
+Try Tokyra
+</a>
+
+
+</div>
+
+
+</nav>
+
+
+
+<header class="hero">
+
+<div class="container">
+
+
+<div class="tag">
+
+<span class="tag-dot"></span>
+
+Live AI efficiency metrics
+
+</div>
+
+
+<h1>
+
+Measure every
+
+<span class="grad">
+
+saved token.
+
+</span>
+
+</h1>
+
+
+<p>
+
+Tokyra tracks compression performance,
+fidelity preservation,
+API reliability,
+and estimated AI cost improvements
+from real optimization runs.
+
+</p>
+
+
+</div>
+
+</header>
 
 
 <section class="section">
+
+
+<div class="container">
+
+
+<div class="section-header">
+
+<div class="label">
+
+Overview
+
+</div>
+
+
+<h2>
+
+AI efficiency at a glance.
+
+</h2>
+
+
+<p>
+
+Tokyra measures optimization quality using
+compression ratio, fidelity preservation,
+and system performance.
+
+</p>
+
+
+</div>
+
+
+
+<div class="metric-grid">
+
+
+<div class="metric-card">
+
+<span>
+TOTAL RUNS
+</span>
+
+<strong id="totalRuns">
+0
+</strong>
+
+</div>
+
+
+
+<div class="metric-card">
+
+<span>
+AVERAGE REDUCTION
+</span>
+
+<strong id="avgReduction">
+0%
+</strong>
+
+</div>
+
+
+
+<div class="metric-card">
+
+<span>
+AVERAGE FIDELITY
+</span>
+
+<strong id="avgFidelity">
+0%
+</strong>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section><section class="section">
 
 
 <div class="container">
@@ -893,7 +876,8 @@ font-size:36px;
 
 
 </style>
-<!-- COST IMPACT -->
+
+
 
 
 <section class="section">
@@ -905,18 +889,24 @@ font-size:36px;
 <div class="section-header">
 
 <div class="label">
+
 Cost impact
+
 </div>
 
 
 <h2>
+
 Every saved token compounds.
+
 </h2>
 
 
 <p>
+
 Reducing unnecessary tokens lowers
 AI inference costs across every request.
+
 </p>
 
 
@@ -1004,7 +994,6 @@ Compression + fidelity balance
 
 
 
-
 <style>
 
 
@@ -1078,17 +1067,7 @@ color:var(--muted);
 }
 
 
-
-</style>
-
-
-
-
-
-<!-- LATEST EXECUTION -->
-
-
-<section class="section">
+</style><section class="section">
 
 
 <div class="container">
@@ -1208,14 +1187,10 @@ font-size:32px;
 }
 
 
-
 </style>
 
 
 
-
-
-<!-- VERIFICATION -->
 
 
 <section class="section">
@@ -1409,8 +1384,7 @@ border:1px solid var(--border);
 
 border-top:none;
 
-border-radius:
-0 0 var(--radius) var(--radius);
+border-radius:0 0 var(--radius) var(--radius);
 
 font-family:var(--mono);
 
@@ -1427,9 +1401,10 @@ font-size:22px;
 }
 
 
-
 </style>
-<!-- METHODOLOGY -->
+
+
+
 
 
 <section class="section">
@@ -1500,7 +1475,7 @@ Fidelity Score
 
 <p>
 
-Evaluates whether optimization preserves:
+Evaluates preservation of:
 
 <br><br>
 
@@ -1635,20 +1610,13 @@ color:var(--blue);
 }
 
 
-
-
 </style>
 
 
 
 
 
-
-<!-- FOOTER -->
-
-
 <footer>
-
 
 <div class="container">
 
@@ -1656,135 +1624,7 @@ Tokyra © 2026 — AI efficiency infrastructure
 
 </div>
 
-
 </footer>
-
-
-
-
-<style>
-
-
-footer{
-
-border-top:1px solid var(--border);
-
-padding:35px 0;
-
-text-align:center;
-
-font-family:var(--mono);
-
-font-size:13px;
-
-color:var(--muted);
-
-}
-
-
-
-
-@media(max-width:900px){
-
-
-.nav-links a:not(.nav-btn){
-
-display:none;
-
-}
-
-
-
-.metric-grid,
-.live-grid,
-.cost-grid,
-.method-grid{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.latest-grid{
-
-grid-template-columns:repeat(2,1fr);
-
-}
-
-
-
-.proof{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.proof-side + .proof-side{
-
-border-left:none;
-
-border-top:1px solid var(--border);
-
-}
-
-
-
-.section h2{
-
-font-size:38px;
-
-}
-
-
-
-}
-
-
-
-@media(max-width:600px){
-
-
-.latest-grid{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.hero{
-
-padding-top:60px;
-
-}
-
-
-
-h1{
-
-letter-spacing:-2px;
-
-}
-
-
-
-.metric-card strong{
-
-font-size:36px;
-
-}
-
-
-}
-
-
-</style>
-
-
-
 
 
 <script>
@@ -1800,8 +1640,6 @@ API + "/stats";
 
 const latestURL =
 API + "/latest";
-
-
 
 
 
@@ -1822,28 +1660,21 @@ document.getElementById("latestContainer");
 
 
 
-
-
-
 async function loadStats(){
 
-
 try{
-
 
 const response =
 await fetch(statsURL);
 
 
-
 if(!response.ok)
-throw new Error("API error");
+throw new Error();
 
 
 
 const data =
 await response.json();
-
 
 
 statusDot.classList.add("online");
@@ -1853,42 +1684,26 @@ statusText.textContent =
 "API online — live metrics loaded";
 
 
-
 const totals =
 data.totals || {};
 
 
-
-document.getElementById("totalRuns")
-.textContent =
+document.getElementById("totalRuns").textContent =
 totals.compressionsRun || 0;
 
 
-
-document.getElementById("avgReduction")
-.textContent =
-(totals.avgCompressionPercent || 0)
-+
-"%";
+document.getElementById("avgReduction").textContent =
+Math.round(totals.avgCompressionPercent || 0)+"%";
 
 
-
-document.getElementById("avgFidelity")
-.textContent =
-Math.round(
-(totals.avgFidelity || 0) * 100
-)
-+
-"%";
-
-
+document.getElementById("avgFidelity").textContent =
+Math.round(totals.avgFidelity || 0)+"%";
 
 
 
 statsContainer.innerHTML = `
 
 <div class="live-grid">
-
 
 <div class="live-card">
 
@@ -1903,7 +1718,6 @@ ${totals.compressionsRun || 0}
 </div>
 
 
-
 <div class="live-card">
 
 <h3>
@@ -1911,13 +1725,10 @@ Average CFS
 </h3>
 
 <strong>
-${Math.round(
-(totals.avgCFS || 0) * 100
-)}
+${Math.round(totals.avgCFS || 0)}
 </strong>
 
 </div>
-
 
 
 <div class="live-card">
@@ -1933,67 +1744,33 @@ ${totals.repairCount || 0}
 </div>
 
 
-
 </div>
 
 `;
 
 
 
-}
-
-
-catch(error){
-
-
-console.log(error);
-
-
+}catch(error){
 
 statusDot.classList.add("error");
-
 
 statusText.textContent =
 "API unavailable";
 
 
-
-statsContainer.innerHTML = `
-
-<div class="loading">
-
-Unable to load live metrics.
-
-</div>
-
-`;
-
 }
 
 
 }
-
-
-
-
-
 
 
 
 async function loadLatest(){
 
-
 try{
-
 
 const response =
 await fetch(latestURL);
-
-
-
-if(!response.ok)
-throw new Error();
-
 
 
 const data =
@@ -2003,17 +1780,14 @@ await response.json();
 
 latestContainer.innerHTML = `
 
-
 <div class="latest-box">
 
-
 <div class="latest-grid">
-
 
 <div class="latest-stat">
 
 <span>
-Original tokens
+Original
 </span>
 
 <strong>
@@ -2023,11 +1797,10 @@ ${data.originalTokens || 0}
 </div>
 
 
-
 <div class="latest-stat">
 
 <span>
-Optimized tokens
+Optimized
 </span>
 
 <strong>
@@ -2035,8 +1808,6 @@ ${data.optimizedTokens || 0}
 </strong>
 
 </div>
-
-
 
 
 <div class="latest-stat">
@@ -2052,8 +1823,6 @@ ${data.tokensSaved || 0}
 </div>
 
 
-
-
 <div class="latest-stat">
 
 <span>
@@ -2067,77 +1836,45 @@ ${data.compressionPercent || 0}%
 </div>
 
 
-
 </div>
-
 
 </div>
 
 `;
-
-
 
 
 
 if(data.tokensSaved){
 
-
-document.getElementById("tokensSaved")
-.textContent =
+document.getElementById("tokensSaved").textContent =
 data.tokensSaved;
 
 
-
-document.getElementById("estimatedSavings")
-.textContent =
-"$" +
-(
-Number(data.tokensSaved) *
-0.000002
-)
-.toFixed(2);
+document.getElementById("estimatedSavings").textContent =
+"$"+(
+Number(data.tokensSaved)*0.000002
+).toFixed(2);
 
 
-
-document.getElementById("efficiencyScore")
-.textContent =
-Math.round(
-(data.estimatedCFS || 0) * 100
-);
-
-
+document.getElementById("efficiencyScore").textContent =
+Math.round(data.cfsScore || 0);
 
 }
 
 
+}catch(error){
 
-}
-
-
-
-catch(error){
-
-
-console.log(error);
-
-
-
-latestContainer.innerHTML = `
-
+latestContainer.innerHTML =
+`
 <div class="loading">
-
 No recent compression available.
-
 </div>
-
 `;
 
 }
 
 
 }
-
-
 
 
 
