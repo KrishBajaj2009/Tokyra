@@ -19,6 +19,9 @@ Tokyra Compressor — AI Efficiency Infrastructure
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+<script src="auth.js" defer></script>
+
+
 <style>
 
 :root {
@@ -31,7 +34,6 @@ Tokyra Compressor — AI Efficiency Infrastructure
 --border2:#3d3468;
 
 --text:#f6f4ff;
-
 --muted:#a79fc9;
 --muted-dim:#726a92;
 
@@ -161,40 +163,7 @@ color:white;
 
 
 
-/* scrollbar */
-
-::-webkit-scrollbar {
-
-width:8px;
-
-}
-
-
-::-webkit-scrollbar-track {
-
-background:var(--surface2);
-
-}
-
-
-::-webkit-scrollbar-thumb {
-
-background:var(--border2);
-
-border-radius:4px;
-
-}
-
-
-::-webkit-scrollbar-thumb:hover {
-
-background:var(--muted-dim);
-
-}
-
-
-
-/* NAV */
+/* NAVIGATION */
 
 
 nav {
@@ -207,13 +176,12 @@ align-items:center;
 
 justify-content:space-between;
 
+
 max-width:var(--max);
 
 margin:auto;
 
 padding:0 5vw;
-
-transition:.3s;
 
 }
 
@@ -278,7 +246,6 @@ transition:.25s;
 }
 
 
-
 .back:hover {
 
 border-color:var(--blue);
@@ -288,7 +255,6 @@ color:white;
 transform:translateY(-2px);
 
 }
-
 
 
 /* HERO */
@@ -301,7 +267,6 @@ padding:80px 0;
 }
 
 
-
 .header {
 
 max-width:800px;
@@ -311,7 +276,6 @@ margin:auto;
 text-align:center;
 
 }
-
 
 
 .tag {
@@ -341,7 +305,6 @@ margin-bottom:25px;
 }
 
 
-
 .tag .dot {
 
 width:7px;
@@ -355,7 +318,6 @@ background:var(--blue);
 box-shadow:0 0 15px var(--blue);
 
 }
-
 
 
 h1 {
@@ -394,11 +356,10 @@ line-height:1.7;
 
 color:var(--muted);
 
-}<style>
+}
 
-/* COMPRESSOR */
 
-.compressor {
+/* compressor styles continue */.compressor {
 
 max-width:1400px;
 
@@ -501,9 +462,6 @@ box-shadow:
 
 
 
-
-/* VOICE */
-
 .voice-btn {
 
 position:absolute;
@@ -551,12 +509,9 @@ background:var(--red);
 border-color:var(--red);
 
 box-shadow:
-
 0 0 25px rgba(239,68,68,.5);
 
 }
-
-
 
 
 
@@ -604,7 +559,6 @@ transition:.3s;
 transform:translateY(-3px);
 
 box-shadow:
-
 0 15px 40px rgba(168,85,247,.45);
 
 }
@@ -620,10 +574,6 @@ cursor:not-allowed;
 }
 
 
-
-
-
-/* STATUS */
 
 .status {
 
@@ -662,8 +612,6 @@ color:var(--blue);
 color:#ff7b7b;
 
 }
-
-
 
 
 
@@ -766,8 +714,6 @@ color:#ddd;
 
 
 
-
-
 /* METRICS */
 
 
@@ -782,7 +728,6 @@ gap:20px;
 margin-top:35px;
 
 }
-
 
 
 .metric:nth-child(1),
@@ -895,7 +840,6 @@ color:transparent;
 .metric.green strong {
 
 background:
-
 linear-gradient(
 115deg,
 #4ade80,
@@ -913,7 +857,6 @@ background-clip:text;
 .metric.yellow strong {
 
 background:
-
 linear-gradient(
 115deg,
 #fde047,
@@ -926,10 +869,6 @@ background-clip:text;
 
 }
 
-
-
-
-/* FOOTER */
 
 
 footer {
@@ -948,55 +887,10 @@ color:var(--muted-dim);
 
 }
 
+</style>
 
+</head>
 
-
-
-/* MOBILE */
-
-
-@media(max-width:900px){
-
-.compressor{
-
-padding:25px;
-
-}
-
-
-.metrics{
-
-display:grid;
-
-grid-template-columns:1fr;
-
-}
-
-
-.metric,
-.metric:nth-child(1),
-.metric:nth-child(2),
-.metric:nth-child(3),
-.metric:nth-child(4),
-.metric:nth-child(5),
-.metric:nth-child(6),
-.metric:nth-child(7){
-
-grid-column:auto;
-
-}
-
-
-h1{
-
-letter-spacing:-2px;
-
-}
-
-}
-
-
-</style></head>
 
 <body>
 
@@ -1035,23 +929,13 @@ Tok<span>yra</span>
 
 
 <a href="index.html" class="back">
-
 ← Back to Tokyra
-
 </a>
 
 
-</nav>
-
-
-
-
-
-<div class="wrapper">
-
+</nav><div class="wrapper">
 
 <div class="container">
-
 
 
 <div class="header">
@@ -1088,10 +972,7 @@ Paste any AI prompt and Tokyra removes unnecessary tokens while preserving instr
 </p>
 
 
-
 </div>
-
-
 
 
 
@@ -1119,6 +1000,7 @@ TOKYRA ENGINE
 
 
 
+
 <div class="input-wrapper">
 
 
@@ -1129,6 +1011,7 @@ id="promptInput"
 placeholder="Paste your AI prompt here..."
 
 ></textarea>
+
 
 
 
@@ -1178,14 +1061,11 @@ Compress Prompt
 
 
 
-
 <div id="status" class="status">
 
 Ready.
 
 </div>
-
-
 
 
 
@@ -1232,7 +1112,6 @@ Copy
 
 
 
-
 <div
 
 id="output"
@@ -1248,7 +1127,6 @@ Your optimized prompt will appear here.
 
 
 </div>
-
 
 
 
@@ -1403,8 +1281,7 @@ LATENCY
 
 
 
-
-
+</div>
 
 
 </div>
@@ -1414,13 +1291,7 @@ LATENCY
 </div>
 
 
-
 </div>
-
-
-
-</div>
-
 
 
 
@@ -1433,41 +1304,67 @@ LATENCY
 </footer><script>
 
 
+const WORKER_URL =
+"https://tokyra-compressor.tokyracompany.workers.dev";
+
+
+
+/* =========================
+NAV EFFECT
+========================= */
+
+
 const nav =
 document.getElementById("nav");
+
+
+if(nav){
 
 
 window.addEventListener(
 "scroll",
 ()=>{
 
+
 if(window.scrollY > 20){
+
 
 nav.style.background =
 "rgba(6,3,18,.72)";
 
+
 nav.style.backdropFilter =
 "blur(16px)";
+
 
 }
 
 else{
 
+
 nav.style.background =
 "transparent";
+
 
 nav.style.backdropFilter =
 "none";
 
+
 }
+
 
 });
 
 
+}
 
 
 
-/* VOICE INPUT */
+
+
+/* =========================
+VOICE INPUT
+========================= */
 
 
 const voiceBtn =
@@ -1492,6 +1389,7 @@ const recognition =
 new SpeechRecognition();
 
 
+
 recognition.lang =
 "en-US";
 
@@ -1507,14 +1405,18 @@ true;
 
 voiceBtn.onclick = ()=>{
 
+
 recognition.start();
+
 
 voiceBtn.classList.add(
 "listening"
 );
 
+
 voiceBtn.innerHTML =
 "🔴";
+
 
 };
 
@@ -1533,14 +1435,17 @@ i<event.results.length;
 i++
 ){
 
+
 transcript +=
 event.results[i][0].transcript;
+
 
 }
 
 
 promptInput.value =
 transcript;
+
 
 };
 
@@ -1549,12 +1454,15 @@ transcript;
 recognition.onend =
 ()=>{
 
+
 voiceBtn.classList.remove(
 "listening"
 );
 
+
 voiceBtn.innerHTML =
 "🎙️";
+
 
 };
 
@@ -1563,22 +1471,30 @@ voiceBtn.innerHTML =
 recognition.onerror =
 ()=>{
 
+
 voiceBtn.classList.remove(
 "listening"
 );
 
+
 voiceBtn.innerHTML =
 "🎙️";
 
+
 };
+
 
 
 }
 
 else{
 
-voiceBtn.style.display =
-"none";
+
+if(voiceBtn){
+
+voiceBtn.style.display="none";
+
+}
 
 }
 
@@ -1586,36 +1502,37 @@ voiceBtn.style.display =
 
 
 
-
-
-
-/* TOKYRA API */
-
-
-const WORKER_URL =
-"https://tokyra-compressor.tokyracompany.workers.dev";
-
-
-
+/* =========================
+COMPRESS FUNCTION
+========================= */
 
 
 async function compressPrompt(){
 
 
 const input =
-promptInput.value.trim();
+document
+.getElementById("promptInput")
+.value
+.trim();
+
 
 
 const output =
-document.getElementById("output");
+document
+.getElementById("output");
+
 
 
 const button =
-document.querySelector(".compress-btn");
+document
+.querySelector(".compress-btn");
+
 
 
 const status =
-document.getElementById("status");
+document
+.getElementById("status");
 
 
 
@@ -1644,8 +1561,10 @@ button.disabled =
 true;
 
 
+
 button.innerText =
 "Compressing...";
+
 
 
 status.innerText =
@@ -1656,15 +1575,10 @@ status.className =
 "status loading";
 
 
+
 output.innerText =
 "Running compression engine...";
 
-
-
-
-
-const start =
-Date.now();
 
 
 
@@ -1674,20 +1588,20 @@ try{
 
 const response =
 await fetch(
-
 WORKER_URL,
-
 {
 
 method:"POST",
 
 headers:{
 
-"Content-Type":"application/json"
+"Content-Type":
+"application/json"
 
 },
 
-body:JSON.stringify({
+body:
+JSON.stringify({
 
 prompt:input
 
@@ -1699,24 +1613,40 @@ prompt:input
 
 
 
+
+const raw =
+await response.text();
+
+
+
+console.log(
+"WORKER RESPONSE:",
+raw
+);
+
+
+
 let data;
 
 
 try{
 
+
 data =
-await response.json();
+JSON.parse(raw);
+
 
 }
 
 catch{
 
+
 throw new Error(
 "Invalid server response"
 );
 
-}
 
+}
 
 
 
@@ -1724,57 +1654,53 @@ throw new Error(
 if(!response.ok){
 
 
-if(response.status===429){
-
 throw new Error(
-"Rate limit reached. Try again later."
-);
-
-}
-
-
-throw new Error(
-
-data.message ||
 data.error ||
 "Compression failed"
-
 );
 
 
 }
-
 
 
 
 
 
 output.innerText =
-data.optimized || "No output returned";
+data.optimized ||
+"No optimized output";
 
 
 
 
 
-document.getElementById("originalTokens")
+document
+.getElementById("originalTokens")
 .innerText =
 data.originalTokens || 0;
 
 
 
-document.getElementById("optimizedTokens")
+
+document
+.getElementById("optimizedTokens")
 .innerText =
 data.optimizedTokens || 0;
 
 
 
-document.getElementById("savedTokens")
+
+document
+.getElementById("savedTokens")
 .innerText =
 data.tokensSaved || 0;
 
 
 
-document.getElementById("compressionPercent")
+
+
+document
+.getElementById("compressionPercent")
 .innerText =
 (data.compressionPercent || 0)
 +
@@ -1784,17 +1710,19 @@ document.getElementById("compressionPercent")
 
 
 
-document.getElementById("fidelity")
+document
+.getElementById("fidelity")
 .innerText =
 (data.fidelityPercent || 0)
 +
-%";
+"%";
 
 
 
 
 
-document.getElementById("cfs")
+document
+.getElementById("cfs")
 .innerText =
 data.cfsScore || 0;
 
@@ -1802,9 +1730,10 @@ data.cfsScore || 0;
 
 
 
-document.getElementById("latency")
+document
+.getElementById("latency")
 .innerText =
-(data.latencyMs || (Date.now()-start))
+(data.latencyMs || 0)
 +
 "ms";
 
@@ -1816,32 +1745,45 @@ status.innerText =
 "Compression complete.";
 
 
+
 status.className =
 "status success";
 
 
 
+
 }
+
 
 catch(error){
 
 
-console.error(error);
+console.error(
+"Tokyra Error:",
+error
+);
+
 
 
 output.innerText =
-"Error: " + error.message;
+"Error: "
++
+error.message;
+
 
 
 status.innerText =
 "Compression failed.";
 
 
+
 status.className =
 "status error";
 
 
+
 }
+
 
 
 
@@ -1850,8 +1792,10 @@ button.disabled =
 false;
 
 
+
 button.innerText =
 "Compress Prompt";
+
 
 
 }
@@ -1862,11 +1806,13 @@ button.innerText =
 
 
 
-
-/* COPY */
+/* =========================
+COPY OUTPUT
+========================= */
 
 
 function copyOutput(){
+
 
 
 const text =
@@ -1876,12 +1822,14 @@ document
 
 
 
-navigator.clipboard.writeText(text);
+navigator.clipboard
+.writeText(text);
 
 
 
 const button =
-document.querySelector(".copy");
+document
+.querySelector(".copy");
 
 
 
@@ -1900,13 +1848,9 @@ button.innerText =
 },1500);
 
 
+
 }
 
 
 
 </script>
-
-
-</body>
-
-</html>
