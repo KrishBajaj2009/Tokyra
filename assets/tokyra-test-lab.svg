@@ -1,0 +1,48 @@
+<svg width="1200" height="880" viewBox="0 0 1200 880" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="880" rx="48" fill="#081019"/>
+  <rect x="48" y="48" width="1104" height="784" rx="34" fill="#0E1722" stroke="rgba(255,255,255,0.12)"/>
+  <text x="92" y="122" fill="#F3F7FB" font-family="Arial, sans-serif" font-size="40" font-weight="700">Tokyra test lab</text>
+  <text x="92" y="160" fill="#7F8B9A" font-family="Arial, sans-serif" font-size="18">A visual snapshot of evaluation lanes, prompt size coverage, and scoring traces</text>
+  <rect x="92" y="212" width="310" height="238" rx="28" fill="#131F2B"/>
+  <rect x="444" y="212" width="310" height="238" rx="28" fill="#131F2B"/>
+  <rect x="796" y="212" width="260" height="238" rx="28" fill="#131F2B"/>
+  <text x="124" y="252" fill="#F3F7FB" font-family="Arial, sans-serif" font-size="22" font-weight="700">Size coverage</text>
+  <rect x="124" y="296" width="234" height="18" rx="9" fill="#1F2B38"/>
+  <rect x="124" y="296" width="68" height="18" rx="9" fill="#64F0D0"/>
+  <rect x="124" y="334" width="234" height="18" rx="9" fill="#1F2B38"/>
+  <rect x="124" y="334" width="126" height="18" rx="9" fill="#2C6BFF"/>
+  <rect x="124" y="372" width="234" height="18" rx="9" fill="#1F2B38"/>
+  <rect x="124" y="372" width="198" height="18" rx="9" fill="#FFBA66"/>
+  <text x="124" y="432" fill="#7F8B9A" font-family="Arial, sans-serif" font-size="16">100 tokens</text>
+  <text x="228" y="432" fill="#7F8B9A" font-family="Arial, sans-serif" font-size="16">10k</text>
+  <text x="322" y="432" fill="#7F8B9A" font-family="Arial, sans-serif" font-size="16">100k</text>
+  <text x="476" y="252" fill="#F3F7FB" font-family="Arial, sans-serif" font-size="22" font-weight="700">Score trace</text>
+  <path d="M480 400C530 360 556 346 598 328C634 312 672 298 720 276" stroke="url(#paint0_linear_1_2)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M480 400C524 390 566 386 620 372C666 360 700 360 730 362" stroke="#64F0D0" stroke-width="10" stroke-linecap="round" stroke-dasharray="1 24"/>
+  <circle cx="720" cy="276" r="11" fill="#FFBA66"/>
+  <circle cx="730" cy="362" r="11" fill="#64F0D0"/>
+  <text x="828" y="252" fill="#F3F7FB" font-family="Arial, sans-serif" font-size="22" font-weight="700">Validation</text>
+  <rect x="828" y="292" width="192" height="42" rx="21" fill="rgba(100,240,208,0.14)"/>
+  <text x="852" y="319" fill="#64F0D0" font-family="Arial, sans-serif" font-size="16" font-weight="700">Markers preserved</text>
+  <rect x="828" y="350" width="178" height="42" rx="21" fill="rgba(255,186,102,0.14)"/>
+  <text x="852" y="377" fill="#FFD39A" font-family="Arial, sans-serif" font-size="16" font-weight="700">Soft-literal budget</text>
+  <rect x="92" y="494" width="964" height="274" rx="28" fill="#131F2B"/>
+  <text x="124" y="540" fill="#F3F7FB" font-family="Arial, sans-serif" font-size="22" font-weight="700">Observed runs</text>
+  <rect x="124" y="582" width="900" height="58" rx="20" fill="#0D151F"/>
+  <rect x="124" y="660" width="900" height="58" rx="20" fill="#0D151F"/>
+  <rect x="142" y="598" width="198" height="26" rx="13" fill="rgba(100,240,208,0.14)"/>
+  <text x="160" y="616" fill="#64F0D0" font-family="Arial, sans-serif" font-size="14" font-weight="700">System prompt lane</text>
+  <text x="372" y="616" fill="#E0E8F1" font-family="Arial, sans-serif" font-size="16" font-weight="700">9,615 to 1,236 tokens</text>
+  <text x="780" y="616" fill="#E0E8F1" font-family="Arial, sans-serif" font-size="16" font-weight="700">87% compression</text>
+  <rect x="142" y="676" width="216" height="26" rx="13" fill="rgba(44,107,255,0.16)"/>
+  <text x="160" y="694" fill="#B6CBFF" font-family="Arial, sans-serif" font-size="14" font-weight="700">Long context stress lane</text>
+  <text x="392" y="694" fill="#E0E8F1" font-family="Arial, sans-serif" font-size="16" font-weight="700">20,174 to 662 tokens</text>
+  <text x="780" y="694" fill="#E0E8F1" font-family="Arial, sans-serif" font-size="16" font-weight="700">97% compression</text>
+  <defs>
+    <linearGradient id="paint0_linear_1_2" x1="480" y1="276" x2="720" y2="276" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#64F0D0"/>
+      <stop offset="0.55" stop-color="#2C6BFF"/>
+      <stop offset="1" stop-color="#FFBA66"/>
+    </linearGradient>
+  </defs>
+</svg>

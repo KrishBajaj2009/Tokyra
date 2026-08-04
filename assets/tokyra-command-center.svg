@@ -1,0 +1,58 @@
+<svg width="1200" height="880" viewBox="0 0 1200 880" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="880" rx="48" fill="#091018"/>
+  <rect x="24" y="24" width="1152" height="832" rx="34" fill="url(#paint0_radial_1_2)" fill-opacity="0.22"/>
+  <rect x="46" y="46" width="1108" height="788" rx="30" stroke="rgba(255,255,255,0.12)"/>
+  <rect x="88" y="86" width="1024" height="76" rx="22" fill="#0F1823"/>
+  <circle cx="126" cy="124" r="10" fill="#FF6B57"/>
+  <circle cx="156" cy="124" r="10" fill="#FFBA66"/>
+  <circle cx="186" cy="124" r="10" fill="#64F0D0"/>
+  <rect x="236" y="110" width="184" height="28" rx="14" fill="rgba(255,255,255,0.08)"/>
+  <rect x="880" y="106" width="184" height="36" rx="18" fill="url(#paint1_linear_1_2)"/>
+  <rect x="88" y="196" width="468" height="448" rx="28" fill="#111C27"/>
+  <rect x="588" y="196" width="524" height="448" rx="28" fill="#0E1721"/>
+  <text x="122" y="244" fill="#D8E2EE" font-family="Arial, sans-serif" font-size="24" font-weight="700">Original prompt</text>
+  <text x="622" y="244" fill="#D8E2EE" font-family="Arial, sans-serif" font-size="24" font-weight="700">Optimized prompt</text>
+  <rect x="122" y="276" width="256" height="16" rx="8" fill="#1B2A39"/>
+  <rect x="122" y="312" width="372" height="12" rx="6" fill="#203142"/>
+  <rect x="122" y="338" width="386" height="12" rx="6" fill="#203142"/>
+  <rect x="122" y="364" width="344" height="12" rx="6" fill="#203142"/>
+  <rect x="122" y="418" width="404" height="12" rx="6" fill="#203142"/>
+  <rect x="122" y="444" width="362" height="12" rx="6" fill="#203142"/>
+  <rect x="122" y="470" width="314" height="12" rx="6" fill="#203142"/>
+  <rect x="122" y="524" width="398" height="12" rx="6" fill="#203142"/>
+  <rect x="122" y="550" width="336" height="12" rx="6" fill="#203142"/>
+  <rect x="122" y="576" width="288" height="12" rx="6" fill="#203142"/>
+  <rect x="622" y="276" width="188" height="36" rx="18" fill="rgba(100,240,208,0.12)" stroke="rgba(100,240,208,0.32)"/>
+  <text x="650" y="300" fill="#64F0D0" font-family="Arial, sans-serif" font-size="16" font-weight="700">Deterministic output</text>
+  <rect x="622" y="338" width="420" height="14" rx="7" fill="#D8E2EE"/>
+  <rect x="622" y="368" width="348" height="10" rx="5" fill="#748191"/>
+  <rect x="622" y="392" width="320" height="10" rx="5" fill="#748191"/>
+  <rect x="622" y="436" width="396" height="10" rx="5" fill="#748191"/>
+  <rect x="622" y="460" width="372" height="10" rx="5" fill="#748191"/>
+  <rect x="622" y="504" width="414" height="10" rx="5" fill="#748191"/>
+  <rect x="622" y="528" width="306" height="10" rx="5" fill="#748191"/>
+  <rect x="622" y="572" width="258" height="10" rx="5" fill="#748191"/>
+  <rect x="88" y="676" width="240" height="124" rx="24" fill="#101823"/>
+  <rect x="348" y="676" width="240" height="124" rx="24" fill="#101823"/>
+  <rect x="608" y="676" width="240" height="124" rx="24" fill="#101823"/>
+  <rect x="868" y="676" width="244" height="124" rx="24" fill="#101823"/>
+  <text x="118" y="720" fill="#7D8998" font-family="Arial, sans-serif" font-size="16" font-weight="600">Compression</text>
+  <text x="118" y="774" fill="#F4F8FB" font-family="Arial, sans-serif" font-size="42" font-weight="700">87%</text>
+  <text x="378" y="720" fill="#7D8998" font-family="Arial, sans-serif" font-size="16" font-weight="600">Fidelity</text>
+  <text x="378" y="774" fill="#F4F8FB" font-family="Arial, sans-serif" font-size="42" font-weight="700">98%</text>
+  <text x="638" y="720" fill="#7D8998" font-family="Arial, sans-serif" font-size="16" font-weight="600">CFS score</text>
+  <text x="638" y="774" fill="#F4F8FB" font-family="Arial, sans-serif" font-size="42" font-weight="700">99</text>
+  <text x="898" y="720" fill="#7D8998" font-family="Arial, sans-serif" font-size="16" font-weight="600">Latency</text>
+  <text x="898" y="774" fill="#F4F8FB" font-family="Arial, sans-serif" font-size="42" font-weight="700">312ms</text>
+  <defs>
+    <radialGradient id="paint0_radial_1_2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(204 96) rotate(43.4762) scale(1093.93 998.466)">
+      <stop stop-color="#64F0D0"/>
+      <stop offset="0.52" stop-color="#1F4AA4"/>
+      <stop offset="1" stop-color="#FF8A57"/>
+    </radialGradient>
+    <linearGradient id="paint1_linear_1_2" x1="880" y1="124" x2="1064" y2="124" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#64F0D0"/>
+      <stop offset="1" stop-color="#2C6BFF"/>
+    </linearGradient>
+  </defs>
+</svg>

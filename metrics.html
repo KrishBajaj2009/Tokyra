@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Tokyra metrics hub with observed compression runs, evaluation visuals, and the latest locally saved compressor result.">
+  <meta name="theme-color" content="#071019">
+  <title>Tokyra Metrics</title>
+  <link rel="icon" href="assets/tokyra-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js" defer></script>
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand" href="index.html" aria-label="Tokyra home">
+        <img src="assets/tokyra-mark.svg" alt="">
+        <span class="brand-copy">
+          <strong>Tokyra</strong>
+          <span>Metrics and benchmark hub</span>
+        </span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-label="Toggle navigation"
+        aria-controls="primary-nav"
+        aria-expanded="false"
+      >
+        <span></span>
+      </button>
+
+      <nav class="nav-menu" id="primary-nav" aria-label="Primary navigation">
+        <a href="index.html">Product</a>
+        <a href="compressor.html">Compressor</a>
+        <a href="metrics.html" aria-current="page">Metrics</a>
+      </nav>
+
+      <div class="nav-actions">
+        <span class="account-badge" data-auth-account hidden></span>
+        <button class="button button-ghost" type="button" data-auth-login>Demo login</button>
+        <button class="button button-ghost" type="button" data-auth-logout hidden>Log out</button>
+        <a class="button button-primary" href="compressor.html">Run a new test</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="site-shell reveal">
+        <div class="announcement">Benchmark hub</div>
+        <h1 class="hero-heading">Metrics that make prompt compression <span>credible.</span></h1>
+        <p>
+          Tokyra does not stop at "shorter." This page collects the latest local run and frames it against
+          observed benchmark cohorts so you can judge whether the compression is genuinely worth shipping.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-shell">
+      <div class="site-shell dashboard-grid">
+        <article class="live-card reveal">
+          <div class="eyebrow">Latest local run</div>
+          <h3>Most recent compressor result</h3>
+          <p id="liveSummary">Run the compressor to populate this panel with the latest saved metrics.</p>
+
+          <div class="live-run" id="liveRun">
+            <article>
+              <span>Compression</span>
+              <strong id="liveCompression">-</strong>
+            </article>
+            <article>
+              <span>Fidelity</span>
+              <strong id="liveFidelity">-</strong>
+            </article>
+            <article>
+              <span>CFS score</span>
+              <strong id="liveCfs">-</strong>
+            </article>
+            <article>
+              <span>Latency</span>
+              <strong id="liveLatency">-</strong>
+            </article>
+          </div>
+        </article>
+
+        <article class="story-card reveal" data-float>
+          <div class="art-frame">
+            <img src="assets/tokyra-benchmark-matrix.svg" alt="Tokyra benchmark matrix showing compression and fidelity across prompt cohorts.">
+          </div>
+          <div class="tag-row">
+            <span class="tag">Observed runs</span>
+            <span class="tag">Compression vs fidelity</span>
+            <span class="tag">Latency cohorts</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-shell">
+      <div class="site-shell">
+        <div class="score-grid">
+          <article class="score-card reveal">
+            <span>Orbit support prompt</span>
+            <strong data-countup="87" data-suffix="%">0%</strong>
+            <p>Observed compression after tightening literal protection and soft-literal validation.</p>
+          </article>
+          <article class="score-card reveal">
+            <span>Observed fidelity</span>
+            <strong data-countup="98" data-suffix="%">0%</strong>
+            <p>Shorter output accepted only when the behavior signal remained intact.</p>
+          </article>
+          <article class="score-card reveal">
+            <span>Top CFS score</span>
+            <strong data-countup="99">0</strong>
+            <p>High compression and high fidelity can coexist when the guardrails are tuned well.</p>
+          </article>
+          <article class="score-card reveal">
+            <span>Largest tested lane</span>
+            <strong data-countup="100000" data-suffix=" tokens">0 tokens</strong>
+            <p>Stress tests now have a dedicated visual surface in the product instead of living off-page.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-shell">
+      <div class="site-shell">
+        <div class="section-intro reveal">
+          <div>
+            <div class="eyebrow">Metric imagery</div>
+            <h2 class="section-title">More visuals, stronger proof.</h2>
+          </div>
+          <p class="section-copy">
+            The Tokyra UI now includes benchmark imagery directly in the product so results are easier to present,
+            compare, and sanity-check.
+          </p>
+        </div>
+
+        <div class="image-grid">
+          <article class="image-card reveal">
+            <div class="art-frame">
+              <img src="assets/tokyra-command-center.svg" alt="Tokyra command center metric image.">
+            </div>
+            <div class="image-caption">
+              <strong>Command center</strong>
+              <span>Pairs the optimized prompt with evaluation cards for token, fidelity, CFS, and latency context.</span>
+            </div>
+          </article>
+          <article class="image-card reveal">
+            <div class="art-frame">
+              <img src="assets/tokyra-benchmark-matrix.svg" alt="Tokyra benchmark matrix metric image.">
+            </div>
+            <div class="image-caption">
+              <strong>Benchmark matrix</strong>
+              <span>Shows observed results across prompt cohorts, score traces, and top-performing runs.</span>
+            </div>
+          </article>
+          <article class="image-card reveal">
+            <div class="art-frame">
+              <img src="assets/tokyra-test-lab.svg" alt="Tokyra test lab metric image.">
+            </div>
+            <div class="image-caption">
+              <strong>Test lab</strong>
+              <span>Highlights prompt-size coverage, validation lanes, and stress-test examples in one frame.</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-shell">
+      <div class="site-shell">
+        <article class="table-card reveal">
+          <div class="eyebrow">Observed runs</div>
+          <h3>Benchmark reference table</h3>
+          <p>These rows reflect the current Tokyra workstream and provide a simple anchor for comparing future UI demos and worker changes.</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Prompt class</th>
+                <th>Original</th>
+                <th>Optimized</th>
+                <th>Compression</th>
+                <th>Fidelity</th>
+                <th>Method</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Orbit support agent</strong></td>
+                <td>9,615</td>
+                <td>1,236</td>
+                <td>87%</td>
+                <td>98%</td>
+                <td>Deterministic</td>
+              </tr>
+              <tr>
+                <td><strong>Dense architecture brief</strong></td>
+                <td>4,763</td>
+                <td>929</td>
+                <td>80%</td>
+                <td>97%</td>
+                <td>Deterministic</td>
+              </tr>
+              <tr>
+                <td><strong>Mid-size system prompt</strong></td>
+                <td>4,818</td>
+                <td>887</td>
+                <td>82%</td>
+                <td>97%</td>
+                <td>Deterministic</td>
+              </tr>
+              <tr>
+                <td><strong>10k-word stress prompt</strong></td>
+                <td>20,174</td>
+                <td>662</td>
+                <td>97%</td>
+                <td>96%</td>
+                <td>Deterministic</td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-shell footer-card">
+      <div class="footer-grid">
+        <div>
+          <strong>Tokyra metrics</strong>
+          <p class="section-copy" style="margin-top: 10px;">A better place to judge compression quality than a single number floating beside a textarea.</p>
+        </div>
+        <div class="footer-links">
+          <a href="index.html">Product</a>
+          <a href="compressor.html">Compressor</a>
+          <a href="metrics.html">Metrics</a>
+        </div>
+      </div>
+      <div class="helper-row">
+        <span>Copyright <span data-year></span> Tokyra.</span>
+        <span>Latest run updates automatically from the compressor page.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const storageKey = "tokyra:last-result";
+
+      const summary = document.getElementById("liveSummary");
+      const compression = document.getElementById("liveCompression");
+      const fidelity = document.getElementById("liveFidelity");
+      const cfs = document.getElementById("liveCfs");
+      const latency = document.getElementById("liveLatency");
+
+      try {
+        const raw = localStorage.getItem(storageKey);
+        const data = raw ? JSON.parse(raw) : null;
+
+        if (!data) return;
+
+        summary.textContent =
+          `Latest saved run at ${new Date(data.savedAt).toLocaleString()}: ` +
+          `${Number(data.originalTokens || 0).toLocaleString()} to ${Number(data.optimizedTokens || 0).toLocaleString()} tokens.`;
+
+        compression.textContent = `${Math.round(Number(data.compressionPercent || 0))}%`;
+        fidelity.textContent = `${Math.round(Number(data.fidelityPercent || 0))}%`;
+        cfs.textContent = String(Number(data.cfsScore || 0));
+        latency.textContent = `${Math.round(Number(data.latencyMs || 0))}ms`;
+      } catch (error) {
+        console.warn("Unable to read latest Tokyra result:", error);
+      }
+    })();
+  </script>
+</body>
+</html>

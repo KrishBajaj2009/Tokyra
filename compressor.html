@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Use Tokyra to compress prompts, compare token deltas, and review fidelity, CFS, and latency in one place.">
+  <meta name="theme-color" content="#071019">
+  <title>Tokyra Compressor</title>
+  <link rel="icon" href="assets/tokyra-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js" defer></script>
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand" href="index.html" aria-label="Tokyra home">
+        <img src="assets/tokyra-mark.svg" alt="">
+        <span class="brand-copy">
+          <strong>Tokyra</strong>
+          <span>Compression workspace</span>
+        </span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-label="Toggle navigation"
+        aria-controls="primary-nav"
+        aria-expanded="false"
+      >
+        <span></span>
+      </button>
+
+      <nav class="nav-menu" id="primary-nav" aria-label="Primary navigation">
+        <a href="index.html">Product</a>
+        <a href="compressor.html" aria-current="page">Compressor</a>
+        <a href="metrics.html">Metrics</a>
+      </nav>
+
+      <div class="nav-actions">
+        <span class="account-badge" data-auth-account hidden></span>
+        <button class="button button-ghost" type="button" data-auth-login>Demo login</button>
+        <button class="button button-ghost" type="button" data-auth-logout hidden>Log out</button>
+        <a class="button button-secondary" href="metrics.html">Open metrics</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="site-shell reveal">
+        <div class="announcement">Live compressor</div>
+        <h1 class="hero-heading">Turn long prompts into <span>lean instructions.</span></h1>
+        <p>
+          Paste a prompt or upload a text file. Tokyra will return the optimized output plus the metrics you need to judge the run:
+          token savings, compression ratio, fidelity, CFS, and latency.
+        </p>
+        <div class="tag-row">
+          <span class="tag">Paste or upload text</span>
+          <span class="tag">500,000-character worker limit</span>
+          <span class="tag">Latest result syncs to Metrics</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace-shell">
+      <div class="site-shell workspace-grid">
+        <div class="workspace-main">
+          <section class="workspace-card reveal" aria-labelledby="input-title">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">Input</div>
+                <h2 class="panel-title" id="input-title">Original prompt</h2>
+              </div>
+              <div class="panel-tools">
+                <button class="button button-ghost" id="sampleBtn" type="button">Use sample</button>
+                <button class="button button-ghost" id="voiceBtn" type="button" aria-pressed="false">Voice</button>
+                <button class="button button-ghost" id="clearBtn" type="button">Clear</button>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <label class="sr-only" for="promptInput">Prompt to compress</label>
+              <div class="textarea-wrap">
+                <textarea
+                  class="prompt-textarea"
+                  id="promptInput"
+                  placeholder="Paste a system prompt, support playbook, API guide, policy brief, or other long-form instruction set here..."
+                ></textarea>
+              </div>
+
+              <div class="upload-row">
+                <button class="button button-secondary" id="uploadBtn" type="button">Upload text file</button>
+                <input
+                  id="fileInput"
+                  type="file"
+                  hidden
+                  accept=".txt,.md,.markdown,.json,.csv,.html,.xml,.yaml,.yml,text/plain,text/markdown,application/json,text/csv,text/html,text/xml,application/xml"
+                >
+                <span id="fileMeta" class="section-copy" style="margin: 0;">Supports paste, drag-and-drop, or text-like files.</span>
+              </div>
+
+              <div
+                class="dropzone"
+                id="dropzone"
+                tabindex="0"
+                role="button"
+                aria-label="Drop a text file here or press Enter to upload"
+              >
+                <strong>Drop a text file here</strong>
+                <span>Works with `.txt`, `.md`, `.json`, `.csv`, `.html`, `.xml`, `.yaml`, and similar text files.</span>
+              </div>
+
+              <div class="character-row">
+                <span id="characterCount">0 characters</span>
+                <span id="limitHint">Worker limit: 500,000 characters. Press Cmd/Ctrl + Enter to compress.</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="workspace-card reveal" aria-labelledby="output-title">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">Output</div>
+                <h2 class="panel-title" id="output-title">Optimized prompt</h2>
+              </div>
+              <div class="panel-tools">
+                <button class="button button-ghost" id="copyBtn" type="button" disabled>Copy output</button>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div class="output-shell">
+                <div class="output-content is-placeholder" id="output" tabindex="0">Your compressed prompt will appear here.</div>
+              </div>
+              <div class="character-row">
+                <span id="outputCount">0 characters</span>
+                <span>Review before production use</span>
+              </div>
+            </div>
+          </section>
+
+          <div class="status-bar reveal" id="status" role="status" aria-live="polite">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="statusText">Ready to compress.</span>
+          </div>
+
+          <button class="button button-primary button-wide reveal" id="compressBtn" type="button">
+            Compress prompt <span aria-hidden="true">→</span>
+          </button>
+
+          <div class="metrics-grid reveal" aria-label="Compression metrics">
+            <article class="metric-card"><span>Original tokens</span><strong id="originalTokens">-</strong></article>
+            <article class="metric-card"><span>Optimized tokens</span><strong id="optimizedTokens">-</strong></article>
+            <article class="metric-card"><span>Tokens saved</span><strong id="savedTokens">-</strong></article>
+            <article class="metric-card"><span>Compression</span><strong id="compressionPercent">-</strong></article>
+            <article class="metric-card"><span>Fidelity</span><strong id="fidelity">-</strong></article>
+            <article class="metric-card"><span>Latency</span><strong id="latency">-</strong></article>
+          </div>
+
+          <div class="helper-row reveal">
+            <span>CFS score: <strong id="cfs">-</strong></span>
+            <span>Latest result is saved locally and displayed in <a href="metrics.html">Metrics</a>.</span>
+          </div>
+
+          <section class="workspace-card reveal">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">Metric visuals</div>
+                <h2 class="panel-title">Result images and test surfaces</h2>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="image-grid">
+                <article class="image-card">
+                  <div class="art-frame">
+                    <img src="assets/tokyra-command-center.svg" alt="Tokyra command center preview.">
+                  </div>
+                  <div class="image-caption">
+                    <strong>Command center</strong>
+                    <span>Product view for each compression run.</span>
+                  </div>
+                </article>
+                <article class="image-card">
+                  <div class="art-frame">
+                    <img src="assets/tokyra-benchmark-matrix.svg" alt="Tokyra benchmark matrix preview.">
+                  </div>
+                  <div class="image-caption">
+                    <strong>Benchmark matrix</strong>
+                    <span>Compression and fidelity across cohorts.</span>
+                  </div>
+                </article>
+                <article class="image-card">
+                  <div class="art-frame">
+                    <img src="assets/tokyra-test-lab.svg" alt="Tokyra test lab preview.">
+                  </div>
+                  <div class="image-caption">
+                    <strong>Test lab</strong>
+                    <span>Stress lanes and validation surfaces.</span>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="workspace-side">
+          <section class="workspace-card sticky reveal">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">Guidance</div>
+                <h2 class="panel-title">What Tokyra protects</h2>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <ul class="bullet-list">
+                <li>Code fences, exact markers, and literals that define behavior.</li>
+                <li>Structured prompts with sections, policies, support rules, and API constraints.</li>
+                <li>Long prompts that need real reduction instead of superficial copyediting.</li>
+              </ul>
+
+              <div class="metric-strip">
+                <article>
+                  <span>Orbit run</span>
+                  <strong>87% saved</strong>
+                </article>
+                <article>
+                  <span>Observed fidelity</span>
+                  <strong>98%</strong>
+                </article>
+                <article>
+                  <span>Top run</span>
+                  <strong>97%</strong>
+                </article>
+              </div>
+
+              <div class="mini-meter"><div class="meter-fill" id="compressionMeter"></div></div>
+              <div class="mini-meter"><div class="meter-fill" id="fidelityMeter"></div></div>
+              <div class="mini-meter"><div class="meter-fill" id="cfsMeter"></div></div>
+            </div>
+          </section>
+
+          <section class="workspace-card reveal">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">Preset prompts</div>
+                <h2 class="panel-title">Load a test lane</h2>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div class="preset-list">
+                <button class="preset-button" type="button" data-prompt-key="support">
+                  <span class="preset-copy">
+                    <strong>Support system prompt</strong>
+                    <span>Dense tone, escalation, billing, and troubleshooting rules.</span>
+                  </span>
+                  <span class="kicker">System</span>
+                </button>
+
+                <button class="preset-button" type="button" data-prompt-key="api">
+                  <span class="preset-copy">
+                    <strong>API support brief</strong>
+                    <span>Endpoints, auth headers, error codes, and output requirements.</span>
+                  </span>
+                  <span class="kicker">Reference</span>
+                </button>
+
+                <button class="preset-button" type="button" data-prompt-key="policy">
+                  <span class="preset-copy">
+                    <strong>Policy and escalation brief</strong>
+                    <span>Compliance, prohibited behavior, handoff rules, and exact wording bans.</span>
+                  </span>
+                  <span class="kicker">Policy</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="workspace-card reveal">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">Observed benchmarks</div>
+                <h2 class="panel-title">Reference runs</h2>
+              </div>
+            </div>
+            <div class="panel-body">
+              <ul class="benchmark-list">
+                <li>Orbit support agent: 9,615 to 1,236 tokens with 98% fidelity.</li>
+                <li>Dense architecture prompt: 4,763 to 929 tokens with 80% compression.</li>
+                <li>Repetitive 10k-word stress prompt: 20,174 to 662 tokens with 97% compression.</li>
+              </ul>
+              <div class="button-row" style="margin-top: 20px;">
+                <a class="button button-secondary" href="metrics.html">See full metrics page</a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-shell footer-card">
+      <div class="footer-grid">
+        <div>
+          <strong>Tokyra compressor</strong>
+          <p class="section-copy" style="margin-top: 10px;">Paste, upload, compress, evaluate, and carry the latest result into the metrics hub.</p>
+        </div>
+        <div class="footer-links">
+          <a href="index.html">Product</a>
+          <a href="compressor.html">Compressor</a>
+          <a href="metrics.html">Metrics</a>
+        </div>
+      </div>
+      <div class="helper-row">
+        <span>Copyright <span data-year></span> Tokyra.</span>
+        <span>Built for heavier prompts than a toy demo can usually survive.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const WORKER_URL = "https://tokyra-compressor.tokyracompany.workers.dev";
+      const MAX_INPUT_CHARS = 500000;
+      const RESULT_STORAGE_KEY = "tokyra:last-result";
+
+      const input = document.getElementById("promptInput");
+      const output = document.getElementById("output");
+      const compressBtn = document.getElementById("compressBtn");
+      const copyBtn = document.getElementById("copyBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const sampleBtn = document.getElementById("sampleBtn");
+      const voiceBtn = document.getElementById("voiceBtn");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const fileInput = document.getElementById("fileInput");
+      const dropzone = document.getElementById("dropzone");
+      const fileMeta = document.getElementById("fileMeta");
+      const characterCount = document.getElementById("characterCount");
+      const outputCount = document.getElementById("outputCount");
+      const limitHint = document.getElementById("limitHint");
+      const status = document.getElementById("status");
+      const statusText = document.getElementById("statusText");
+      const compressionMeter = document.getElementById("compressionMeter");
+      const fidelityMeter = document.getElementById("fidelityMeter");
+      const cfsMeter = document.getElementById("cfsMeter");
+
+      const fields = {
+        originalTokens: document.getElementById("originalTokens"),
+        optimizedTokens: document.getElementById("optimizedTokens"),
+        savedTokens: document.getElementById("savedTokens"),
+        compressionPercent: document.getElementById("compressionPercent"),
+        fidelity: document.getElementById("fidelity"),
+        latency: document.getElementById("latency"),
+        cfs: document.getElementById("cfs")
+      };
+
+      const samples = {
+        support: `SYSTEM PROMPT\nYou are the customer support AI for a B2B software company. Resolve issues in one conversation when possible, speak like a sharp support engineer, keep responses concise, and never invent account details you cannot verify. Preserve billing rules, refund escalation paths, API error handling guidance, and exact wording for security incidents. If the user reports a 429, mention rate limits and backoff. If they report a 403, explain permissions before troubleshooting anything else. If the request involves data deletion, hand off to the privacy team. Avoid filler, avoid generic empathy, and prefer specific next steps.`,
+        api: `You are an API support assistant. Preserve exact field names, endpoints, and authentication details. Keep these literals if they appear: "Authorization", "Bearer <token>", GET /v1/projects, POST /v1/projects, POST /v1/chat/completions, 401, 403, 404, 429, Retry-After. The answer must use short sections, bullets for steps, and no invented endpoints or fields. If the problem is auth-related, explain token scope, revocation status, and header formatting.`,
+        policy: `You are an operations agent. Preserve every prohibition, escalation rule, exception, and approval requirement. Never promise credits or refunds directly. Route GDPR and CCPA deletion requests to the privacy team. Escalate security incidents immediately. Keep exact timelines when they matter, and never compress away workflow steps that define who owns the next action. Remove duplicate explanations, repeated framing, and low-signal prose, but preserve the operating policy.`
+      };
+
+      const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
+      const formatNumber = (value) => new Intl.NumberFormat().format(number(value));
+
+      const setStatus = (message, state = "") => {
+        status.className = `status-bar${state ? ` ${state}` : ""}`;
+        statusText.textContent = message;
+      };
+
+      const resetMetrics = () => {
+        Object.values(fields).forEach((field) => {
+          field.textContent = "-";
+        });
+        [compressionMeter, fidelityMeter, cfsMeter].forEach((meter) => {
+          meter.style.width = "0%";
+        });
+      };
+
+      const setOutput = (text, placeholder = false) => {
+        output.textContent = text;
+        output.classList.toggle("is-placeholder", placeholder);
+        copyBtn.disabled = placeholder || !text.trim();
+        updateCounts();
+      };
+
+      const updateCounts = () => {
+        const inputLength = input.value.length;
+        characterCount.textContent = `${inputLength.toLocaleString()} characters`;
+
+        if (inputLength > MAX_INPUT_CHARS) {
+          limitHint.textContent = `Worker limit exceeded by ${(inputLength - MAX_INPUT_CHARS).toLocaleString()} characters`;
+        } else {
+          limitHint.textContent = `Worker limit: ${MAX_INPUT_CHARS.toLocaleString()} characters. Press Cmd/Ctrl + Enter to compress.`;
+        }
+
+        const outputText = output.classList.contains("is-placeholder") ? "" : output.textContent;
+        outputCount.textContent = `${outputText.length.toLocaleString()} characters`;
+      };
+
+      const setFileMeta = (message) => {
+        fileMeta.textContent = message;
+      };
+
+      const humanFileSize = (bytes) => {
+        if (!Number.isFinite(bytes) || bytes < 1024) return `${bytes || 0} B`;
+        const units = ["KB", "MB", "GB"];
+        let value = bytes / 1024;
+        let index = 0;
+        while (value >= 1024 && index < units.length - 1) {
+          value /= 1024;
+          index += 1;
+        }
+        return `${value.toFixed(value >= 100 ? 0 : 1)} ${units[index]}`;
+      };
+
+      const applyPromptText = (text, sourceLabel = "Text loaded.") => {
+        input.value = text;
+        updateCounts();
+        input.focus();
+        setFileMeta(sourceLabel);
+      };
+
+      async function loadTextFile(file) {
+        if (!file) return;
+
+        try {
+          const text = await file.text();
+          applyPromptText(
+            text,
+            `Loaded ${file.name} • ${humanFileSize(file.size)} • ${text.length.toLocaleString()} characters`
+          );
+
+          if (text.length > MAX_INPUT_CHARS) {
+            setStatus(
+              `Loaded ${file.name}, but it exceeds the worker limit of ${MAX_INPUT_CHARS.toLocaleString()} characters.`,
+              "error"
+            );
+          } else {
+            setStatus(`Loaded ${file.name}. Ready to compress.`, "success");
+          }
+        } catch (error) {
+          console.error("File load error:", error);
+          setStatus("That file could not be read as text.", "error");
+          setFileMeta("File load failed.");
+        }
+      }
+
+      const persistResult = (payload) => {
+        try {
+          localStorage.setItem(RESULT_STORAGE_KEY, JSON.stringify(payload));
+        } catch (error) {
+          console.warn("Unable to persist Tokyra result:", error);
+        }
+      };
+
+      async function compressPrompt() {
+        const prompt = input.value.trim();
+
+        if (!prompt) {
+          setStatus("Add a prompt before compressing.", "error");
+          input.focus();
+          return;
+        }
+
+        if (prompt.length > MAX_INPUT_CHARS) {
+          setStatus(
+            `This prompt is ${prompt.length.toLocaleString()} characters. Tokyra currently accepts up to ${MAX_INPUT_CHARS.toLocaleString()} characters per request.`,
+            "error"
+          );
+          input.focus();
+          return;
+        }
+
+        compressBtn.disabled = true;
+        compressBtn.textContent = "Compressing...";
+        setStatus("Tokyra is optimizing your prompt...", "loading");
+        setOutput("Processing your prompt...", true);
+        resetMetrics();
+        const startedAt = performance.now();
+
+        try {
+          const response = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              prompt,
+              mode: "maximum"
+            })
+          });
+
+          const raw = await response.text();
+          let data;
+
+          try {
+            data = raw ? JSON.parse(raw) : {};
+          } catch {
+            throw new Error("The server returned an unreadable response.");
+          }
+
+          if (!response.ok) {
+            const message = response.status === 429
+              ? "The service is busy. Please try again shortly."
+              : data.error || data.message || "Compression failed.";
+            throw new Error(message);
+          }
+
+          const optimized = String(data.optimized || data.optimizedPrompt || "").trim();
+          if (!optimized) {
+            throw new Error("No optimized prompt was returned.");
+          }
+
+          const compression = Math.round(number(data.compressionPercent));
+          const fidelity = Math.round(number(data.fidelityPercent ?? data.fidelity));
+          const cfs = number(data.cfsScore);
+          const latency = number(data.latencyMs, Math.round(performance.now() - startedAt));
+
+          setOutput(optimized);
+          fields.originalTokens.textContent = formatNumber(data.originalTokens);
+          fields.optimizedTokens.textContent = formatNumber(data.optimizedTokens);
+          fields.savedTokens.textContent = formatNumber(data.tokensSaved);
+          fields.compressionPercent.textContent = `${compression}%`;
+          fields.fidelity.textContent = `${fidelity}%`;
+          fields.cfs.textContent = cfs.toFixed(cfs % 1 ? 1 : 0);
+          fields.latency.textContent = `${Math.round(latency)}ms`;
+
+          compressionMeter.style.width = `${Math.max(0, Math.min(compression, 100))}%`;
+          fidelityMeter.style.width = `${Math.max(0, Math.min(fidelity, 100))}%`;
+          cfsMeter.style.width = `${Math.max(0, Math.min(cfs, 100))}%`;
+
+          persistResult({
+            savedAt: new Date().toISOString(),
+            originalTokens: number(data.originalTokens),
+            optimizedTokens: number(data.optimizedTokens),
+            tokensSaved: number(data.tokensSaved),
+            compressionPercent: compression,
+            fidelityPercent: fidelity,
+            cfsScore: cfs,
+            latencyMs: Math.round(latency),
+            optimizedPreview: optimized.slice(0, 1200)
+          });
+
+          setStatus("Compression complete. Review the optimized prompt before using it.", "success");
+        } catch (error) {
+          console.error("Tokyra compression error:", error);
+          setOutput(`Unable to compress this prompt. ${error.message}`, true);
+          setStatus(error.message || "Compression failed.", "error");
+        } finally {
+          compressBtn.disabled = false;
+          compressBtn.innerHTML = 'Compress prompt <span aria-hidden="true">→</span>';
+        }
+      }
+
+      input.addEventListener("input", updateCounts);
+      input.addEventListener("keydown", (event) => {
+        if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+          event.preventDefault();
+          compressPrompt();
+        }
+      });
+
+      compressBtn.addEventListener("click", compressPrompt);
+
+      clearBtn.addEventListener("click", () => {
+        input.value = "";
+        fileInput.value = "";
+        setOutput("Your compressed prompt will appear here.", true);
+        resetMetrics();
+        setFileMeta("Supports paste, drag-and-drop, or text-like files.");
+        setStatus("Ready to compress.");
+        updateCounts();
+        input.focus();
+      });
+
+      sampleBtn.addEventListener("click", () => {
+        applyPromptText(samples.support, "Loaded support-system sample.");
+        setStatus("Sample prompt loaded.");
+      });
+
+      document.querySelectorAll("[data-prompt-key]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.getAttribute("data-prompt-key");
+          if (!key || !samples[key]) return;
+          applyPromptText(samples[key], `Loaded ${key} sample prompt.`);
+          setStatus("Preset prompt loaded.");
+        });
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(output.textContent);
+          const original = copyBtn.textContent;
+          copyBtn.textContent = "Copied";
+          setTimeout(() => {
+            copyBtn.textContent = original;
+          }, 1400);
+        } catch {
+          setStatus("Copy failed. Select the output and copy it manually.", "error");
+        }
+      });
+
+      uploadBtn.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", async () => {
+        const [file] = fileInput.files || [];
+        await loadTextFile(file);
+      });
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          dropzone.classList.add("is-active");
+        });
+      });
+
+      ["dragleave", "dragend", "drop"].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          dropzone.classList.remove("is-active");
+        });
+      });
+
+      dropzone.addEventListener("drop", async (event) => {
+        const [file] = event.dataTransfer?.files || [];
+        await loadTextFile(file);
+      });
+
+      dropzone.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      dropzone.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          fileInput.click();
+        }
+      });
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        voiceBtn.hidden = true;
+      } else {
+        const recognition = new SpeechRecognition();
+        recognition.lang = "en-US";
+        recognition.interimResults = true;
+        recognition.continuous = false;
+
+        voiceBtn.addEventListener("click", () => recognition.start());
+        recognition.addEventListener("start", () => {
+          voiceBtn.textContent = "Listening...";
+          voiceBtn.setAttribute("aria-pressed", "true");
+          setStatus("Listening for your prompt...", "loading");
+        });
+        recognition.addEventListener("result", (event) => {
+          input.value = Array.from(event.results).map((result) => result[0].transcript).join(" ");
+          updateCounts();
+        });
+        recognition.addEventListener("end", () => {
+          voiceBtn.textContent = "Voice";
+          voiceBtn.setAttribute("aria-pressed", "false");
+          setStatus("Voice input added. Ready to compress.");
+        });
+        recognition.addEventListener("error", () => {
+          voiceBtn.textContent = "Voice";
+          voiceBtn.setAttribute("aria-pressed", "false");
+          setStatus("Voice input was unavailable. You can type, paste, or upload instead.", "error");
+        });
+      }
+
+      updateCounts();
+    })();
+  </script>
+</body>
+</html>
