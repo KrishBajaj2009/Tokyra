@@ -1,0 +1,54 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1024" height="1024" rx="224" fill="#050505"/>
+
+  <defs>
+    <linearGradient id="gold" x1="180" y1="140" x2="844" y2="884" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7E2A0"/>
+      <stop offset="0.25" stop-color="#D7B15A"/>
+      <stop offset="0.55" stop-color="#B8872B"/>
+      <stop offset="0.8" stop-color="#E8C973"/>
+      <stop offset="1" stop-color="#8C6118"/>
+    </linearGradient>
+    <filter id="softGlow" x="0" y="0" width="1024" height="1024" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <path id="topArc" d="M 220 512 A 292 292 0 0 1 804 512"/>
+    <path id="bottomArc" d="M 804 512 A 292 292 0 0 1 220 512"/>
+  </defs>
+
+  <circle cx="512" cy="512" r="348" stroke="url(#gold)" stroke-width="14"/>
+  <circle cx="512" cy="512" r="314" stroke="url(#gold)" stroke-width="4"/>
+
+  <g opacity="0.18" filter="url(#softGlow)">
+    <circle cx="512" cy="512" r="330" stroke="#E6C36B" stroke-width="18"/>
+  </g>
+
+  <line x1="218" y1="512" x2="376" y2="512" stroke="url(#gold)" stroke-width="10"/>
+  <line x1="648" y1="512" x2="806" y2="512" stroke="url(#gold)" stroke-width="10"/>
+
+  <rect x="224" y="468" width="112" height="88" rx="10" stroke="url(#gold)" stroke-width="6"/>
+  <rect x="688" y="468" width="112" height="88" rx="10" stroke="url(#gold)" stroke-width="6"/>
+
+  <text x="280" y="522" text-anchor="middle" fill="url(#gold)" font-size="40" font-family="Georgia, Times New Roman, serif" font-weight="700" letter-spacing="1.5">EST.</text>
+  <text x="744" y="522" text-anchor="middle" fill="url(#gold)" font-size="38" font-family="Georgia, Times New Roman, serif" font-weight="700" letter-spacing="1.5">1990</text>
+
+  <circle cx="512" cy="512" r="174" stroke="url(#gold)" stroke-width="10"/>
+
+  <g transform="translate(512 346)">
+    <polygon points="0,-32 34,-6 20,28 -20,28 -34,-6" stroke="url(#gold)" stroke-width="8" fill="none"/>
+    <line x1="-20" y1="28" x2="20" y2="28" stroke="url(#gold)" stroke-width="6"/>
+    <line x1="-10" y1="-12" x2="0" y2="28" stroke="url(#gold)" stroke-width="5"/>
+    <line x1="10" y1="-12" x2="0" y2="28" stroke="url(#gold)" stroke-width="5"/>
+    <line x1="-17" y1="-2" x2="17" y2="-2" stroke="url(#gold)" stroke-width="5"/>
+  </g>
+
+  <text x="512" y="635" text-anchor="middle" fill="url(#gold)" font-size="220" font-family="Impact, Haettenschweiler, Arial Narrow Bold, sans-serif" font-weight="700" letter-spacing="-18">GK</text>
+
+  <text fill="url(#gold)" font-size="50" font-family="Georgia, Times New Roman, serif" font-weight="700" letter-spacing="7">
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">GOLD KING</textPath>
+  </text>
+
+  <text fill="url(#gold)" font-size="50" font-family="Georgia, Times New Roman, serif" font-weight="700" letter-spacing="7">
+    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">JEWELERS</textPath>
+  </text>
+</svg>

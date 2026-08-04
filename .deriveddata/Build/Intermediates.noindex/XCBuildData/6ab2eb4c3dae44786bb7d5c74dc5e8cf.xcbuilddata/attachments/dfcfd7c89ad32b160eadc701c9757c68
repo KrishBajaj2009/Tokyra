@@ -1,0 +1,59 @@
+{
+  "" : {
+    "diagnostics" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKing-primary.dia",
+    "emit-module-dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKing-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKing-primary-emit-module.dia",
+    "pch" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKing-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKing-primary.swiftdeps"
+  },
+  "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/krishbajaj/Documents/New project/GoldKing/ContentView.swift" : {
+    "const-values" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/ContentView.d",
+    "diagnostics" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/ContentView.dia",
+    "index-unit-output-path" : "/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/ContentView.o",
+    "llvm-bc" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/ContentView.bc",
+    "object" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/ContentView.o",
+    "swift-dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/ContentView~partial.swiftmodule"
+  },
+  "/Users/krishbajaj/Documents/New project/GoldKing/GoldKingApp.swift" : {
+    "const-values" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKingApp.swiftconstvalues",
+    "dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKingApp.d",
+    "diagnostics" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKingApp.dia",
+    "index-unit-output-path" : "/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKingApp.o",
+    "llvm-bc" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKingApp.bc",
+    "object" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKingApp.o",
+    "swift-dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKingApp.swiftdeps",
+    "swiftmodule" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/GoldKingApp~partial.swiftmodule"
+  },
+  "/Users/krishbajaj/Documents/New project/GoldKing/StoreViewModel.swift" : {
+    "const-values" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreViewModel.swiftconstvalues",
+    "dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreViewModel.d",
+    "diagnostics" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreViewModel.dia",
+    "index-unit-output-path" : "/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreViewModel.o",
+    "llvm-bc" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreViewModel.bc",
+    "object" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreViewModel.o",
+    "swift-dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreViewModel.swiftdeps",
+    "swiftmodule" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreViewModel~partial.swiftmodule"
+  },
+  "/Users/krishbajaj/Documents/New project/GoldKing/StoreWebView.swift" : {
+    "const-values" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreWebView.swiftconstvalues",
+    "dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreWebView.d",
+    "diagnostics" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreWebView.dia",
+    "index-unit-output-path" : "/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreWebView.o",
+    "llvm-bc" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreWebView.bc",
+    "object" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreWebView.o",
+    "swift-dependencies" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreWebView.swiftdeps",
+    "swiftmodule" : "/Users/krishbajaj/Documents/New project/.deriveddata/Build/Intermediates.noindex/GoldKing.build/Debug-iphonesimulator/GoldKing.build/Objects-normal/x86_64/StoreWebView~partial.swiftmodule"
+  }
+}

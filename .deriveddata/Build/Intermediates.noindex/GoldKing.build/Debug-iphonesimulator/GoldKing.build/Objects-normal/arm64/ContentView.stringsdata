@@ -1,0 +1,328 @@
+{
+  "source": "/Users/krishbajaj/Documents/New project/GoldKing/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Home",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 10
+        }
+      },
+      {
+        "comment": "",
+        "key": "Shop",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 16
+        }
+      },
+      {
+        "comment": "",
+        "key": "Visit",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 22
+        }
+      },
+      {
+        "comment": "",
+        "key": "Gold King",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Quick Actions",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "Gold King Jewelers",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fine jewelry, custom designs, repairs, appraisals, and flexible financing in Altamonte Mall.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "Orlando's Best Jeweler",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "2000+ Reviews",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 116
+        }
+      },
+      {
+        "comment": "",
+        "key": "Located on the lower level next to Macy's at Altamonte Mall.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Monday through Saturday from 11:00 AM to 7:00 PM, and Sunday from 12:00 PM to 5:00 PM.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 134
+        }
+      },
+      {
+        "comment": "",
+        "key": "The website currently promotes major seasonal savings, on-site jewelry and watch repairs, and financing options.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 135
+        }
+      },
+      {
+        "comment": "",
+        "key": "Store Highlights",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 130
+        }
+      },
+      {
+        "comment": "",
+        "key": "Popular Categories",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 145
+        }
+      },
+      {
+        "comment": "",
+        "key": "What You'll Find",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 165
+        }
+      },
+      {
+        "comment": "",
+        "key": "Flexible Financing",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "The website currently highlights financing and lease-to-own options so customers can shop now and pay over time.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 195
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Store",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 202
+        }
+      },
+      {
+        "comment": "",
+        "key": "Visit",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 339
+        }
+      },
+      {
+        "comment": "",
+        "key": "Visit Us",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 286
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hours",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 312
+        }
+      },
+      {
+        "comment": "",
+        "key": "Services",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 317
+        }
+      },
+      {
+        "comment": "",
+        "key": "Social",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 325
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open in Maps",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 295
+        }
+      },
+      {
+        "comment": "",
+        "key": "Call (407) 322-6435",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 303
+        }
+      },
+      {
+        "comment": "",
+        "key": "Email Store",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 307
+        }
+      },
+      {
+        "comment": "",
+        "key": "Gold King Jewelers",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 288
+        }
+      },
+      {
+        "comment": "",
+        "key": "451 E. Altamonte Dr, Suite 1165",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 290
+        }
+      },
+      {
+        "comment": "",
+        "key": "Altamonte Springs, FL 32701",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 291
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lower level next to Macy's",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 292
+        }
+      },
+      {
+        "comment": "",
+        "key": "Monday - Saturday",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 313
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sunday",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 314
+        }
+      },
+      {
+        "comment": "",
+        "key": "Custom jewelry",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 318
+        }
+      },
+      {
+        "comment": "",
+        "key": "Jewelry repair",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 319
+        }
+      },
+      {
+        "comment": "",
+        "key": "Watch repair",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 320
+        }
+      },
+      {
+        "comment": "",
+        "key": "Appraisals",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 321
+        }
+      },
+      {
+        "comment": "",
+        "key": "Financing options",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 322
+        }
+      },
+      {
+        "comment": "",
+        "key": "Instagram",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 326
+        }
+      },
+      {
+        "comment": "",
+        "key": "Facebook",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 330
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pinterest",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 334
+        }
+      }
+    ]
+  },
+  "version": 1
+}
