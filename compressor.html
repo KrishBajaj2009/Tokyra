@@ -14,13 +14,57 @@
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
   <script src="auth.js" defer></script>
   <script src="site.js" defer></script>
+  <style>
+    .upload-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .file-meta {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.92rem;
+    }
+
+    .dropzone {
+      margin-top: 14px;
+      border: 1px dashed rgba(255, 255, 255, 0.22);
+      border-radius: 18px;
+      padding: 18px;
+      color: rgba(255, 255, 255, 0.76);
+      background: rgba(255, 255, 255, 0.03);
+      transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .dropzone:hover,
+    .dropzone:focus-visible,
+    .dropzone.is-active {
+      border-color: rgba(128, 214, 255, 0.6);
+      background: rgba(128, 214, 255, 0.09);
+      transform: translateY(-1px);
+    }
+
+    .dropzone strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .limit-note {
+      color: rgba(255, 255, 255, 0.62);
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header">
     <div class="container nav-shell">
-      <a class="brand" href="index.html" aria-label="Tokyra home"><span class="brand-mark" aria-hidden="true"></span>Tokyra</span></a>
+      <a class="brand" href="index.html" aria-label="Tokyra home"><span class="brand-mark" aria-hidden="true"></span>Tokyra</a>
       <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-controls="primary-nav" aria-expanded="false"><span></span></button>
       <nav class="nav-menu" id="primary-nav" aria-label="Primary navigation">
         <a class="nav-link" href="index.html">Product</a>
@@ -41,7 +85,7 @@
       <div class="container">
         <div class="eyebrow">Live compressor</div>
         <h1>Turn long prompts into <span class="gradient-text">lean instructions.</span></h1>
-        <p>Paste a prompt below. Tokyra returns an optimized version and the metrics needed to evaluate the result.</p>
+        <p>Paste a prompt or upload a text file. Tokyra returns an optimized version and the metrics needed to evaluate the result.</p>
       </div>
     </section>
 
@@ -60,11 +104,23 @@
             <div class="panel-body">
               <label class="sr-only" for="promptInput">Prompt to compress</label>
               <div class="textarea-wrap">
-                <textarea class="prompt-textarea" id="promptInput" maxlength="20000" placeholder="Paste a system prompt, agent instruction, workflow, or other AI prompt here…"></textarea>
+                <textarea class="prompt-textarea" id="promptInput" placeholder="Paste a system prompt, agent instruction, workflow, or other AI prompt here…"></textarea>
               </div>
+
+              <div class="upload-row">
+                <button class="button button-ghost" id="uploadBtn" type="button">Upload text file</button>
+                <input id="fileInput" type="file" hidden accept=".txt,.md,.markdown,.json,.csv,.html,.xml,.yaml,.yml,text/plain,text/markdown,application/json,text/csv,text/html,text/xml,application/xml">
+                <span class="file-meta" id="fileMeta">Supports paste, drag-and-drop, or text-like files.</span>
+              </div>
+
+              <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Drop a text file here or press Enter to upload">
+                <strong>Drop a text file here</strong>
+                <span>Works with `.txt`, `.md`, `.json`, `.csv`, `.html`, `.xml`, `.yaml`, and similar text files.</span>
+              </div>
+
               <div class="panel-footer">
                 <span class="character-count" id="characterCount">0 characters</span>
-                <span class="shortcut-hint">⌘/Ctrl + Enter to compress</span>
+                <span class="shortcut-hint" id="limitHint">Worker limit: 500,000 characters • ⌘/Ctrl + Enter to compress</span>
               </div>
             </div>
           </section>
@@ -117,6 +173,8 @@
       "use strict";
 
       const WORKER_URL = "https://tokyra-compressor.tokyracompany.workers.dev";
+      const MAX_INPUT_CHARS = 500000;
+
       const input = document.getElementById("promptInput");
       const output = document.getElementById("output");
       const compressBtn = document.getElementById("compressBtn");
@@ -124,8 +182,13 @@
       const clearBtn = document.getElementById("clearBtn");
       const sampleBtn = document.getElementById("sampleBtn");
       const voiceBtn = document.getElementById("voiceBtn");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const fileInput = document.getElementById("fileInput");
+      const dropzone = document.getElementById("dropzone");
+      const fileMeta = document.getElementById("fileMeta");
       const characterCount = document.getElementById("characterCount");
       const outputCount = document.getElementById("outputCount");
+      const limitHint = document.getElementById("limitHint");
       const status = document.getElementById("status");
       const statusText = document.getElementById("statusText");
 
@@ -149,14 +212,10 @@
         statusText.textContent = message;
       };
 
-      const updateCounts = () => {
-        characterCount.textContent = `${input.value.length.toLocaleString()} characters`;
-        const outputText = output.classList.contains("is-placeholder") ? "" : output.textContent;
-        outputCount.textContent = `${outputText.length.toLocaleString()} characters`;
-      };
-
       const resetMetrics = () => {
-        Object.values(fields).forEach((field) => { field.textContent = "—"; });
+        Object.values(fields).forEach((field) => {
+          field.textContent = "—";
+        });
       };
 
       const setOutput = (text, placeholder = false) => {
@@ -166,10 +225,84 @@
         updateCounts();
       };
 
+      const updateCounts = () => {
+        const inputLength = input.value.length;
+        characterCount.textContent = `${inputLength.toLocaleString()} characters`;
+
+        if (inputLength > MAX_INPUT_CHARS) {
+          characterCount.classList.add("limit-note");
+          limitHint.textContent = `Worker limit exceeded by ${(inputLength - MAX_INPUT_CHARS).toLocaleString()} characters`;
+        } else {
+          characterCount.classList.remove("limit-note");
+          limitHint.textContent = `Worker limit: ${MAX_INPUT_CHARS.toLocaleString()} characters • ⌘/Ctrl + Enter to compress`;
+        }
+
+        const outputText = output.classList.contains("is-placeholder") ? "" : output.textContent;
+        outputCount.textContent = `${outputText.length.toLocaleString()} characters`;
+      };
+
+      const setFileMeta = (message) => {
+        fileMeta.textContent = message;
+      };
+
+      const humanFileSize = (bytes) => {
+        if (!Number.isFinite(bytes) || bytes < 1024) return `${bytes || 0} B`;
+        const units = ["KB", "MB", "GB"];
+        let value = bytes / 1024;
+        let unitIndex = 0;
+        while (value >= 1024 && unitIndex < units.length - 1) {
+          value /= 1024;
+          unitIndex += 1;
+        }
+        return `${value.toFixed(value >= 100 ? 0 : 1)} ${units[unitIndex]}`;
+      };
+
+      const applyPromptText = (text, sourceLabel = "Text loaded.") => {
+        input.value = text;
+        updateCounts();
+        input.focus();
+        setFileMeta(sourceLabel);
+      };
+
+      async function loadTextFile(file) {
+        if (!file) return;
+
+        try {
+          const text = await file.text();
+          applyPromptText(
+            text,
+            `Loaded ${file.name} • ${humanFileSize(file.size)} • ${text.length.toLocaleString()} characters`
+          );
+
+          if (text.length > MAX_INPUT_CHARS) {
+            setStatus(
+              `Loaded ${file.name}, but it exceeds the worker limit of ${MAX_INPUT_CHARS.toLocaleString()} characters. Split it before compressing.`,
+              "error"
+            );
+          } else {
+            setStatus(`Loaded ${file.name}. Ready to compress.`, "success");
+          }
+        } catch (error) {
+          console.error("File load error:", error);
+          setStatus("That file could not be read as text.", "error");
+          setFileMeta("File load failed.");
+        }
+      }
+
       async function compressPrompt() {
         const prompt = input.value.trim();
+
         if (!prompt) {
           setStatus("Add a prompt before compressing.", "error");
+          input.focus();
+          return;
+        }
+
+        if (prompt.length > MAX_INPUT_CHARS) {
+          setStatus(
+            `This prompt is ${prompt.length.toLocaleString()} characters. Tokyra currently accepts up to ${MAX_INPUT_CHARS.toLocaleString()} characters per request.`,
+            "error"
+          );
           input.focus();
           return;
         }
@@ -185,7 +318,10 @@
           const response = await fetch(WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt })
+            body: JSON.stringify({
+              prompt,
+              mode: "maximum"
+            })
           });
 
           const raw = await response.text();
@@ -204,7 +340,9 @@
           }
 
           const optimized = String(data.optimized || data.optimizedPrompt || "").trim();
-          if (!optimized) throw new Error("No optimized prompt was returned.");
+          if (!optimized) {
+            throw new Error("No optimized prompt was returned.");
+          }
 
           setOutput(optimized);
           fields.originalTokens.textContent = formatNumber(data.originalTokens);
@@ -233,29 +371,77 @@
           compressPrompt();
         }
       });
+
       compressBtn.addEventListener("click", compressPrompt);
+
       clearBtn.addEventListener("click", () => {
         input.value = "";
+        fileInput.value = "";
         setOutput("Your compressed prompt will appear here.", true);
         resetMetrics();
+        setFileMeta("Supports paste, drag-and-drop, or text-like files.");
         setStatus("Ready to compress.");
         updateCounts();
         input.focus();
       });
+
       sampleBtn.addEventListener("click", () => {
         input.value = samplePrompt;
         updateCounts();
         setStatus("Sample prompt loaded.");
+        setFileMeta("Sample prompt loaded from the page.");
         input.focus();
       });
+
       copyBtn.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(output.textContent);
           const original = copyBtn.textContent;
           copyBtn.textContent = "Copied";
-          setTimeout(() => { copyBtn.textContent = original; }, 1400);
+          setTimeout(() => {
+            copyBtn.textContent = original;
+          }, 1400);
         } catch {
           setStatus("Copy failed. Select the output and copy it manually.", "error");
+        }
+      });
+
+      uploadBtn.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", async () => {
+        const [file] = fileInput.files || [];
+        await loadTextFile(file);
+      });
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          dropzone.classList.add("is-active");
+        });
+      });
+
+      ["dragleave", "dragend", "drop"].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          dropzone.classList.remove("is-active");
+        });
+      });
+
+      dropzone.addEventListener("drop", async (event) => {
+        const [file] = event.dataTransfer?.files || [];
+        await loadTextFile(file);
+      });
+
+      dropzone.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      dropzone.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          fileInput.click();
         }
       });
 
@@ -286,7 +472,7 @@
         recognition.addEventListener("error", () => {
           voiceBtn.textContent = "Voice";
           voiceBtn.setAttribute("aria-pressed", "false");
-          setStatus("Voice input was unavailable. You can type or paste a prompt instead.", "error");
+          setStatus("Voice input was unavailable. You can type, paste, or upload a prompt instead.", "error");
         });
       }
 
