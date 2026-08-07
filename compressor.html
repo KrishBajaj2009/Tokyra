@@ -15,48 +15,26 @@
   <script src="auth.js" defer></script>
   <script src="site.js" defer></script>
   <style>
-    .upload-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      margin-top: 14px;
-    }
-
-    .file-meta {
-      color: rgba(255, 255, 255, 0.72);
-      font-size: 0.92rem;
-    }
-
+    .upload-row { margin-top: 14px; }
+    .file-meta, .limit-note { color: var(--muted); font-size: 0.92rem; }
     .dropzone {
       margin-top: 14px;
-      border: 1px dashed rgba(255, 255, 255, 0.22);
-      border-radius: 18px;
       padding: 18px;
-      color: rgba(255, 255, 255, 0.76);
-      background: rgba(255, 255, 255, 0.03);
-      transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+      border: 1px dashed var(--border-strong);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.025);
+      color: var(--muted);
       cursor: pointer;
-      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
     }
-
     .dropzone:hover,
     .dropzone:focus-visible,
     .dropzone.is-active {
-      border-color: rgba(128, 214, 255, 0.6);
-      background: rgba(128, 214, 255, 0.09);
+      border-color: var(--purple-light);
+      background: var(--gradient-soft);
       transform: translateY(-1px);
     }
-
-    .dropzone strong {
-      display: block;
-      margin-bottom: 4px;
-      color: #fff;
-    }
-
-    .limit-note {
-      color: rgba(255, 255, 255, 0.62);
-    }
+    .dropzone strong { display: block; margin-bottom: 4px; color: var(--text); }
   </style>
 </head>
 <body>
@@ -202,7 +180,7 @@
         cfs: document.getElementById("cfs")
       };
 
-      const samplePrompt = "You are a helpful customer support assistant. Please carefully read the customer's request, identify the main issue, and then write a clear, concise, friendly response. Make sure you answer every question, avoid unnecessary technical language, and suggest practical next steps when appropriate.";
+      const samplePrompt = "You are a helpful customer support assistant. Carefully read the customer's request, identify the main issue, and write a clear, concise, friendly response that directly answers every question. Apologize when the customer experienced an inconvenience, explain the next practical step, and set an honest expectation for when they will hear back. Avoid unnecessary technical language, internal implementation details, blame, unsupported guarantees, and promises the company has not approved. Keep the answer professional and empathetic. Use short paragraphs, preserve any dates or reference numbers supplied by the customer, and end by thanking them for their patience. Do not repeat the same point in multiple ways. Return only the customer-facing response without analysis, notes, or a preamble.";
 
       const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
       const formatNumber = (value) => new Intl.NumberFormat().format(number(value));
@@ -320,7 +298,8 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               prompt,
-              mode: "maximum"
+              mode: "maximum",
+              targetReduction: 60
             })
           });
 
@@ -347,13 +326,24 @@
           setOutput(optimized);
           fields.originalTokens.textContent = formatNumber(data.originalTokens);
           fields.optimizedTokens.textContent = formatNumber(data.optimizedTokens);
-          fields.savedTokens.textContent = formatNumber(data.tokensSaved);
-          fields.compressionPercent.textContent = `${Math.round(number(data.compressionPercent))}%`;
+          const originalTokens = number(data.originalTokens);
+          const optimizedTokens = number(data.optimizedTokens);
+          const tokensSaved = number(data.tokensSaved, Math.max(0, originalTokens - optimizedTokens));
+          const compression = number(data.compressionPercent);
+          fields.savedTokens.textContent = formatNumber(tokensSaved);
+          fields.compressionPercent.textContent = `${Math.round(compression)}%`;
           fields.fidelity.textContent = `${Math.round(number(data.fidelityPercent ?? data.fidelity))}%`;
           fields.cfs.textContent = number(data.cfsScore).toFixed(number(data.cfsScore) % 1 ? 1 : 0);
           const latency = number(data.latencyMs, Math.round(performance.now() - startedAt));
           fields.latency.textContent = `${Math.round(latency)}ms`;
-          setStatus("Compression complete. Review the optimized prompt before using it.", "success");
+
+          if (compression <= 0 || data.status === "skipped" || data.unchanged === true) {
+            setStatus("This prompt was already too short or dense to reduce safely, so Tokyra preserved it unchanged.", "success");
+          } else if (data.method === "deterministic" || data.status === "fallback") {
+            setStatus("Compression complete using Tokyra's backup optimizer. Review the result before production use.", "success");
+          } else {
+            setStatus("Compression complete. Review the optimized prompt before using it.", "success");
+          }
         } catch (error) {
           console.error("Tokyra compression error:", error);
           setOutput(`Unable to compress this prompt. ${error.message}`, true);
