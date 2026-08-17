@@ -35,6 +35,15 @@
       transform: translateY(-1px);
     }
     .dropzone strong { display: block; margin-bottom: 4px; color: var(--text); }
+    .maximum-note {
+      margin: 12px auto 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      text-align: center;
+    }
+    .maximum-note strong { color: var(--text); }
   </style>
 </head>
 <body>
@@ -63,7 +72,7 @@
       <div class="container">
         <div class="eyebrow">Live compressor</div>
         <h1>Turn long prompts into <span class="gradient-text">lean instructions.</span></h1>
-        <p>Paste a prompt or upload a text file. Tokyra returns an optimized version and the metrics needed to evaluate the result.</p>
+        <p>Paste a prompt or upload a text file. Tokyra explores multiple compressions, returns the shortest verified result, and preserves the original when a safe reduction is unavailable.</p>
       </div>
     </section>
 
@@ -122,10 +131,11 @@
 
         <div class="status-bar" id="status" role="status" aria-live="polite">
           <span class="status-dot" aria-hidden="true"></span>
-          <span id="statusText">Ready to compress.</span>
+          <span id="statusText">Ready for maximum compression.</span>
         </div>
 
-        <button class="button button-primary button-wide" id="compressBtn" type="button">Compress prompt <span aria-hidden="true">→</span></button>
+        <button class="button button-primary button-wide" id="compressBtn" type="button" aria-describedby="maximumModeNote">Start maximum compression <span aria-hidden="true">→</span></button>
+        <p class="maximum-note" id="maximumModeNote"><strong>Maximum mode runs in the background and may take up to 45 minutes.</strong> This page checks the job automatically and reconnects after a refresh. Cloudflare's daily free AI allowance applies.</p>
 
         <div class="metrics-grid" aria-label="Compression metrics">
           <article class="metric-card"><span>Original tokens</span><strong id="originalTokens">—</strong></article>
@@ -151,7 +161,10 @@
       "use strict";
 
       const WORKER_URL = "https://tokyra-compressor.tokyracompany.workers.dev";
+      const MAXIMUM_URL = `${WORKER_URL}/compress-max`;
       const MAX_INPUT_CHARS = 500000;
+      const POLL_INTERVAL_MS = 10000;
+      const ACTIVE_JOB_KEY = "tokyraMaximumCompressionJob";
 
       const input = document.getElementById("promptInput");
       const output = document.getElementById("output");
@@ -180,10 +193,85 @@
         cfs: document.getElementById("cfs")
       };
 
+      let activeJob = null;
+
       const samplePrompt = "You are a helpful customer support assistant. Carefully read the customer's request, identify the main issue, and write a clear, concise, friendly response that directly answers every question. Apologize when the customer experienced an inconvenience, explain the next practical step, and set an honest expectation for when they will hear back. Avoid unnecessary technical language, internal implementation details, blame, unsupported guarantees, and promises the company has not approved. Keep the answer professional and empathetic. Use short paragraphs, preserve any dates or reference numbers supplied by the customer, and end by thanking them for their patience. Do not repeat the same point in multiple ways. Return only the customer-facing response without analysis, notes, or a preamble.";
 
       const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
       const formatNumber = (value) => new Intl.NumberFormat().format(number(value));
+      const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+      const elapsedLabel = (startedAt) => {
+        const totalSeconds = Math.max(0, Math.floor((Date.now() - number(startedAt, Date.now())) / 1000));
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return minutes ? `${minutes}m ${seconds}s` : `${seconds}s`;
+      };
+
+      const describeError = (value, fallback = "Compression failed.") => {
+        if (typeof value === "string" && value.trim()) return value.trim();
+        if (value && typeof value.message === "string" && value.message.trim()) return value.message.trim();
+        return fallback;
+      };
+
+      const readApiResponse = async (response) => {
+        const raw = await response.text();
+        let data;
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch {
+          const error = new Error("The server returned an unreadable response.");
+          error.status = response.status;
+          throw error;
+        }
+
+        if (!response.ok) {
+          const fallback = response.status === 429
+            ? "The free compression service is busy or has reached its current limit. Try again later."
+            : "Compression failed.";
+          const error = new Error(describeError(data.error || data.message, fallback));
+          error.status = response.status;
+          throw error;
+        }
+
+        return data;
+      };
+
+      const saveActiveJob = (job) => {
+        activeJob = job;
+        try {
+          localStorage.setItem(ACTIVE_JOB_KEY, JSON.stringify(job));
+        } catch {
+          // The job still runs if browser storage is unavailable.
+        }
+      };
+
+      const clearActiveJob = () => {
+        activeJob = null;
+        try {
+          localStorage.removeItem(ACTIVE_JOB_KEY);
+        } catch {
+          // Nothing else is required when browser storage is unavailable.
+        }
+      };
+
+      const loadActiveJob = () => {
+        try {
+          const job = JSON.parse(localStorage.getItem(ACTIVE_JOB_KEY) || "null");
+          if (!job || !job.statusUrl || !job.startedAt) return null;
+
+          const statusUrl = new URL(job.statusUrl);
+          const workerUrl = new URL(WORKER_URL);
+          if (statusUrl.origin !== workerUrl.origin || !statusUrl.pathname.startsWith("/compress-max/")) {
+            localStorage.removeItem(ACTIVE_JOB_KEY);
+            return null;
+          }
+
+          return job;
+        } catch {
+          return null;
+        }
+      };
 
       const setStatus = (message, state = "") => {
         status.className = `status-bar${state ? ` ${state}` : ""}`;
@@ -222,6 +310,103 @@
       const setFileMeta = (message) => {
         fileMeta.textContent = message;
       };
+
+      const setCompressionButtonBusy = (busy) => {
+        compressBtn.disabled = busy;
+        compressBtn.innerHTML = busy
+          ? "Maximum compression running…"
+          : 'Start maximum compression <span aria-hidden="true">→</span>';
+      };
+
+      const displayCompressionResult = (data, workflowOutput, startedAt) => {
+        const optimized = String(data.optimized || data.optimizedPrompt || "").trim();
+        if (!optimized) {
+          throw new Error("No optimized prompt was returned.");
+        }
+
+        setOutput(optimized);
+        fields.originalTokens.textContent = formatNumber(data.originalTokens);
+        fields.optimizedTokens.textContent = formatNumber(data.optimizedTokens);
+
+        const originalTokens = number(data.originalTokens);
+        const optimizedTokens = number(data.optimizedTokens);
+        const tokensSaved = number(data.tokensSaved, Math.max(0, originalTokens - optimizedTokens));
+        const compression = number(data.compressionPercent);
+        const fidelity = number(data.fidelityPercent ?? data.fidelity);
+        const cfsScore = number(data.cfsScore);
+        const workflowLatency = number(workflowOutput?.maximumEffort?.elapsedMs);
+        const latency = workflowLatency || number(data.latencyMs, Date.now() - startedAt);
+
+        fields.savedTokens.textContent = formatNumber(tokensSaved);
+        fields.compressionPercent.textContent = `${Math.round(compression)}%`;
+        fields.fidelity.textContent = `${Math.round(fidelity)}%`;
+        fields.cfs.textContent = cfsScore.toFixed(cfsScore % 1 ? 1 : 0);
+        fields.latency.textContent = `${Math.round(latency)}ms`;
+
+        if (compression <= 0 || data.status === "skipped" || data.unchanged === true) {
+          setStatus("No shorter F100 result passed every safety check, so Tokyra preserved the original prompt.", "success");
+        } else {
+          setStatus(`Maximum compression complete at ${Math.round(fidelity)}% fidelity. Review the optimized prompt before using it.`, "success");
+        }
+      };
+
+      async function pollMaximumJob(job) {
+        let connectionFailures = 0;
+
+        while (activeJob && activeJob.jobId === job.jobId) {
+          try {
+            const response = await fetch(job.statusUrl, {
+              method: "GET",
+              headers: { "Accept": "application/json" },
+              cache: "no-store"
+            });
+            const statusData = await readApiResponse(response);
+            connectionFailures = 0;
+
+            const jobStatus = String(statusData.status || "running").toLowerCase();
+            if (statusData.complete || jobStatus === "complete") {
+              const workflowOutput = statusData.result || {};
+              const result = workflowOutput.result || workflowOutput;
+              displayCompressionResult(result, workflowOutput, job.startedAt);
+              clearActiveJob();
+              return;
+            }
+
+            if (["errored", "error", "terminated", "cancelled", "canceled"].includes(jobStatus)) {
+              const error = new Error(describeError(statusData.error, `The maximum-compression job ${jobStatus}.`));
+              error.terminal = true;
+              throw error;
+            }
+
+            const friendlyStatus = jobStatus === "queued" ? "queued" : "running";
+            setStatus(`Maximum compression is ${friendlyStatus} • ${elapsedLabel(job.startedAt)} elapsed. This page checks automatically.`, "loading");
+            setOutput(`Maximum compression is ${friendlyStatus}. The verified result will appear here automatically.`, true);
+          } catch (error) {
+            const clientError = number(error.status) >= 400 && number(error.status) < 500 && number(error.status) !== 429;
+            if (error.terminal || clientError) throw error;
+
+            connectionFailures += 1;
+            setStatus(`Connection interrupted. Retrying automatically (${connectionFailures})…`, "loading");
+          }
+
+          await wait(POLL_INTERVAL_MS);
+        }
+      }
+
+      async function monitorMaximumJob(job) {
+        setCompressionButtonBusy(true);
+
+        try {
+          await pollMaximumJob(job);
+        } catch (error) {
+          console.error("Tokyra maximum-compression error:", error);
+          clearActiveJob();
+          setOutput(`Unable to finish this maximum-compression job. ${error.message}`, true);
+          setStatus(error.message || "Maximum compression failed.", "error");
+        } finally {
+          setCompressionButtonBusy(false);
+        }
+      }
 
       const humanFileSize = (bytes) => {
         if (!Number.isFinite(bytes) || bytes < 1024) return `${bytes || 0} B`;
@@ -270,6 +455,11 @@
       async function compressPrompt() {
         const prompt = input.value.trim();
 
+        if (activeJob) {
+          setStatus("A maximum-compression job is already running. This page will show its result automatically.", "loading");
+          return;
+        }
+
         if (!prompt) {
           setStatus("Add a prompt before compressing.", "error");
           input.focus();
@@ -285,72 +475,42 @@
           return;
         }
 
-        compressBtn.disabled = true;
-        compressBtn.textContent = "Compressing…";
-        setStatus("Tokyra is optimizing your prompt…", "loading");
-        setOutput("Processing your prompt…", true);
+        setCompressionButtonBusy(true);
+        setStatus("Starting maximum compression…", "loading");
+        setOutput("Creating a background maximum-compression job…", true);
         resetMetrics();
-        const startedAt = performance.now();
+        const startedAt = Date.now();
 
         try {
-          const response = await fetch(WORKER_URL, {
+          const response = await fetch(MAXIMUM_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               prompt,
-              mode: "maximum",
-              targetReduction: 60
+              targetReduction: 99
             })
           });
-
-          const raw = await response.text();
-          let data;
-          try {
-            data = raw ? JSON.parse(raw) : {};
-          } catch {
-            throw new Error("The server returned an unreadable response.");
+          const data = await readApiResponse(response);
+          if (!data.accepted || !data.jobId || !data.statusUrl) {
+            throw new Error("The server did not create a maximum-compression job.");
           }
 
-          if (!response.ok) {
-            const message = response.status === 429
-              ? "The service is busy. Please try again shortly."
-              : data.error || data.message || "Compression failed.";
-            throw new Error(message);
-          }
-
-          const optimized = String(data.optimized || data.optimizedPrompt || "").trim();
-          if (!optimized) {
-            throw new Error("No optimized prompt was returned.");
-          }
-
-          setOutput(optimized);
-          fields.originalTokens.textContent = formatNumber(data.originalTokens);
-          fields.optimizedTokens.textContent = formatNumber(data.optimizedTokens);
-          const originalTokens = number(data.originalTokens);
-          const optimizedTokens = number(data.optimizedTokens);
-          const tokensSaved = number(data.tokensSaved, Math.max(0, originalTokens - optimizedTokens));
-          const compression = number(data.compressionPercent);
-          fields.savedTokens.textContent = formatNumber(tokensSaved);
-          fields.compressionPercent.textContent = `${Math.round(compression)}%`;
-          fields.fidelity.textContent = `${Math.round(number(data.fidelityPercent ?? data.fidelity))}%`;
-          fields.cfs.textContent = number(data.cfsScore).toFixed(number(data.cfsScore) % 1 ? 1 : 0);
-          const latency = number(data.latencyMs, Math.round(performance.now() - startedAt));
-          fields.latency.textContent = `${Math.round(latency)}ms`;
-
-          if (compression <= 0 || data.status === "skipped" || data.unchanged === true) {
-            setStatus("This prompt was already too short or dense to reduce safely, so Tokyra preserved it unchanged.", "success");
-          } else if (data.method === "deterministic" || data.status === "fallback") {
-            setStatus("Compression complete using Tokyra's backup optimizer. Review the result before production use.", "success");
-          } else {
-            setStatus("Compression complete. Review the optimized prompt before using it.", "success");
-          }
+          const job = {
+            jobId: data.jobId,
+            statusUrl: data.statusUrl,
+            startedAt,
+            maximumDurationMinutes: number(data.maximumDurationMinutes, 45)
+          };
+          saveActiveJob(job);
+          setStatus("Maximum compression started. This page will keep checking automatically.", "loading");
+          await monitorMaximumJob(job);
         } catch (error) {
           console.error("Tokyra compression error:", error);
+          clearActiveJob();
           setOutput(`Unable to compress this prompt. ${error.message}`, true);
           setStatus(error.message || "Compression failed.", "error");
         } finally {
-          compressBtn.disabled = false;
-          compressBtn.innerHTML = 'Compress prompt <span aria-hidden="true">→</span>';
+          if (!activeJob) setCompressionButtonBusy(false);
         }
       }
 
@@ -370,7 +530,7 @@
         setOutput("Your compressed prompt will appear here.", true);
         resetMetrics();
         setFileMeta("Supports paste, drag-and-drop, or text-like files.");
-        setStatus("Ready to compress.");
+        setStatus("Ready for maximum compression.");
         updateCounts();
         input.focus();
       });
@@ -467,6 +627,14 @@
       }
 
       updateCounts();
+
+      const savedJob = loadActiveJob();
+      if (savedJob) {
+        saveActiveJob(savedJob);
+        setOutput("Reconnecting to your maximum-compression job…", true);
+        setStatus(`Reconnecting • ${elapsedLabel(savedJob.startedAt)} elapsed.`, "loading");
+        monitorMaximumJob(savedJob);
+      }
     })();
   </script>
 </body>
