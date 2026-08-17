@@ -1,4 +1,4 @@
-# Tokyra website — maximum compression
+# Tokyra website — fast Cloudflare Free compression
 
 This is the Netlify-ready Tokyra frontend. Its compressor is connected to:
 
@@ -6,15 +6,14 @@ This is the Netlify-ready Tokyra frontend. Its compressor is connected to:
 
 ## What the Compress button does
 
-1. Sends the prompt to `POST /compress-max` with a 99% target reduction.
-2. Receives a background Workflow job ID.
-3. Checks the returned status URL every 10 seconds.
-4. Reconnects to an unfinished job after a page refresh.
-5. Displays the shortest verified result and its token, compression, fidelity,
-   latency, and CFS metrics.
+1. Sends one request to the main compression endpoint.
+2. Uses `balanced` mode with a 66% target reduction so the Worker can stop
+   after its first high-quality result.
+3. Displays the optimized prompt and its token, compression, fidelity,
+   latency, and CFS metrics immediately after the request finishes.
 
 The Worker returns the original prompt unchanged when it cannot produce a
-shorter result that passes all F100 safety checks.
+shorter result that passes its safety checks.
 
 ## Deploy to Netlify
 
@@ -22,18 +21,17 @@ shorter result that passes all F100 safety checks.
 2. Open **Deploys**.
 3. Drag this `Tokyra-main` folder into Netlify's manual deployment area.
 4. Wait for the deployment to become **Published**.
-5. Open `compressor.html`, paste a prompt, and select **Start maximum
-   compression**.
+5. Open `compressor.html`, paste a prompt, and select **Compress prompt**.
 
 The site is static and does not require a build command, package installation,
 API key, or environment variable.
 
 ## Free-plan behavior
 
-Cloudflare's Workers AI free allocation applies. Maximum compression may run
-for up to 45 minutes, but Free-plan CPU and daily AI limits mean a job cannot
-be guaranteed to use every configured round. When the daily free allocation is
-exhausted, Cloudflare stops further AI work instead of charging the account.
+Cloudflare's Workers AI free allocation applies. This site deliberately avoids
+the 45-minute Workflow because Cloudflare Free limits each Workflow step to 10
+ms of active CPU time. When the daily free AI allocation is exhausted,
+Cloudflare stops further AI work instead of charging the account.
 
 ## Future changes
 
