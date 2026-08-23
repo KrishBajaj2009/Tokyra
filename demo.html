@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Watch Tokyra compress prompts automatically in a live demo.">
+  <meta name="theme-color" content="#070711">
+  <title>Live Demos — Tokyra</title>
+  <link rel="icon" href="tokyra.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
+  <script src="auth.js" defer></script>
+  <script src="site.js" defer></script>
+  <style>
+    .demo-shell {
+      padding: 18px 0 72px;
+    }
+
+    .demo-stage {
+      border: 1px solid var(--border-strong);
+      border-radius: 22px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.025);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.18);
+    }
+
+    .demo-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 0.02em;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #32d583;
+      box-shadow: 0 0 0 5px rgba(50,213,131,0.11), 0 0 20px rgba(50,213,131,0.55);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .55; transform: scale(.84); }
+    }
+
+    .demo-counter {
+      color: var(--muted);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.85rem;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .demo-panel {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .demo-panel + .demo-panel {
+      border-left: 1px solid var(--border);
+    }
+
+    .demo-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .demo-text {
+      min-height: 250px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .demo-text.is-muted {
+      color: var(--muted);
+    }
+
+    .typing::after {
+      content: "▋";
+      margin-left: 2px;
+      animation: blink .8s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .demo-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .status-copy {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--border-strong);
+      border-top-color: var(--purple-light);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .demo-progress {
+      height: 3px;
+      background: rgba(255,255,255,0.05);
+      overflow: hidden;
+    }
+
+    .demo-progress > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--purple-light);
+      transition: width .15s linear;
+    }
+
+    .metrics-grid {
+      margin-top: 20px;
+    }
+
+    .demo-note {
+      max-width: 780px;
+      margin: 18px auto 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.6;
+    }
+
+    .demo-error {
+      color: #ff8c8c;
+    }
+
+    @media (max-width: 820px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-panel + .demo-panel {
+        border-left: 0;
+        border-top: 1px solid var(--border);
+      }
+
+      .demo-text {
+        min-height: 190px;
+      }
+
+      .demo-status {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container nav-shell">
+      <a class="brand" href="index.html" aria-label="Tokyra home"><span class="brand-mark" aria-hidden="true"></span>Tokyra</a>
+      <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-controls="primary-nav" aria-expanded="false"><span></span></button>
+
+      <nav class="nav-menu" id="primary-nav" aria-label="Primary navigation">
+        <a class="nav-link" href="index.html">Product</a>
+        <a class="nav-link" href="compressor.html">Compressor</a>
+        <a class="nav-link" href="demos.html" aria-current="page">Demos</a>
+        <a class="nav-link" href="metrics.html">Metrics</a>
+      </nav>
+
+      <div class="nav-actions">
+        <span class="account-badge" data-auth-account hidden></span>
+        <button class="button button-ghost" type="button" data-auth-login>Log in</button>
+        <button class="button button-ghost" type="button" data-auth-logout hidden>Log out</button>
+        <a class="button button-secondary" href="metrics.html">View metrics</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="eyebrow">Preloaded demos</div>
+        <h1>Watch Tokyra <span class="gradient-text">compress in real time.</span></h1>
+        <p>No typing. No buttons. Browse preloaded examples showing how Tokyra turns long prompts into leaner instructions.</p>
+      </div>
+    </section>
+
+    <section class="demo-shell">
+      <div class="container">
+        <div class="demo-stage">
+          <div class="demo-topbar">
+            <div class="live-badge">
+              <span class="live-dot" aria-hidden="true"></span>
+              TOKYRA DEMO
+            </div>
+            <div class="demo-counter" id="demoCounter">Demo 1 / 2</div>
+          </div>
+
+          <div class="demo-grid">
+            <section class="demo-panel" aria-labelledby="originalTitle">
+              <div class="demo-label">
+                <span id="originalTitle">Original prompt</span>
+                <span id="originalTokenMini">— tokens</span>
+              </div>
+              <div class="demo-text typing" id="originalText"></div>
+            </section>
+
+            <section class="demo-panel" aria-labelledby="optimizedTitle">
+              <div class="demo-label">
+                <span id="optimizedTitle">Tokyra output</span>
+                <span id="optimizedTokenMini">— tokens</span>
+              </div>
+              <div class="demo-text is-muted" id="optimizedText">Compressed example appears here.</div>
+            </section>
+          </div>
+
+          <div class="demo-progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+          <div class="demo-status" role="status" aria-live="polite">
+            <div class="status-copy">
+              <span class="status-spinner" id="statusSpinner" aria-hidden="true"></span>
+              <span id="statusText">Preparing live demo…</span>
+            </div>
+            <span id="nextDemoText">Next demo starts automatically.</span>
+          </div>
+        </div>
+
+        <div class="metrics-grid" aria-label="Demo compression metrics">
+          <article class="metric-card"><span>Original tokens</span><strong id="originalTokens">—</strong></article>
+          <article class="metric-card"><span>Optimized tokens</span><strong id="optimizedTokens">—</strong></article>
+          <article class="metric-card"><span>Tokens saved</span><strong id="savedTokens">—</strong></article>
+          <article class="metric-card"><span>Compression</span><strong id="compressionPercent">—</strong></article>
+          <article class="metric-card"><span>Fidelity</span><strong id="fidelity">—</strong></article>
+          <article class="metric-card"><span>Latency</span><strong id="latency">—</strong></article>
+        </div>
+
+        <p class="demo-note">
+          These examples are preloaded for demonstration purposes. Nothing is submitted or processed when a visitor opens this page.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span data-year></span> Tokyra.</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="demos.html">Demos</a>
+        <a href="metrics.html">Metrics</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const CYCLE_DELAY_MS = 9000;
+
+      const demos = [
+        {
+          name: "Customer support",
+          original: `You are a helpful customer support assistant. Carefully read the customer's request, identify the main issue, and write a clear, concise, friendly response that directly answers every question. Apologize when the customer experienced an inconvenience, explain the next practical step, and set an honest expectation for when they will hear back. Avoid unnecessary technical language, internal implementation details, blame, unsupported guarantees, and promises the company has not approved. Keep the answer professional and empathetic. Use short paragraphs, preserve any dates or reference numbers supplied by the customer, and end by thanking them for their patience. Do not repeat the same point in multiple ways. Return only the customer-facing response without analysis, notes, or a preamble.`,
+          optimized: `Write a concise, friendly customer-support response that directly answers every question. If there was inconvenience, apologize, give the next practical step and an honest follow-up expectation. Avoid technical/internal details, blame, unsupported guarantees, or unapproved promises. Preserve supplied dates/reference numbers, use short professional paragraphs, avoid repetition, thank the customer for their patience, and return only the customer-facing response.`,
+          originalTokens: 126,
+          optimizedTokens: 70,
+          savedTokens: 56,
+          compression: 44,
+          fidelity: 98,
+          latency: 1180
+        },
+        {
+          name: "Coding agent",
+          original: `Act as a senior software engineer helping debug a production web application. Read all supplied code carefully before proposing any changes. Find the actual root cause of the reported problem rather than guessing. Preserve all existing functionality that is unrelated to the bug. Make the smallest safe change that fully resolves the issue. Do not rename public APIs, environment variables, routes, configuration keys, file paths, or database fields unless the user explicitly requests it. If code is provided, return complete replacement code for every file that needs to change. Keep explanations concise, call out any assumptions, preserve exact numbers and constraints, and avoid inventing libraries, endpoints, files, or dependencies that were not provided.`,
+          optimized: `Debug the production web app as a senior engineer. Read all supplied code, identify the real root cause, and make the smallest safe fix while preserving unrelated behavior. Do not rename public APIs, environment variables, routes, config keys, file paths, or database fields unless requested. Return complete replacement code for changed files. Keep explanations concise, state assumptions, preserve exact numbers/constraints, and do not invent dependencies, files, endpoints, or libraries.`,
+          originalTokens: 119,
+          optimizedTokens: 76,
+          savedTokens: 43,
+          compression: 36,
+          fidelity: 99,
+          latency: 1324
+        },
+        {
+          name: "Research assistant",
+          original: `You are an expert research assistant. Analyze the user's question carefully and produce a concise but rigorous answer based only on reliable evidence. Distinguish clearly between facts, estimates, assumptions, and interpretations. Preserve exact dates, names, quantities, percentages, units, quotations, URLs, identifiers, and technical terminology that materially affect the meaning. When multiple credible interpretations exist, explain the disagreement instead of pretending there is one certain answer. Do not add unnecessary background. Organize the answer so the most decision-relevant information appears first, then give supporting detail, caveats, and a short conclusion.`,
+          optimized: `Answer as a rigorous research assistant using reliable evidence. Clearly separate facts, estimates, assumptions, and interpretations. Preserve material dates, names, quantities, percentages, units, quotations, URLs, identifiers, and technical terms. Explain credible disagreements instead of forcing certainty. Put decision-relevant information first, followed by supporting detail, caveats, and a brief conclusion; omit unnecessary background.`,
+          originalTokens: 102,
+          optimizedTokens: 60,
+          savedTokens: 42,
+          compression: 41,
+          fidelity: 98,
+          latency: 1046
+        },
+        {
+          name: "Marketing copy",
+          original: `You are an experienced marketing copywriter. Rewrite the following product description so it is persuasive, clear, and easy to understand without sounding exaggerated or misleading. Keep all factual claims, prices, dates, product names, plan names, feature names, and limitations exactly accurate. Lead with the strongest customer benefit, explain the most important supporting features, and finish with a simple call to action. Avoid clichés, filler, fake urgency, vague superlatives, excessive adjectives, and claims that are not directly supported by the supplied information. Use natural language and short paragraphs.`,
+          optimized: `Rewrite the product description as clear, persuasive marketing copy without exaggeration. Preserve factual claims, prices, dates, names, features, plans, and limitations exactly. Lead with the strongest customer benefit, support it with key features, and end with a simple CTA. Avoid clichés, filler, fake urgency, vague superlatives, excessive adjectives, and unsupported claims. Use natural language and short paragraphs.`,
+          originalTokens: 97,
+          optimizedTokens: 61,
+          savedTokens: 36,
+          compression: 37,
+          fidelity: 99,
+          latency: 1108
+        }
+      ];
+
+      const els = {
+        originalText: document.getElementById("originalText"),
+        optimizedText: document.getElementById("optimizedText"),
+        originalTokenMini: document.getElementById("originalTokenMini"),
+        optimizedTokenMini: document.getElementById("optimizedTokenMini"),
+        demoCounter: document.getElementById("demoCounter"),
+        progressBar: document.getElementById("progressBar"),
+        statusText: document.getElementById("statusText"),
+        statusSpinner: document.getElementById("statusSpinner"),
+        nextDemoText: document.getElementById("nextDemoText"),
+        originalTokens: document.getElementById("originalTokens"),
+        optimizedTokens: document.getElementById("optimizedTokens"),
+        savedTokens: document.getElementById("savedTokens"),
+        compressionPercent: document.getElementById("compressionPercent"),
+        fidelity: document.getElementById("fidelity"),
+        latency: document.getElementById("latency")
+      };
+
+      let activeIndex = 0;
+      let cycleTimer;
+      let progressTimer;
+
+      function showDemo(index) {
+        const demo = demos[index];
+
+        els.demoCounter.textContent = `Demo ${index + 1} / ${demos.length} • ${demo.name}`;
+        els.originalText.className = "demo-text";
+        els.optimizedText.className = "demo-text";
+
+        els.originalText.textContent = demo.original;
+        els.optimizedText.textContent = demo.optimized;
+
+        els.originalTokenMini.textContent = `${demo.originalTokens} tokens`;
+        els.optimizedTokenMini.textContent = `${demo.optimizedTokens} tokens`;
+
+        els.originalTokens.textContent = demo.originalTokens;
+        els.optimizedTokens.textContent = demo.optimizedTokens;
+        els.savedTokens.textContent = demo.savedTokens;
+        els.compressionPercent.textContent = `${demo.compression}%`;
+        els.fidelity.textContent = `${demo.fidelity}%`;
+        els.latency.textContent = `${demo.latency}ms`;
+
+        els.statusSpinner.hidden = true;
+        els.statusText.textContent = `${demo.compression}% smaller • ${demo.fidelity}% fidelity`;
+        els.nextDemoText.textContent = "Next example appears automatically.";
+
+        startProgress();
+      }
+
+      function startProgress() {
+        clearTimeout(cycleTimer);
+        clearInterval(progressTimer);
+
+        const started = performance.now();
+        els.progressBar.style.width = "0%";
+
+        progressTimer = setInterval(() => {
+          const pct = Math.min(100, ((performance.now() - started) / CYCLE_DELAY_MS) * 100);
+          els.progressBar.style.width = `${pct}%`;
+          if (pct >= 100) clearInterval(progressTimer);
+        }, 100);
+
+        cycleTimer = setTimeout(() => {
+          activeIndex = (activeIndex + 1) % demos.length;
+          showDemo(activeIndex);
+        }, CYCLE_DELAY_MS);
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          clearTimeout(cycleTimer);
+          clearInterval(progressTimer);
+        } else {
+          showDemo(activeIndex);
+        }
+      });
+
+      showDemo(activeIndex);
+    })();
+  </script>
+</body>
+</html>
