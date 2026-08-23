@@ -44,51 +44,6 @@
       text-align: center;
     }
     .maximum-note strong { color: var(--text); }
-
-    .maintenance-shell {
-      padding: 34px 0 72px;
-    }
-    .maintenance-card {
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 44px 32px;
-      border: 1px solid var(--border-strong);
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.025);
-      text-align: center;
-    }
-    .maintenance-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 18px;
-      padding: 8px 12px;
-      border: 1px solid var(--border-strong);
-      border-radius: 999px;
-      color: var(--muted);
-      font-size: 0.88rem;
-      font-weight: 600;
-    }
-    .maintenance-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--purple-light);
-      box-shadow: 0 0 16px var(--purple-light);
-    }
-    .maintenance-card h2 {
-      margin: 0 0 12px;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      line-height: 1.05;
-    }
-    .maintenance-card p {
-      max-width: 620px;
-      margin: 0 auto;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.7;
-    }
   </style>
 </head>
 <body>
@@ -102,7 +57,6 @@
         <a class="nav-link" href="index.html">Product</a>
         <a class="nav-link" href="compressor.html" aria-current="page">Compressor</a>
         <a class="nav-link" href="metrics.html">Metrics</a>
-        <a href="demos.html">Demos</a>
       </nav>
       <div class="nav-actions">
         <span class="account-badge" data-auth-account hidden></span>
@@ -122,21 +76,7 @@
       </div>
     </section>
 
-
-    <section class="maintenance-shell" aria-labelledby="maintenance-title">
-      <div class="container">
-        <div class="maintenance-card">
-          <div class="maintenance-badge">
-            <span class="maintenance-dot" aria-hidden="true"></span>
-            Compressor temporarily unavailable
-          </div>
-          <h2 id="maintenance-title">Down for updates.</h2>
-          <p>We’re making improvements to the Tokyra compressor. It’ll be back shortly.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="workspace" style="display:none" aria-hidden="true">
+    <section class="workspace">
       <div class="container">
         <div class="compressor-layout">
           <section class="compressor-card" aria-labelledby="input-title">
