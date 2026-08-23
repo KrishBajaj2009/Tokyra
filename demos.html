@@ -196,6 +196,78 @@
         flex-direction: column;
       }
     }
+  
+    .demo-text {
+      max-height: 390px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scroll-behavior: smooth;
+    }
+
+    .demo-text::-webkit-scrollbar { width: 7px; }
+    .demo-text::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.16);
+      border-radius: 999px;
+    }
+
+    .demo-stage { position: relative; isolation: isolate; }
+    .demo-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(137, 90, 255, .12), transparent 34%),
+        radial-gradient(circle at 90% 100%, rgba(80, 168, 255, .08), transparent 32%);
+    }
+
+    .typing-caret::after {
+      content: "▋";
+      margin-left: 2px;
+      color: var(--purple-light);
+      animation: demo-caret .72s step-end infinite;
+    }
+
+    @keyframes demo-caret { 50% { opacity: 0; } }
+
+    .demo-text.is-waiting {
+      color: var(--muted);
+      opacity: .72;
+    }
+
+    .demo-text.is-complete {
+      animation: demo-reveal .38s ease both;
+    }
+
+    @keyframes demo-reveal {
+      from { opacity: .42; transform: translateY(3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .extreme-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      margin-left: 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      font-size: .7rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+      vertical-align: middle;
+    }
+
+    .metric-card strong.metric-pop {
+      animation: metric-pop .38s cubic-bezier(.2,.8,.2,1);
+    }
+
+    @keyframes metric-pop {
+      from { opacity: .2; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
   </style>
 </head>
 
@@ -210,8 +282,8 @@
       <nav class="nav-menu" id="primary-nav" aria-label="Primary navigation">
         <a class="nav-link" href="index.html">Product</a>
         <a class="nav-link" href="compressor.html">Compressor</a>
-        <a class="nav-link" href="metrics.html">Metrics</a>
         <a class="nav-link" href="demos.html" aria-current="page">Demos</a>
+        <a class="nav-link" href="metrics.html">Metrics</a>
       </nav>
 
       <div class="nav-actions">
@@ -228,7 +300,7 @@
       <div class="container">
         <div class="eyebrow">Preloaded demos</div>
         <h1>Watch Tokyra <span class="gradient-text">compress in real time.</span></h1>
-        <p>No typing. No buttons. Browse preloaded examples showing how Tokyra turns long prompts into leaner instructions.</p>
+        <p>No typing. No buttons. Watch three preloaded examples, including an extreme ~10K-token compression, transform automatically.</p>
       </div>
     </section>
 
@@ -240,7 +312,7 @@
               <span class="live-dot" aria-hidden="true"></span>
               TOKYRA DEMO
             </div>
-            <div class="demo-counter" id="demoCounter">Demo 1 / 2</div>
+            <div class="demo-counter" id="demoCounter">Demo 1 / 3</div>
           </div>
 
           <div class="demo-grid">
@@ -282,7 +354,7 @@
         </div>
 
         <p class="demo-note">
-          These examples are preloaded for demonstration purposes. Nothing is submitted or processed when a visitor opens this page.
+          These examples are preloaded for demonstration purposes. Nothing is submitted or processed when a visitor opens this page. The extreme-demo token count is approximate.
         </p>
       </div>
     </section>
@@ -303,52 +375,209 @@
     (() => {
       "use strict";
 
-      const CYCLE_DELAY_MS = 9000;
-
       const demos = [
         {
           name: "Customer support",
           original: `You are a helpful customer support assistant. Carefully read the customer's request, identify the main issue, and write a clear, concise, friendly response that directly answers every question. Apologize when the customer experienced an inconvenience, explain the next practical step, and set an honest expectation for when they will hear back. Avoid unnecessary technical language, internal implementation details, blame, unsupported guarantees, and promises the company has not approved. Keep the answer professional and empathetic. Use short paragraphs, preserve any dates or reference numbers supplied by the customer, and end by thanking them for their patience. Do not repeat the same point in multiple ways. Return only the customer-facing response without analysis, notes, or a preamble.`,
-          optimized: `Write a concise, friendly customer-support response that directly answers every question. If there was inconvenience, apologize, give the next practical step and an honest follow-up expectation. Avoid technical/internal details, blame, unsupported guarantees, or unapproved promises. Preserve supplied dates/reference numbers, use short professional paragraphs, avoid repetition, thank the customer for their patience, and return only the customer-facing response.`,
-          originalTokens: 126,
-          optimizedTokens: 70,
-          savedTokens: 56,
-          compression: 44,
-          fidelity: 98,
-          latency: 1180
+          optimized: `Write a concise, friendly customer-support response that answers every question. If there was inconvenience, apologize, give the next practical step and an honest follow-up expectation. Avoid technical/internal details, blame, unsupported guarantees, or unapproved promises. Preserve supplied dates/reference numbers, use short professional paragraphs, avoid repetition, thank the customer, and return only the customer-facing response.`,
+          originalTokens: "126",
+          optimizedTokens: "68",
+          savedTokens: "58",
+          compression: "46%",
+          fidelity: "98%",
+          latency: "1180ms",
+          typeMs: 1800,
+          outputMs: 1300
         },
         {
-          name: "Coding agent",
-          original: `Act as a senior software engineer helping debug a production web application. Read all supplied code carefully before proposing any changes. Find the actual root cause of the reported problem rather than guessing. Preserve all existing functionality that is unrelated to the bug. Make the smallest safe change that fully resolves the issue. Do not rename public APIs, environment variables, routes, configuration keys, file paths, or database fields unless the user explicitly requests it. If code is provided, return complete replacement code for every file that needs to change. Keep explanations concise, call out any assumptions, preserve exact numbers and constraints, and avoid inventing libraries, endpoints, files, or dependencies that were not provided.`,
-          optimized: `Debug the production web app as a senior engineer. Read all supplied code, identify the real root cause, and make the smallest safe fix while preserving unrelated behavior. Do not rename public APIs, environment variables, routes, config keys, file paths, or database fields unless requested. Return complete replacement code for changed files. Keep explanations concise, state assumptions, preserve exact numbers/constraints, and do not invent dependencies, files, endpoints, or libraries.`,
-          originalTokens: 119,
-          optimizedTokens: 76,
-          savedTokens: 43,
-          compression: 36,
-          fidelity: 99,
-          latency: 1324
+          name: "Complex coding workflow",
+          original: `Act as a senior software engineer helping debug a production web application. Before making changes, read all supplied code, configuration, error messages, stack traces, environment-variable names, routes, package versions, database fields, and user requirements. Determine the actual root cause rather than guessing from one error. Preserve all unrelated functionality and make the smallest safe change that fully resolves the problem. Do not rename public APIs, exported functions, environment variables, routes, configuration keys, file paths, CSS classes referenced by JavaScript, database fields, analytics events, or external identifiers unless explicitly requested. Do not remove validation, authentication, authorization, rate limiting, logging, caching, retries, accessibility behavior, responsive behavior, or browser compatibility. Preserve exact numbers, limits, model names, URLs, paths, dates, IDs, prices, percentages, and technical literals when they affect behavior. Prefer existing dependencies and project patterns; do not invent libraries, endpoints, services, files, routes, tables, or frameworks. Check syntax, imports, async behavior, malformed responses, empty and very large input, network failures, duplicate submissions, stale state, security regressions, and mobile layouts. Return the root cause, the minimal fix, complete replacement code for changed files, and a short verification section. Avoid filler and unrelated refactors.`,
+          optimized: `Debug the production app as a senior engineer. Read all supplied code/config/errors and identify the real root cause. Make the smallest safe fix while preserving unrelated behavior and existing validation, auth, rate limits, logging, caching, retries, accessibility, responsiveness, and compatibility. Do not rename public APIs, exports, env vars, routes, config keys, paths, JS-referenced CSS classes, DB fields, events, or external IDs unless requested. Preserve behavior-critical literals. Prefer existing dependencies; do not invent files, APIs, services, routes, tables, or frameworks. Check syntax/imports, async behavior, malformed responses, empty/large input, failures, duplicate submissions, stale state, security, and mobile layouts. Return root cause, minimal fix, complete changed-file code, and brief verification.`,
+          originalTokens: "225",
+          optimizedTokens: "112",
+          savedTokens: "113",
+          compression: "50%",
+          fidelity: "98%",
+          latency: "1390ms",
+          typeMs: 2400,
+          outputMs: 1600
         },
         {
-          name: "Research assistant",
-          original: `You are an expert research assistant. Analyze the user's question carefully and produce a concise but rigorous answer based only on reliable evidence. Distinguish clearly between facts, estimates, assumptions, and interpretations. Preserve exact dates, names, quantities, percentages, units, quotations, URLs, identifiers, and technical terminology that materially affect the meaning. When multiple credible interpretations exist, explain the disagreement instead of pretending there is one certain answer. Do not add unnecessary background. Organize the answer so the most decision-relevant information appears first, then give supporting detail, caveats, and a short conclusion.`,
-          optimized: `Answer as a rigorous research assistant using reliable evidence. Clearly separate facts, estimates, assumptions, and interpretations. Preserve material dates, names, quantities, percentages, units, quotations, URLs, identifiers, and technical terms. Explain credible disagreements instead of forcing certainty. Put decision-relevant information first, followed by supporting detail, caveats, and a brief conclusion; omit unnecessary background.`,
-          originalTokens: 102,
-          optimizedTokens: 60,
-          savedTokens: 42,
-          compression: 41,
-          fidelity: 98,
-          latency: 1046
-        },
-        {
-          name: "Marketing copy",
-          original: `You are an experienced marketing copywriter. Rewrite the following product description so it is persuasive, clear, and easy to understand without sounding exaggerated or misleading. Keep all factual claims, prices, dates, product names, plan names, feature names, and limitations exactly accurate. Lead with the strongest customer benefit, explain the most important supporting features, and finish with a simple call to action. Avoid clichés, filler, fake urgency, vague superlatives, excessive adjectives, and claims that are not directly supported by the supplied information. Use natural language and short paragraphs.`,
-          optimized: `Rewrite the product description as clear, persuasive marketing copy without exaggeration. Preserve factual claims, prices, dates, names, features, plans, and limitations exactly. Lead with the strongest customer benefit, support it with key features, and end with a simple CTA. Avoid clichés, filler, fake urgency, vague superlatives, excessive adjectives, and unsupported claims. Use natural language and short paragraphs.`,
-          originalTokens: 97,
-          optimizedTokens: 61,
-          savedTokens: 36,
-          compression: 37,
-          fidelity: 99,
-          latency: 1108
+          name: "Extreme production agent",
+          extreme: true,
+          original: `You are Tokyra's senior production engineering agent. Your job is to repair a complex production application with the smallest safe change while preserving every explicit constraint. The application may include frontend JavaScript, Cloudflare Workers, APIs, authentication, databases, AI-model calls, metrics, caching, file uploads, mobile layouts, and third-party integrations. Treat all supplied code and requirements as authoritative unless they directly conflict. Follow every requirement below throughout analysis, implementation, verification, and final output.
+
+Requirement 1 — Source inspection (During investigation and diagnosis): Read every supplied source file, configuration block, stack trace, request log, schema, package version, build setting, environment-variable name, route, and prior implementation note before proposing a change. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 2 — Root-cause analysis (During investigation and diagnosis): Trace the failure from symptom to underlying cause. Do not treat the first visible exception as proof of the root cause, and do not rewrite unrelated modules merely because they are nearby in the call chain. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 3 — Behavior preservation (During investigation and diagnosis): Preserve all behavior unrelated to the reported defect, including API contracts, UI flows, keyboard behavior, browser compatibility, validation rules, caching, retries, analytics, logging, and accessibility. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 4 — Public interfaces (During investigation and diagnosis): Do not rename exported functions, public APIs, routes, environment variables, configuration keys, database fields, file paths, CSS selectors referenced by JavaScript, event names, or external identifiers unless explicitly requested. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 5 — Security (During investigation and diagnosis): Do not weaken authentication, authorization, CSRF protection, origin checks, input validation, escaping, rate limits, secret handling, permission boundaries, or audit logging while attempting to simplify the implementation. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 6 — Data integrity (During investigation and diagnosis): Preserve database constraints, field semantics, ordering guarantees, transaction boundaries, idempotency behavior, migration assumptions, null handling, duplicate prevention, and existing serialization formats. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 7 — Network behavior (During investigation and diagnosis): Handle successful responses, non-2xx responses, timeouts, malformed JSON, empty bodies, retries, duplicate requests, slow upstream services, partial failures, and user cancellation without inventing an unavailable endpoint. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 8 — Async correctness (During investigation and diagnosis): Check promises, awaits, race conditions, stale closures, concurrent updates, aborted requests, timer cleanup, event-listener cleanup, repeated submissions, loading states, and error propagation before finalizing the fix. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 9 — Frontend behavior (During investigation and diagnosis): Preserve responsive layouts, focus order, screen-reader labels, reduced-motion behavior, mobile tap targets, form semantics, empty states, loading states, error states, and existing design-system classes. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 10 — Backend behavior (During investigation and diagnosis): Preserve route semantics, status codes, response shapes, request-body requirements, headers, authentication middleware, validation middleware, service boundaries, and existing operational limits. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 11 — Dependencies (During investigation and diagnosis): Prefer packages and utilities already present in the project. Do not invent a new library, service, package, framework, queue, database, storage layer, API, or build tool unless the user specifically asks for one. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 12 — Configuration (During investigation and diagnosis): Preserve exact environment-variable names, deployment bindings, model identifiers, feature flags, ports, file names, thresholds, timeout values, limits, URLs, regions, and compatibility dates when they affect runtime behavior. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 13 — Literal preservation (During investigation and diagnosis): Keep behavior-critical numbers, dates, prices, percentages, units, IDs, model names, URLs, paths, quoted strings, command names, header names, schema fields, and negations exactly when changing them would alter meaning. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 14 — Error handling (During investigation and diagnosis): Return useful failures without exposing secrets or internal implementation details. Avoid swallowing exceptions, converting all failures to generic success, or removing existing diagnostic information needed for production debugging. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 15 — Performance (During investigation and diagnosis): Avoid unnecessary repeated work, accidental quadratic loops, duplicate network calls, unbounded concurrency, memory growth, blocking operations, oversized responses, and repeated parsing while keeping the change narrowly scoped. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 16 — Testing (During investigation and diagnosis): Mentally test the happy path and edge cases involving empty input, very large input, invalid values, malformed server output, slow requests, duplicate actions, stale state, missing optional fields, and unsupported browser features. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 17 — Code output (During investigation and diagnosis): When code must change, return complete replacement code for each changed file rather than disconnected fragments. Keep unchanged files untouched and make the patch easy to apply without reconstructing missing context. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 18 — Assumptions (During investigation and diagnosis): If required information is missing, make the smallest reasonable assumption and state it clearly. Do not fabricate files, dependencies, endpoints, database tables, credentials, user requirements, or prior project decisions. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 19 — Conflicts (During investigation and diagnosis): When two supplied requirements conflict, identify the conflict and choose the safest interpretation that best satisfies the user's explicit goal while preserving production behavior and data integrity. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 20 — Scope control (During investigation and diagnosis): Do not turn a narrow bug fix into a broad refactor, redesign, migration, dependency upgrade, style rewrite, or architecture project unless the broader change is required to solve the stated problem safely. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 21 — Syntax review (During investigation and diagnosis): Before returning code, check brackets, quotes, commas, imports, exports, variable names, nullability, function signatures, object keys, JSON syntax, async control flow, and references to renamed or removed symbols. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 22 — Deployment (During investigation and diagnosis): Respect the existing runtime, deployment platform, build system, environment bindings, free-tier or resource limits, compatibility settings, and production constraints described by the user. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 23 — Communication (During investigation and diagnosis): Keep the explanation practical and concise: state the root cause, explain the minimal fix, mention meaningful assumptions or risks, then provide the complete changed code. Avoid motivational filler or unrelated tutorials. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 24 — User intent (During investigation and diagnosis): Prioritize the user's explicit requirements over speculative best-practice rewrites. Do not silently remove requested functionality just to make the implementation easier or the code shorter. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 25 — Final verification (During investigation and diagnosis): Review the proposed result as if it were going directly to production: confirm the reported defect is addressed, unrelated features remain intact, no new security or reliability regression is introduced, and every requested constraint is preserved. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 26 — Source inspection (During implementation and patch construction): Read every supplied source file, configuration block, stack trace, request log, schema, package version, build setting, environment-variable name, route, and prior implementation note before proposing a change. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 27 — Root-cause analysis (During implementation and patch construction): Trace the failure from symptom to underlying cause. Do not treat the first visible exception as proof of the root cause, and do not rewrite unrelated modules merely because they are nearby in the call chain. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 28 — Behavior preservation (During implementation and patch construction): Preserve all behavior unrelated to the reported defect, including API contracts, UI flows, keyboard behavior, browser compatibility, validation rules, caching, retries, analytics, logging, and accessibility. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 29 — Public interfaces (During implementation and patch construction): Do not rename exported functions, public APIs, routes, environment variables, configuration keys, database fields, file paths, CSS selectors referenced by JavaScript, event names, or external identifiers unless explicitly requested. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 30 — Security (During implementation and patch construction): Do not weaken authentication, authorization, CSRF protection, origin checks, input validation, escaping, rate limits, secret handling, permission boundaries, or audit logging while attempting to simplify the implementation. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 31 — Data integrity (During implementation and patch construction): Preserve database constraints, field semantics, ordering guarantees, transaction boundaries, idempotency behavior, migration assumptions, null handling, duplicate prevention, and existing serialization formats. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 32 — Network behavior (During implementation and patch construction): Handle successful responses, non-2xx responses, timeouts, malformed JSON, empty bodies, retries, duplicate requests, slow upstream services, partial failures, and user cancellation without inventing an unavailable endpoint. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 33 — Async correctness (During implementation and patch construction): Check promises, awaits, race conditions, stale closures, concurrent updates, aborted requests, timer cleanup, event-listener cleanup, repeated submissions, loading states, and error propagation before finalizing the fix. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 34 — Frontend behavior (During implementation and patch construction): Preserve responsive layouts, focus order, screen-reader labels, reduced-motion behavior, mobile tap targets, form semantics, empty states, loading states, error states, and existing design-system classes. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 35 — Backend behavior (During implementation and patch construction): Preserve route semantics, status codes, response shapes, request-body requirements, headers, authentication middleware, validation middleware, service boundaries, and existing operational limits. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 36 — Dependencies (During implementation and patch construction): Prefer packages and utilities already present in the project. Do not invent a new library, service, package, framework, queue, database, storage layer, API, or build tool unless the user specifically asks for one. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 37 — Configuration (During implementation and patch construction): Preserve exact environment-variable names, deployment bindings, model identifiers, feature flags, ports, file names, thresholds, timeout values, limits, URLs, regions, and compatibility dates when they affect runtime behavior. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 38 — Literal preservation (During implementation and patch construction): Keep behavior-critical numbers, dates, prices, percentages, units, IDs, model names, URLs, paths, quoted strings, command names, header names, schema fields, and negations exactly when changing them would alter meaning. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 39 — Error handling (During implementation and patch construction): Return useful failures without exposing secrets or internal implementation details. Avoid swallowing exceptions, converting all failures to generic success, or removing existing diagnostic information needed for production debugging. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 40 — Performance (During implementation and patch construction): Avoid unnecessary repeated work, accidental quadratic loops, duplicate network calls, unbounded concurrency, memory growth, blocking operations, oversized responses, and repeated parsing while keeping the change narrowly scoped. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 41 — Testing (During implementation and patch construction): Mentally test the happy path and edge cases involving empty input, very large input, invalid values, malformed server output, slow requests, duplicate actions, stale state, missing optional fields, and unsupported browser features. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 42 — Code output (During implementation and patch construction): When code must change, return complete replacement code for each changed file rather than disconnected fragments. Keep unchanged files untouched and make the patch easy to apply without reconstructing missing context. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 43 — Assumptions (During implementation and patch construction): If required information is missing, make the smallest reasonable assumption and state it clearly. Do not fabricate files, dependencies, endpoints, database tables, credentials, user requirements, or prior project decisions. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 44 — Conflicts (During implementation and patch construction): When two supplied requirements conflict, identify the conflict and choose the safest interpretation that best satisfies the user's explicit goal while preserving production behavior and data integrity. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 45 — Scope control (During implementation and patch construction): Do not turn a narrow bug fix into a broad refactor, redesign, migration, dependency upgrade, style rewrite, or architecture project unless the broader change is required to solve the stated problem safely. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 46 — Syntax review (During implementation and patch construction): Before returning code, check brackets, quotes, commas, imports, exports, variable names, nullability, function signatures, object keys, JSON syntax, async control flow, and references to renamed or removed symbols. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 47 — Deployment (During implementation and patch construction): Respect the existing runtime, deployment platform, build system, environment bindings, free-tier or resource limits, compatibility settings, and production constraints described by the user. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 48 — Communication (During implementation and patch construction): Keep the explanation practical and concise: state the root cause, explain the minimal fix, mention meaningful assumptions or risks, then provide the complete changed code. Avoid motivational filler or unrelated tutorials. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 49 — User intent (During implementation and patch construction): Prioritize the user's explicit requirements over speculative best-practice rewrites. Do not silently remove requested functionality just to make the implementation easier or the code shorter. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 50 — Final verification (During implementation and patch construction): Review the proposed result as if it were going directly to production: confirm the reported defect is addressed, unrelated features remain intact, no new security or reliability regression is introduced, and every requested constraint is preserved. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 51 — Source inspection (During final verification and production handoff): Read every supplied source file, configuration block, stack trace, request log, schema, package version, build setting, environment-variable name, route, and prior implementation note before proposing a change. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 52 — Root-cause analysis (During final verification and production handoff): Trace the failure from symptom to underlying cause. Do not treat the first visible exception as proof of the root cause, and do not rewrite unrelated modules merely because they are nearby in the call chain. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 53 — Behavior preservation (During final verification and production handoff): Preserve all behavior unrelated to the reported defect, including API contracts, UI flows, keyboard behavior, browser compatibility, validation rules, caching, retries, analytics, logging, and accessibility. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 54 — Public interfaces (During final verification and production handoff): Do not rename exported functions, public APIs, routes, environment variables, configuration keys, database fields, file paths, CSS selectors referenced by JavaScript, event names, or external identifiers unless explicitly requested. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 55 — Security (During final verification and production handoff): Do not weaken authentication, authorization, CSRF protection, origin checks, input validation, escaping, rate limits, secret handling, permission boundaries, or audit logging while attempting to simplify the implementation. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 56 — Data integrity (During final verification and production handoff): Preserve database constraints, field semantics, ordering guarantees, transaction boundaries, idempotency behavior, migration assumptions, null handling, duplicate prevention, and existing serialization formats. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 57 — Network behavior (During final verification and production handoff): Handle successful responses, non-2xx responses, timeouts, malformed JSON, empty bodies, retries, duplicate requests, slow upstream services, partial failures, and user cancellation without inventing an unavailable endpoint. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 58 — Async correctness (During final verification and production handoff): Check promises, awaits, race conditions, stale closures, concurrent updates, aborted requests, timer cleanup, event-listener cleanup, repeated submissions, loading states, and error propagation before finalizing the fix. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 59 — Frontend behavior (During final verification and production handoff): Preserve responsive layouts, focus order, screen-reader labels, reduced-motion behavior, mobile tap targets, form semantics, empty states, loading states, error states, and existing design-system classes. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 60 — Backend behavior (During final verification and production handoff): Preserve route semantics, status codes, response shapes, request-body requirements, headers, authentication middleware, validation middleware, service boundaries, and existing operational limits. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 61 — Dependencies (During final verification and production handoff): Prefer packages and utilities already present in the project. Do not invent a new library, service, package, framework, queue, database, storage layer, API, or build tool unless the user specifically asks for one. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 62 — Configuration (During final verification and production handoff): Preserve exact environment-variable names, deployment bindings, model identifiers, feature flags, ports, file names, thresholds, timeout values, limits, URLs, regions, and compatibility dates when they affect runtime behavior. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 63 — Literal preservation (During final verification and production handoff): Keep behavior-critical numbers, dates, prices, percentages, units, IDs, model names, URLs, paths, quoted strings, command names, header names, schema fields, and negations exactly when changing them would alter meaning. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 64 — Error handling (During final verification and production handoff): Return useful failures without exposing secrets or internal implementation details. Avoid swallowing exceptions, converting all failures to generic success, or removing existing diagnostic information needed for production debugging. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 65 — Performance (During final verification and production handoff): Avoid unnecessary repeated work, accidental quadratic loops, duplicate network calls, unbounded concurrency, memory growth, blocking operations, oversized responses, and repeated parsing while keeping the change narrowly scoped. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 66 — Testing (During final verification and production handoff): Mentally test the happy path and edge cases involving empty input, very large input, invalid values, malformed server output, slow requests, duplicate actions, stale state, missing optional fields, and unsupported browser features. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 67 — Code output (During final verification and production handoff): When code must change, return complete replacement code for each changed file rather than disconnected fragments. Keep unchanged files untouched and make the patch easy to apply without reconstructing missing context. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 68 — Assumptions (During final verification and production handoff): If required information is missing, make the smallest reasonable assumption and state it clearly. Do not fabricate files, dependencies, endpoints, database tables, credentials, user requirements, or prior project decisions. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 69 — Conflicts (During final verification and production handoff): When two supplied requirements conflict, identify the conflict and choose the safest interpretation that best satisfies the user's explicit goal while preserving production behavior and data integrity. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 70 — Scope control (During final verification and production handoff): Do not turn a narrow bug fix into a broad refactor, redesign, migration, dependency upgrade, style rewrite, or architecture project unless the broader change is required to solve the stated problem safely. Apply this requirement continuously, not only when the relevant file is first opened. If a proposed change could violate this requirement, revise the change rather than silently accepting the regression. Preserve the user's exact constraints and explain only material tradeoffs.
+
+Requirement 71 — Syntax review (`,
+          optimized: `Act as Tokyra’s senior production engineer. Repair the supplied production application with the smallest safe change while preserving every explicit user constraint and all unrelated behavior.
+
+INVESTIGATE
+Read all supplied source files, config, stack traces, logs, schemas, package/runtime versions, environment variables, routes, deployment settings, model IDs, database fields, and prior notes before changing code. Trace symptoms to the actual root cause; do not assume the first exception is the cause or refactor nearby code without evidence.
+
+PRESERVE
+Do not rename or alter public APIs, exports, routes, env vars, config keys, DB fields, file paths, JS-referenced CSS selectors, analytics events, external IDs, response shapes, status codes, serialization, ordering, transaction/idempotency behavior, or behavior-critical numbers, dates, prices, percentages, units, URLs, model names, literals, and negations unless explicitly requested. Preserve unrelated functionality, validation, auth/authz, CSRF/origin protections, escaping, rate limits, secret handling, permissions, audit/logging, caching, retries, accessibility, responsiveness, browser compatibility, and deployment/resource limits.
+
+IMPLEMENT
+Make the narrowest fix that fully resolves the root cause. Prefer existing project patterns/dependencies; do not invent files, APIs, services, routes, packages, tables, frameworks, credentials, or requirements. Do not turn a bug fix into a redesign, migration, dependency upgrade, or style rewrite unless required for correctness. If requirements conflict, identify the conflict and choose the safest interpretation matching the user’s explicit goal. If information is missing, make and state only the smallest reasonable assumption.
+
+VERIFY
+Check syntax, imports/exports, references, nullability, async control flow, race conditions, stale closures, timer/listener cleanup, duplicate submissions, aborted/slow requests, malformed or empty responses, non-2xx errors, retries, large/empty/invalid input, partial failures, memory/concurrency issues, mobile layouts, loading/error/empty states, focus order, screen readers, and reduced motion. Confirm no security, reliability, data-integrity, API-contract, observability, or unrelated behavior regression.
+
+OUTPUT
+For changed files, provide complete replacement code using exact existing filenames when known; leave unchanged files untouched. Keep prose concise and practical. Structure the response:
+1. ROOT CAUSE — actual failure.
+2. FIX — minimal correction and material assumptions/tradeoffs.
+3. COMPLETE CHANGED CODE — every changed file, no disconnected fragments.
+4. VERIFICATION — key edge cases checked.
+
+Do not add motivational filler, speculative features, unrelated tutorials, fabricated benchmarks, hidden assumptions, or unsupported claims.`,
+          originalTokens: "≈10,200",
+          optimizedTokens: "≈704",
+          savedTokens: "≈9,496",
+          compression: "≈93%",
+          fidelity: "Demo",
+          latency: "Preloaded",
+          typeMs: 4300,
+          outputMs: 2100
         }
       ];
 
@@ -370,65 +599,152 @@
         latency: document.getElementById("latency")
       };
 
+      const metricEls = [
+        els.originalTokens, els.optimizedTokens, els.savedTokens,
+        els.compressionPercent, els.fidelity, els.latency
+      ];
+
       let activeIndex = 0;
-      let cycleTimer;
-      let progressTimer;
+      let sequenceId = 0;
+      let cycleTimer = null;
 
-      function showDemo(index) {
-        const demo = demos[index];
+      const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+      const reducedMotion = () =>
+        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        els.demoCounter.textContent = `Demo ${index + 1} / ${demos.length} • ${demo.name}`;
-        els.originalText.className = "demo-text";
-        els.optimizedText.className = "demo-text";
+      function resetMetrics() {
+        metricEls.forEach(el => {
+          el.textContent = "—";
+          el.classList.remove("metric-pop");
+        });
+        els.originalTokenMini.textContent = "— tokens";
+        els.optimizedTokenMini.textContent = "— tokens";
+      }
 
-        els.originalText.textContent = demo.original;
-        els.optimizedText.textContent = demo.optimized;
+      function setStatus(message, busy = false) {
+        els.statusText.textContent = message;
+        els.statusSpinner.hidden = !busy;
+      }
+
+      async function typeText(element, text, totalMs, id) {
+        element.textContent = "";
+        element.scrollTop = 0;
+        element.classList.remove("is-complete", "is-waiting");
+        element.classList.add("typing-caret");
+
+        if (reducedMotion()) {
+          element.textContent = text;
+          element.classList.remove("typing-caret");
+          element.classList.add("is-complete");
+          return;
+        }
+
+        // Long prompts type in larger chunks so the 10K-token demo stays cinematic, not painfully slow.
+        const targetSteps = text.length > 15000 ? 235 : 165;
+        const charsPerStep = Math.max(1, Math.ceil(text.length / targetSteps));
+        const delay = Math.max(7, totalMs / targetSteps);
+
+        for (let i = 0; i < text.length; i += charsPerStep) {
+          if (id !== sequenceId) return;
+          element.textContent = text.slice(0, Math.min(text.length, i + charsPerStep));
+          element.scrollTop = element.scrollHeight;
+          await sleep(delay);
+        }
+
+        element.textContent = text;
+        element.classList.remove("typing-caret");
+        element.classList.add("is-complete");
+        element.scrollTop = element.scrollHeight;
+      }
+
+      function populateMetrics(demo) {
+        const values = [
+          demo.originalTokens, demo.optimizedTokens, demo.savedTokens,
+          demo.compression, demo.fidelity, demo.latency
+        ];
+
+        metricEls.forEach((el, index) => {
+          el.textContent = values[index];
+          void el.offsetWidth;
+          el.classList.add("metric-pop");
+        });
 
         els.originalTokenMini.textContent = `${demo.originalTokens} tokens`;
         els.optimizedTokenMini.textContent = `${demo.optimizedTokens} tokens`;
-
-        els.originalTokens.textContent = demo.originalTokens;
-        els.optimizedTokens.textContent = demo.optimizedTokens;
-        els.savedTokens.textContent = demo.savedTokens;
-        els.compressionPercent.textContent = `${demo.compression}%`;
-        els.fidelity.textContent = `${demo.fidelity}%`;
-        els.latency.textContent = `${demo.latency}ms`;
-
-        els.statusSpinner.hidden = true;
-        els.statusText.textContent = `${demo.compression}% smaller • ${demo.fidelity}% fidelity`;
-
-        startProgress();
       }
 
-      function startProgress() {
-        clearTimeout(cycleTimer);
-        clearInterval(progressTimer);
-
+      function animateProgress(duration, id) {
         const started = performance.now();
         els.progressBar.style.width = "0%";
 
-        progressTimer = setInterval(() => {
-          const pct = Math.min(100, ((performance.now() - started) / CYCLE_DELAY_MS) * 100);
+        function frame(now) {
+          if (id !== sequenceId) return;
+          const pct = Math.min(100, ((now - started) / duration) * 100);
           els.progressBar.style.width = `${pct}%`;
-          if (pct >= 100) clearInterval(progressTimer);
-        }, 100);
+          if (pct < 100) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+
+      async function playDemo(index) {
+        sequenceId += 1;
+        const id = sequenceId;
+        const demo = demos[index];
+
+        clearTimeout(cycleTimer);
+        resetMetrics();
+
+        els.demoCounter.innerHTML =
+          `Demo ${index + 1} / ${demos.length} • ${demo.name}` +
+          (demo.extreme ? ` <span class="extreme-chip">10K → &lt;900</span>` : "");
+
+        els.optimizedText.textContent = "Tokyra is compressing…";
+        els.optimizedText.className = "demo-text is-waiting";
+        els.nextDemoText.textContent =
+          index === demos.length - 1 ? "Looping back to demo 1." : "Next demo starts automatically.";
+
+        setStatus(demo.extreme ? "Streaming ~10K-token prompt…" : "Reading original prompt…", true);
+
+        await typeText(els.originalText, demo.original, demo.typeMs, id);
+        if (id !== sequenceId) return;
+        els.originalTokenMini.textContent = `${demo.originalTokens} tokens`;
+
+        setStatus(demo.extreme ? "Extreme compression pass…" : "Compressing prompt…", true);
+        animateProgress(demo.extreme ? 1500 : 1100, id);
+        await sleep(reducedMotion() ? 60 : (demo.extreme ? 1500 : 1100));
+        if (id !== sequenceId) return;
+
+        setStatus("Writing optimized prompt…", true);
+        await typeText(els.optimizedText, demo.optimized, demo.outputMs, id);
+        if (id !== sequenceId) return;
+
+        populateMetrics(demo);
+        els.progressBar.style.width = "100%";
+
+        setStatus(
+          demo.extreme
+            ? `Extreme demo • ${demo.originalTokens} → ${demo.optimizedTokens} tokens • ${demo.compression} smaller`
+            : `${demo.savedTokens} tokens removed • ${demo.compression} smaller • ${demo.fidelity} fidelity`,
+          false
+        );
 
         cycleTimer = setTimeout(() => {
+          if (id !== sequenceId) return;
           activeIndex = (activeIndex + 1) % demos.length;
-          showDemo(activeIndex);
-        }, CYCLE_DELAY_MS);
+          playDemo(activeIndex);
+        }, reducedMotion() ? 4500 : (demo.extreme ? 8000 : 6000));
       }
 
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
+          sequenceId += 1;
           clearTimeout(cycleTimer);
-          clearInterval(progressTimer);
         } else {
-          showDemo(activeIndex);
+          playDemo(activeIndex);
         }
       });
 
-      showDemo(activeIndex);
+      playDemo(activeIndex);
     })();
   </script>
 </body>
