@@ -268,6 +268,232 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+  
+    .demo-results {
+      border-top: 1px solid var(--border);
+      padding: 22px 22px 24px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.018), rgba(255,255,255,.035));
+    }
+
+    .results-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .results-heading h3 {
+      margin: 3px 0 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.08rem;
+      letter-spacing: -.01em;
+    }
+
+    .results-kicker {
+      display: block;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .results-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: .75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .results-badge::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--purple-light);
+      box-shadow: 0 0 12px rgba(157, 107, 255, .75);
+    }
+
+    .token-journey {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 17px 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .journey-main {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .journey-value {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(1.65rem, 4vw, 2.45rem);
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -.055em;
+      white-space: nowrap;
+    }
+
+    .journey-label {
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .savings-pill {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(121, 92, 255, .12);
+      border: 1px solid rgba(157, 107, 255, .28);
+      color: var(--purple-light);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .compression-meter {
+      margin-top: 17px;
+    }
+
+    .meter-copy {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 9px;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    .meter-copy strong {
+      color: var(--text);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: .86rem;
+    }
+
+    .meter-track {
+      height: 9px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .meter-fill {
+      display: block;
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--purple-light), #8db7ff);
+      box-shadow: 0 0 18px rgba(139, 110, 255, .28);
+      transition: width .85s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .result-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 17px;
+    }
+
+    .result-stat {
+      min-width: 0;
+      padding: 13px 13px 12px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: rgba(255,255,255,.018);
+    }
+
+    .result-stat span,
+    .result-stat small {
+      display: block;
+      color: var(--muted);
+    }
+
+    .result-stat span {
+      margin-bottom: 5px;
+      font-size: .73rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+
+    .result-stat strong {
+      display: block;
+      overflow-wrap: anywhere;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 1.03rem;
+      line-height: 1.2;
+    }
+
+    .result-stat small {
+      margin-top: 4px;
+      font-size: .67rem;
+    }
+
+    .demo-results.results-ready .token-journey {
+      animation: results-enter .42s ease both;
+    }
+
+    .demo-results.results-ready .result-stat {
+      animation: results-enter .42s ease both;
+    }
+
+    .demo-results.results-ready .result-stat:nth-child(2) { animation-delay: .035s; }
+    .demo-results.results-ready .result-stat:nth-child(3) { animation-delay: .07s; }
+    .demo-results.results-ready .result-stat:nth-child(4) { animation-delay: .105s; }
+    .demo-results.results-ready .result-stat:nth-child(5) { animation-delay: .14s; }
+
+    @keyframes results-enter {
+      from { opacity: .35; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 820px) {
+      .result-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .result-stat:last-child {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .demo-results {
+        padding: 18px 16px 20px;
+      }
+
+      .results-heading,
+      .token-journey {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .journey-value {
+        white-space: normal;
+      }
+
+      .savings-pill {
+        align-self: flex-start;
+      }
+    }
+
   </style>
 </head>
 
@@ -342,19 +568,66 @@
             </div>
             <span id="nextDemoText">Next demo starts automatically.</span>
           </div>
-        </div>
 
-        <div class="metrics-grid" aria-label="Demo compression metrics">
-          <article class="metric-card"><span>Original tokens</span><strong id="originalTokens">—</strong></article>
-          <article class="metric-card"><span>Optimized tokens</span><strong id="optimizedTokens">—</strong></article>
-          <article class="metric-card"><span>Tokens saved</span><strong id="savedTokens">—</strong></article>
-          <article class="metric-card"><span>Compression</span><strong id="compressionPercent">—</strong></article>
-          <article class="metric-card"><span>Fidelity</span><strong id="fidelity">—</strong></article>
-          <article class="metric-card"><span>Latency</span><strong id="latency">—</strong></article>
+          <section class="demo-results" id="demoResults" aria-label="Demo compression results">
+            <div class="results-heading">
+              <div>
+                <span class="results-kicker">Example metrics</span>
+                <h3>Compression result</h3>
+              </div>
+              <span class="results-badge" id="resultsBadge">Preloaded demo</span>
+            </div>
+
+            <div class="token-journey">
+              <div class="journey-main">
+                <span class="journey-value" id="tokenJourney">— → —</span>
+                <span class="journey-label">tokens</span>
+              </div>
+              <div class="savings-pill" id="savingsPill">— saved</div>
+            </div>
+
+            <div class="compression-meter" aria-label="Compression percentage">
+              <div class="meter-copy">
+                <span>Compression</span>
+                <strong id="compressionPercent">—</strong>
+              </div>
+              <div class="meter-track" aria-hidden="true">
+                <span class="meter-fill" id="compressionFill"></span>
+              </div>
+            </div>
+
+            <div class="result-stats">
+              <article class="result-stat">
+                <span>Original</span>
+                <strong id="originalTokens">—</strong>
+                <small>tokens</small>
+              </article>
+              <article class="result-stat">
+                <span>Optimized</span>
+                <strong id="optimizedTokens">—</strong>
+                <small>tokens</small>
+              </article>
+              <article class="result-stat">
+                <span>Saved</span>
+                <strong id="savedTokens">—</strong>
+                <small>tokens</small>
+              </article>
+              <article class="result-stat">
+                <span>Fidelity</span>
+                <strong id="fidelity">—</strong>
+                <small>example score</small>
+              </article>
+              <article class="result-stat">
+                <span>Latency</span>
+                <strong id="latency">—</strong>
+                <small>example run</small>
+              </article>
+            </div>
+          </section>
         </div>
 
         <p class="demo-note">
-          These examples are preloaded for demonstration purposes. Nothing is submitted or processed when a visitor opens this page. The extreme-demo token count is approximate.
+          These examples are preloaded for demonstration purposes. Nothing is submitted or processed when a visitor opens this page. Demo metrics are illustrative/preloaded; the extreme-demo token count is approximate.
         </p>
       </div>
     </section>
@@ -386,8 +659,8 @@
           compression: "46%",
           fidelity: "98%",
           latency: "1180ms",
-          typeMs: 1800,
-          outputMs: 1300
+          typeMs: 850,
+          outputMs: 650
         },
         {
           name: "Complex coding workflow",
@@ -399,8 +672,8 @@
           compression: "50%",
           fidelity: "98%",
           latency: "1390ms",
-          typeMs: 2400,
-          outputMs: 1600
+          typeMs: 1100,
+          outputMs: 750
         },
         {
           name: "Extreme production agent",
@@ -574,10 +847,10 @@ Do not add motivational filler, speculative features, unrelated tutorials, fabri
           optimizedTokens: "≈704",
           savedTokens: "≈9,496",
           compression: "≈93%",
-          fidelity: "Demo",
-          latency: "Preloaded",
-          typeMs: 4300,
-          outputMs: 2100
+          fidelity: "97%",
+          latency: "1.9s",
+          typeMs: 1600,
+          outputMs: 900
         }
       ];
 
@@ -596,7 +869,12 @@ Do not add motivational filler, speculative features, unrelated tutorials, fabri
         savedTokens: document.getElementById("savedTokens"),
         compressionPercent: document.getElementById("compressionPercent"),
         fidelity: document.getElementById("fidelity"),
-        latency: document.getElementById("latency")
+        latency: document.getElementById("latency"),
+        demoResults: document.getElementById("demoResults"),
+        tokenJourney: document.getElementById("tokenJourney"),
+        savingsPill: document.getElementById("savingsPill"),
+        compressionFill: document.getElementById("compressionFill"),
+        resultsBadge: document.getElementById("resultsBadge")
       };
 
       const metricEls = [
@@ -619,6 +897,11 @@ Do not add motivational filler, speculative features, unrelated tutorials, fabri
         });
         els.originalTokenMini.textContent = "— tokens";
         els.optimizedTokenMini.textContent = "— tokens";
+        els.tokenJourney.textContent = "— → —";
+        els.savingsPill.textContent = "— saved";
+        els.compressionFill.style.width = "0%";
+        els.resultsBadge.textContent = "Preloaded demo";
+        els.demoResults.classList.remove("results-ready");
       }
 
       function setStatus(message, busy = false) {
@@ -640,9 +923,9 @@ Do not add motivational filler, speculative features, unrelated tutorials, fabri
         }
 
         // Long prompts type in larger chunks so the 10K-token demo stays cinematic, not painfully slow.
-        const targetSteps = text.length > 15000 ? 235 : 165;
+        const targetSteps = text.length > 15000 ? 150 : 110;
         const charsPerStep = Math.max(1, Math.ceil(text.length / targetSteps));
-        const delay = Math.max(7, totalMs / targetSteps);
+        const delay = Math.max(4, totalMs / targetSteps);
 
         for (let i = 0; i < text.length; i += charsPerStep) {
           if (id !== sequenceId) return;
@@ -671,6 +954,21 @@ Do not add motivational filler, speculative features, unrelated tutorials, fabri
 
         els.originalTokenMini.textContent = `${demo.originalTokens} tokens`;
         els.optimizedTokenMini.textContent = `${demo.optimizedTokens} tokens`;
+        els.tokenJourney.textContent = `${demo.originalTokens} → ${demo.optimizedTokens}`;
+        els.savingsPill.textContent = `${demo.savedTokens} saved`;
+
+        const compressionValue = Math.max(
+          0,
+          Math.min(100, parseFloat(String(demo.compression).replace(/[^0-9.]/g, "")) || 0)
+        );
+        requestAnimationFrame(() => {
+          els.compressionFill.style.width = `${compressionValue}%`;
+        });
+
+        els.resultsBadge.textContent = demo.extreme ? "Extreme example" : "Preloaded demo";
+        els.demoResults.classList.remove("results-ready");
+        void els.demoResults.offsetWidth;
+        els.demoResults.classList.add("results-ready");
       }
 
       function animateProgress(duration, id) {
@@ -711,7 +1009,7 @@ Do not add motivational filler, speculative features, unrelated tutorials, fabri
 
         setStatus(demo.extreme ? "Extreme compression pass…" : "Compressing prompt…", true);
         animateProgress(demo.extreme ? 1500 : 1100, id);
-        await sleep(reducedMotion() ? 60 : (demo.extreme ? 1500 : 1100));
+        await sleep(reducedMotion() ? 60 : (demo.extreme ? 650 : 500));
         if (id !== sequenceId) return;
 
         setStatus("Writing optimized prompt…", true);
@@ -732,7 +1030,7 @@ Do not add motivational filler, speculative features, unrelated tutorials, fabri
           if (id !== sequenceId) return;
           activeIndex = (activeIndex + 1) % demos.length;
           playDemo(activeIndex);
-        }, reducedMotion() ? 4500 : (demo.extreme ? 8000 : 6000));
+        }, reducedMotion() ? 4500 : (demo.extreme ? 5000 : 4200));
       }
 
       document.addEventListener("visibilitychange", () => {
