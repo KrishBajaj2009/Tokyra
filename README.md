@@ -1,43 +1,30 @@
-# Tokyra website — fast Cloudflare Free compression
+# Tokyra website
 
-This is the Netlify-ready Tokyra frontend. Its compressor is connected to:
+Tokyra is a static, Netlify-ready frontend for prompt compression. The live compressor connects to:
 
 `https://tokyra-compressor.tokyracompany.workers.dev`
 
-## What the Compress button does
+## Pages
 
-1. Sends one request to the main compression endpoint.
-2. Uses `balanced` mode with a 66% target reduction so the Worker can stop
-   after its first high-quality result.
-3. Displays the optimized prompt and its token, compression, fidelity,
-   latency, and CFS metrics immediately after the request finishes.
+- `index.html` — product landing page and animated compression preview
+- `compressor.html` — live prompt compressor
+- `demos.html` — three preloaded, zero-API demonstrations
+- `metrics.html` — live aggregate and latest-run metrics
 
-The Worker returns the original prompt unchanged when it cannot produce a
-shorter result that passes its safety checks.
+Shared presentation and interaction code lives in `style.css`, `site.js`, and `auth.js`. Page-specific behavior lives in `compressor.js`, `demos.js`, and `metrics.js`.
 
-## Deploy to Netlify
+## Compressor behavior
 
-1. Sign in to Netlify and open the existing Tokyra site.
-2. Open **Deploys**.
-3. Drag this `Tokyra-main` folder into Netlify's manual deployment area.
-4. Wait for the deployment to become **Published**.
-5. Open `compressor.html`, paste a prompt, and select **Compress prompt**.
+The compressor sends one request in `balanced` mode with a 66% target reduction. It supports paste, voice input when the browser provides speech recognition, and text-like file uploads up to 500,000 characters.
 
-The site is static and does not require a build command, package installation,
-API key, or environment variable.
+The UI displays original tokens, optimized tokens, tokens saved, compression, fidelity, latency, and CFS. The Worker remains the source of truth for compression and safety checks. It can preserve the original prompt when no shorter candidate safely retains protected instructions and literals.
 
-## Free-plan behavior
+## Run locally
 
-Cloudflare's Workers AI free allocation applies. This site deliberately avoids
-the 45-minute Workflow because Cloudflare Free limits each Workflow step to 10
-ms of active CPU time. When the daily free AI allocation is exhausted,
-Cloudflare stops further AI work instead of charging the account.
+Serve the directory with any static web server. No build command, package install, API key, or frontend environment variable is required.
 
-## Future changes
+## Deployment
 
-- Website changes: edit the files in this folder and redeploy the folder to
-  Netlify.
-- Compressor backend changes: edit the separate v148 Worker project and run
-  `npx.cmd wrangler deploy` from that Worker project.
-- Do not use Cloudflare's dashboard editor as the source copy of the Worker;
-  Wrangler's local project is the source of truth.
+The repository is compatible with Netlify static hosting. Changes pushed to the branch connected to the Tokyra Netlify site can deploy without a build step.
+
+The Cloudflare Worker is maintained separately; do not place Worker secrets or AI credentials in this frontend repository.
