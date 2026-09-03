@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -76,7 +76,7 @@
         <div class="demo-progress" aria-hidden="true"><span id="progressBar"></span></div>
         <div class="demo-status" role="status" aria-live="polite"><span id="statusText">Reading original prompt…</span><strong id="nextDemoText">Next example starts automatically.</strong></div>
 
-        <div class="demo-results" id="demoResults" aria-label="Preloaded demo metrics">
+        <div class="demo-results" id="demoResults" role="group" aria-label="Preloaded demo metrics">
           <div class="demo-result-stat"><span>Original</span><strong id="originalTokens">—</strong></div>
           <div class="demo-result-stat"><span>Optimized</span><strong id="optimizedTokens">—</strong></div>
           <div class="demo-result-stat highlight"><span>Saved</span><strong id="savedTokens">—</strong></div>
@@ -88,10 +88,10 @@
 
       <p class="demo-note">These are preloaded, illustrative examples; no API request runs on this page. The extreme example uses a representative excerpt in the viewer because its full source prompt is approximately 10,200 tokens.</p>
 
-      <div class="demo-cards reveal" aria-label="Demo summaries">
-        <button class="demo-summary-card is-active" type="button" data-demo-card="0"><span>01 / CUSTOMER SUPPORT</span><h3>Clearer instructions, same tone.</h3><p>A verbose response policy becomes a direct customer-support instruction with dates, reference numbers, and prohibitions intact.</p></button>
-        <button class="demo-summary-card" type="button" data-demo-card="1"><span>02 / CODING WORKFLOW</span><h3>Constraints without repetition.</h3><p>A production debugging workflow retains protected interfaces, safety checks, edge cases, and required output structure.</p></button>
-        <button class="demo-summary-card" type="button" data-demo-card="2"><span>03 / EXTREME WORKFLOW</span><h3>≈10,200 tokens to ≈704.</h3><p>A deliberately repetitive production-agent prompt shows the upper end of the preloaded demonstration.</p></button>
+      <div class="demo-cards reveal" role="group" aria-label="Demo summaries">
+        <button class="demo-summary-card is-active" type="button" data-demo-card="0"><span>01 / CUSTOMER SUPPORT</span><span class="demo-summary-title">Clearer instructions, same tone.</span><span class="demo-summary-copy">A verbose response policy becomes a direct customer-support instruction with dates, reference numbers, and prohibitions intact.</span></button>
+        <button class="demo-summary-card" type="button" data-demo-card="1"><span>02 / CODING WORKFLOW</span><span class="demo-summary-title">Constraints without repetition.</span><span class="demo-summary-copy">A production debugging workflow retains protected interfaces, safety checks, edge cases, and required output structure.</span></button>
+        <button class="demo-summary-card" type="button" data-demo-card="2"><span>03 / EXTREME WORKFLOW</span><span class="demo-summary-title">≈10,200 tokens to ≈704.</span><span class="demo-summary-copy">A deliberately repetitive production-agent prompt shows the upper end of the preloaded demonstration.</span></button>
       </div>
     </div>
   </main>

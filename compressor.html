@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -66,10 +66,10 @@
             <textarea class="prompt-textarea" id="promptInput" placeholder="Paste a system prompt, agent instruction, coding workflow, or other AI prompt here…" spellcheck="true"></textarea>
 
             <div class="file-row">
-              <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Drop a text file here or press Enter to upload">
+              <button class="dropzone" id="dropzone" type="button" aria-label="Drop a text file here or press Enter to upload">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5M4 14v4a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-4"/></svg>
                 <span>Drop a text file or <strong>browse</strong></span>
-              </div>
+              </button>
               <button class="sr-only" id="uploadBtn" type="button">Upload text file</button>
               <input id="fileInput" type="file" hidden accept=".txt,.md,.markdown,.json,.csv,.html,.xml,.yaml,.yml,text/plain,text/markdown,application/json,text/csv,text/html,text/xml,application/xml">
               <span class="file-meta" id="fileMeta">TXT · MD · JSON · CSV · HTML · XML · YAML</span>
@@ -103,7 +103,7 @@
         <button class="button button-accent button-wide compress-button" id="compressBtn" type="button" aria-describedby="maximumModeNote">
           <span class="button-label">Compress prompt</span><span class="arrow" aria-hidden="true">↗</span><span class="button-progress" aria-hidden="true"></span>
         </button>
-        <div class="compress-meta" aria-label="Current compression mode">
+        <div class="compress-meta" role="group" aria-label="Current compression mode">
           <div><span>MODE</span><strong>Balanced · 66% target</strong></div>
           <div class="mode-orb" aria-hidden="true">T</div>
         </div>
@@ -113,7 +113,7 @@
         <span class="status-dot" aria-hidden="true"></span><span id="statusText">Ready for fast compression.</span>
       </div>
 
-      <div class="result-metrics reveal" aria-label="Compression metrics">
+      <div class="result-metrics reveal" role="group" aria-label="Compression metrics">
         <article class="metric-card"><span>Original tokens</span><strong id="originalTokens">—</strong></article>
         <article class="metric-card"><span>Optimized tokens</span><strong id="optimizedTokens">—</strong></article>
         <article class="metric-card metric-highlight"><span>Tokens saved</span><strong id="savedTokens">—</strong></article>
