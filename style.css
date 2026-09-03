@@ -625,13 +625,16 @@ body.has-pointer .cursor-glow {
   flex-wrap: wrap;
   gap: 18px;
   margin-top: 38px;
+  margin-bottom: 0;
+  padding: 0;
   color: var(--muted);
   font-family: var(--mono);
   font-size: 0.64rem;
   letter-spacing: 0.02em;
+  list-style: none;
 }
 
-.trust-line span {
+.trust-line li {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -1095,44 +1098,96 @@ body.has-pointer .cursor-glow {
 }
 
 .intent-visual {
+  --model-rotate-x: 0deg;
+  --model-rotate-y: 0deg;
+  --model-scale: 1;
+  --model-shift-x: 0px;
+  --model-shift-y: 0px;
   position: absolute;
   top: 44%;
   left: 56%;
   width: 320px;
   height: 320px;
-  transform: translate(-50%, -50%);
+  perspective: 850px;
+  transform: translate(calc(-50% + var(--model-shift-x)), calc(-50% + var(--model-shift-y))) rotateX(var(--model-rotate-x)) rotateY(var(--model-rotate-y)) scale(var(--model-scale));
+  transform-style: preserve-3d;
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
 }
 
 .intent-ring {
+  --ring-depth: 0px;
   position: absolute;
   inset: 50%;
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, var(--ring-depth));
+  transform-style: preserve-3d;
 }
 
-.ring-a { width: 120px; height: 120px; animation: semantic-pulse 3.4s ease-in-out infinite; }
-.ring-b { width: 210px; height: 210px; animation: semantic-pulse 3.4s 0.5s ease-in-out infinite; }
-.ring-c { width: 300px; height: 300px; animation: semantic-pulse 3.4s 1s ease-in-out infinite; }
+.ring-a { --ring-depth: 28px; width: 120px; height: 120px; animation: semantic-pulse 3.4s ease-in-out infinite; }
+.ring-b { --ring-depth: 10px; width: 210px; height: 210px; animation: semantic-pulse 3.4s 0.5s ease-in-out infinite; }
+.ring-c { --ring-depth: -10px; width: 300px; height: 300px; animation: semantic-pulse 3.4s 1s ease-in-out infinite; }
 
 .intent-word {
   position: absolute;
   top: 50%;
   left: 50%;
   display: grid;
-  width: 90px;
-  height: 90px;
+  width: 98px;
+  height: 98px;
   place-items: center;
-  border-radius: 50%;
-  background: var(--acid);
-  box-shadow: 0 0 60px rgba(217, 255, 67, 0.2);
+  gap: 5px;
+  padding: 17px 14px 13px;
+  border: 1px solid rgba(217, 255, 67, 0.65);
+  border-radius: 27px;
+  background: linear-gradient(145deg, rgba(217, 255, 67, 0.98), rgba(185, 233, 35, 0.86));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34), 0 0 68px rgba(217, 255, 67, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.65);
   color: var(--ink);
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.52rem;
   font-weight: 500;
-  letter-spacing: 0.08em;
-  transform: translate(-50%, -50%);
+  letter-spacing: 0.1em;
+  transform: translate3d(-50%, -50%, 52px);
+  transform-style: preserve-3d;
 }
+
+.intent-word::before,
+.intent-word::after {
+  position: absolute;
+  inset: 7px;
+  z-index: -1;
+  border: 1px solid rgba(217, 255, 67, 0.2);
+  border-radius: 23px;
+  background: rgba(217, 255, 67, 0.14);
+  content: "";
+  transform: translateZ(-22px);
+}
+
+.intent-word::after {
+  inset: 13px;
+  opacity: 0.55;
+  transform: translateZ(-42px);
+}
+
+.intent-glyph {
+  display: flex;
+  height: 27px;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.intent-glyph i {
+  display: block;
+  width: 6px;
+  border-radius: 3px 3px 1px 1px;
+  background: var(--ink);
+  box-shadow: 0 0 0 1px rgba(11, 12, 15, 0.08);
+}
+
+.intent-glyph i:nth-child(1) { height: 13px; }
+.intent-glyph i:nth-child(2) { height: 25px; }
+.intent-glyph i:nth-child(3) { height: 19px; }
 
 .intent-node {
   position: absolute;
@@ -1144,6 +1199,7 @@ body.has-pointer .cursor-glow {
   font-family: var(--mono);
   font-size: 0.5rem;
   letter-spacing: 0.07em;
+  transform: translateZ(18px);
 }
 
 .node-a { top: 15px; left: 118px; }
@@ -1152,6 +1208,30 @@ body.has-pointer .cursor-glow {
 
 .literal-card {
   background: #e7e4ff;
+}
+
+.pixel-card-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease;
+  -webkit-mask-image: radial-gradient(circle at 50% 48%, #000 0 36%, transparent 82%);
+  mask-image: radial-gradient(circle at 50% 48%, #000 0 36%, transparent 82%);
+}
+
+[data-pixel-card].is-pixel-active .pixel-card-canvas {
+  opacity: 0.48;
+}
+
+[data-pixel-card] .literal-stack,
+[data-pixel-card] .card-topline,
+[data-pixel-card] .card-copy {
+  position: relative;
+  z-index: 2;
 }
 
 .literal-stack {
@@ -1527,7 +1607,7 @@ body.has-pointer .cursor-glow {
 
 .footer-main > p {
   max-width: 330px;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 255, 255, 0.52);
   font-size: 0.78rem;
   line-height: 1.7;
 }
@@ -1551,7 +1631,7 @@ body.has-pointer .cursor-glow {
   justify-content: space-between;
   padding-top: 22px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.52);
   font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.05em;
@@ -1820,6 +1900,7 @@ body.has-pointer .cursor-glow {
   padding: 0 12px;
   border: 1px dashed rgba(255, 255, 255, 0.17);
   border-radius: 10px;
+  background: transparent;
   color: rgba(255, 255, 255, 0.36);
   cursor: pointer;
   font-family: var(--mono);
@@ -2005,6 +2086,16 @@ body.has-pointer .cursor-glow {
   box-shadow: 0 0 13px rgba(69, 226, 155, 0.65);
 }
 
+.status-bar.review .status-dot {
+  background: var(--amber);
+  box-shadow: 0 0 13px rgba(255, 190, 63, 0.65);
+}
+
+.status-bar.review {
+  border-color: rgba(255, 190, 63, 0.2);
+  color: rgba(255, 255, 255, 0.72);
+}
+
 .status-bar.error .status-dot {
   background: var(--red);
   box-shadow: 0 0 13px rgba(255, 94, 99, 0.65);
@@ -2058,6 +2149,12 @@ body.has-pointer .cursor-glow {
   font-size: clamp(1.25rem, 2.3vw, 1.8rem);
   font-weight: 550;
   letter-spacing: -0.05em;
+}
+
+.metric-card strong.metric-unverified {
+  color: var(--amber);
+  font-size: clamp(0.92rem, 1.5vw, 1.12rem);
+  letter-spacing: -0.025em;
 }
 
 .metric-card.metric-highlight {
@@ -2654,21 +2751,26 @@ body.has-pointer .cursor-glow {
   transform: translateY(-4px);
 }
 
-.demo-summary-card span {
+.demo-summary-card > span:first-child {
+  display: block;
   color: var(--acid);
   font-family: var(--mono);
   font-size: 0.52rem;
   letter-spacing: 0.07em;
 }
 
-.demo-summary-card h3 {
+.demo-summary-title {
+  display: block;
   margin: 34px 0 9px;
+  color: #fff;
   font-size: 1.25rem;
   font-weight: 650;
   letter-spacing: -0.04em;
+  line-height: 1.25;
 }
 
-.demo-summary-card p {
+.demo-summary-copy {
+  display: block;
   color: rgba(255, 255, 255, 0.34);
   font-size: 0.68rem;
   line-height: 1.65;
@@ -2805,7 +2907,7 @@ body.has-pointer .cursor-glow {
 @keyframes orbit-spin { to { transform: rotate(360deg); } }
 @keyframes scroll-line { 0% { transform: translateY(0); } 100% { transform: translateY(200%); } }
 @keyframes ticker-move { to { transform: translateX(-50%); } }
-@keyframes semantic-pulse { 0%, 100% { opacity: 0.25; transform: translate(-50%, -50%) scale(0.96); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.03); } }
+@keyframes semantic-pulse { 0%, 100% { opacity: 0.25; transform: translate3d(-50%, -50%, var(--ring-depth)) scale(0.96); } 50% { opacity: 1; transform: translate3d(-50%, -50%, var(--ring-depth)) scale(1.03); } }
 @keyframes literal-float { 0%, 100% { transform: translateY(0) rotateX(0); } 50% { transform: translateY(-5px) rotateX(2deg); } }
 @keyframes dial-draw { from { stroke-dashoffset: 240; } to { stroke-dashoffset: 46; } }
 @keyframes pipeline-core { 0%, 100% { transform: scale(0.96); } 50% { transform: scale(1.04); } }
@@ -2945,8 +3047,9 @@ body.has-pointer .cursor-glow {
   }
 
   .intent-visual {
-    left: 58%;
-    transform: translate(-50%, -50%) scale(0.8);
+    top: 40%;
+    left: 50%;
+    --model-scale: 0.72;
   }
 
   .process-layout {
@@ -3135,6 +3238,11 @@ body.has-pointer .cursor-glow {
   .bento-card {
     min-height: 460px;
     padding: 22px;
+  }
+
+  .intent-visual {
+    top: 39%;
+    --model-scale: 0.68;
   }
 
   .pipeline-visual {
@@ -3399,7 +3507,15 @@ body.has-pointer .cursor-glow {
   }
 
   .network-canvas,
-  .cursor-glow {
+  .cursor-glow,
+  .pixel-card-canvas {
     display: none;
+  }
+
+  .intent-visual {
+    --model-rotate-x: 0deg !important;
+    --model-rotate-y: 0deg !important;
+    --model-shift-x: 0px !important;
+    --model-shift-y: 0px !important;
   }
 }

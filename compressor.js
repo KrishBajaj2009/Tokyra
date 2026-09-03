@@ -21,6 +21,8 @@
   const limitHint = document.getElementById("limitHint");
   const status = document.getElementById("status");
   const statusText = document.getElementById("statusText");
+  let activeController = null;
+  let activeRequestId = 0;
 
   const fields = {
     originalTokens: document.getElementById("originalTokens"),
@@ -35,6 +37,32 @@
   const samplePrompt = "You are a helpful customer support assistant. Carefully read the customer's request, identify the main issue, and write a clear, concise, friendly response that directly answers every question. Apologize when the customer experienced an inconvenience, explain the next practical step, and set an honest expectation for when they will hear back. Avoid unnecessary technical language, internal implementation details, blame, unsupported guarantees, and promises the company has not approved. Keep the answer professional and empathetic. Use short paragraphs, preserve any dates or reference numbers supplied by the customer, and end by thanking them for their patience. Do not repeat the same point in multiple ways. Return only the customer-facing response without analysis, notes, or a preamble.";
 
   const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
+  const optionalNumber = (value) => {
+    if (value === null || value === undefined || typeof value === "boolean") return null;
+    if (typeof value === "string" && !value.trim()) return null;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+  const optionalPercent = (value) => {
+    const parsed = optionalNumber(value);
+    return parsed !== null && parsed >= 0 && parsed <= 100 ? parsed : null;
+  };
+  const readFidelity = (data) => {
+    const legacyFidelity = data?.fidelity && typeof data.fidelity === "object"
+      ? data.fidelity.percent
+      : data?.fidelity;
+    const candidates = [
+      data?.fidelityPercent,
+      data?.deterministicFidelityPercent,
+      legacyFidelity,
+      data?.semanticJudgeScore
+    ];
+    for (const candidate of candidates) {
+      const parsed = optionalPercent(candidate);
+      if (parsed !== null) return parsed;
+    }
+    return null;
+  };
   const formatNumber = (value) => new Intl.NumberFormat().format(number(value));
 
   const describeError = (value, fallback = "Compression failed.") => {
@@ -72,6 +100,8 @@
 
   const resetMetrics = () => {
     Object.values(fields).forEach((field) => { field.textContent = "—"; });
+    fields.fidelity.classList.remove("metric-unverified");
+    fields.fidelity.removeAttribute("title");
   };
 
   const updateCounts = () => {
@@ -105,6 +135,19 @@
     compressLabel.textContent = busy ? "Compressing signal" : "Compress prompt";
   };
 
+  const cancelActiveCompression = (message = "") => {
+    if (!activeController) return false;
+    activeRequestId += 1;
+    activeController.abort();
+    activeController = null;
+    setCompressionButtonBusy(false);
+    if (output.classList.contains("is-loading")) {
+      setOutput("Your compressed prompt will appear here.", { placeholder: true });
+    }
+    if (message) setStatus(message);
+    return true;
+  };
+
   const displayCompressionResult = (data, startedAt) => {
     const optimized = String(data.optimized || data.optimizedPrompt || "").trim();
     if (!optimized) throw new Error("No optimized prompt was returned.");
@@ -115,23 +158,58 @@
 
     const originalTokens = number(data.originalTokens);
     const optimizedTokens = number(data.optimizedTokens);
-    const tokensSaved = number(data.tokensSaved, Math.max(0, originalTokens - optimizedTokens));
-    const compression = number(data.compressionPercent);
-    const fidelity = number(data.fidelityPercent ?? data.fidelity);
+    const tokensSaved = optionalNumber(data.tokensSaved) ?? Math.max(0, originalTokens - optimizedTokens);
+    const preciseCompression = optionalPercent(data.compressionPercentPrecise);
+    const compression = optionalPercent(data.compressionPercent) ?? preciseCompression ??
+      (originalTokens > 0 ? Math.max(0, (tokensSaved / originalTokens) * 100) : 0);
+    const fidelity = readFidelity(data);
     const cfsScore = number(data.cfsScore);
     const latency = number(data.latencyMs, Date.now() - startedAt);
+    const judgeStatus = String(data.semanticJudgeStatus || "").toLowerCase();
+    const verificationUnavailable = fidelity === null || judgeStatus === "unavailable";
+    const verificationFailed = data.fidelityAccepted === false ||
+      judgeStatus === "rejected" ||
+      (data.semanticJudgeAccepted === false && !["", "not_required", "unavailable"].includes(judgeStatus));
+    const reviewRequired = verificationUnavailable || verificationFailed ||
+      data.status === "optimized-review-required" ||
+      data.qualityTier === "review" ||
+      data.accepted === false;
+    const resultStatus = String(data.status || "").toLowerCase();
+    const explicitlyUnchanged = data.unchanged === true ||
+      data.noVerifiedShorterCandidate === true ||
+      resultStatus === "skipped" ||
+      resultStatus === "no-verified-shorter-candidate";
+    const explicitlyChanged = data.unchanged === false ||
+      data.accepted === true ||
+      resultStatus.startsWith("optimized") ||
+      ["accepted", "complete", "success"].includes(resultStatus);
+    const outputChanged = optimized !== input.value.trim();
+    const unchanged = explicitlyUnchanged ||
+      (!explicitlyChanged && !outputChanged && tokensSaved <= 0 && (preciseCompression ?? compression) <= 0);
 
     fields.savedTokens.textContent = formatNumber(tokensSaved);
     fields.compressionPercent.textContent = `${Math.round(compression)}%`;
-    fields.fidelity.textContent = `${Math.round(fidelity)}%`;
+    fields.fidelity.textContent = fidelity === null ? "Unverified" : `${Math.round(fidelity)}%`;
+    fields.fidelity.classList.toggle("metric-unverified", fidelity === null);
+    fields.fidelity.title = fidelity === null
+      ? "The current Worker returned no verified fidelity score for this result."
+      : "";
     fields.cfs.textContent = cfsScore.toFixed(cfsScore % 1 ? 1 : 0);
     fields.latency.textContent = `${Math.round(latency)}ms`;
 
     document.dispatchEvent(new CustomEvent("tokyra:compression", { detail: { compression, fidelity, tokensSaved } }));
 
-    if (compression <= 0 || data.status === "skipped" || data.unchanged === true) {
+    if (unchanged) {
       setStatus("No shorter result passed every safety check, so Tokyra preserved the original prompt.", "success");
       window.TokyraUI?.toast("Original preserved — no safe reduction passed.");
+    } else if (reviewRequired) {
+      const reviewMessage = verificationUnavailable
+        ? "A shorter draft was produced, but fidelity was not verified for this run. Review it before use."
+        : verificationFailed
+          ? "A shorter draft was produced, but it did not pass all verification checks. Review it before use."
+          : "A shorter draft was produced and requires review before use.";
+      setStatus(reviewMessage, "review");
+      window.TokyraUI?.toast("Shorter draft ready — fidelity review required.");
     } else {
       setStatus(`Compression complete at ${Math.round(fidelity)}% fidelity. Review the output before using it.`, "success");
       window.TokyraUI?.toast(`${formatNumber(tokensSaved)} tokens removed at ${Math.round(fidelity)}% fidelity.`);
@@ -151,6 +229,7 @@
   };
 
   const applyPromptText = (text, sourceLabel) => {
+    cancelActiveCompression("The active request was cancelled because the prompt changed.");
     input.value = text;
     updateCounts();
     fileMeta.textContent = sourceLabel;
@@ -175,6 +254,11 @@
   }
 
   async function compressPrompt() {
+    if (activeController) {
+      setStatus("Compression is already in progress. Wait for it to finish or edit the prompt to cancel it.", "loading");
+      return;
+    }
+
     const prompt = input.value.trim();
     if (!prompt) {
       setStatus("Add a prompt before compressing.", "error");
@@ -192,28 +276,48 @@
     setOutput("Processing your prompt…", { placeholder: true, loading: true });
     resetMetrics();
     const startedAt = Date.now();
+    const requestId = ++activeRequestId;
+    const controller = new AbortController();
+    activeController = controller;
+    let timedOut = false;
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 90000);
 
     try {
       const response = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, mode: "balanced", targetReduction: 66 })
+        body: JSON.stringify({ prompt, mode: "balanced", targetReduction: 66 }),
+        signal: controller.signal
       });
       const data = await readApiResponse(response);
+      if (requestId !== activeRequestId) return;
       displayCompressionResult(data, startedAt);
     } catch (error) {
+      if (requestId !== activeRequestId) return;
       console.error("Tokyra compression error:", error);
-      const message = /CPU time limit/i.test(error.message || "")
+      const message = timedOut
+        ? "Compression timed out after 90 seconds. Try a shorter prompt or split it into sections."
+        : /CPU time limit/i.test(error.message || "")
         ? "This prompt exceeded Cloudflare Free's processing limit. Try a shorter prompt or split it into sections."
         : error.message || "Compression failed.";
       setOutput(`Unable to compress this prompt. ${message}`, { placeholder: true });
       setStatus(message, "error");
     } finally {
-      setCompressionButtonBusy(false);
+      clearTimeout(timeout);
+      if (requestId === activeRequestId) {
+        activeController = null;
+        setCompressionButtonBusy(false);
+      }
     }
   }
 
-  input.addEventListener("input", updateCounts);
+  input.addEventListener("input", () => {
+    cancelActiveCompression("The active request was cancelled because the prompt changed.");
+    updateCounts();
+  });
   input.addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
       event.preventDefault();
@@ -224,6 +328,7 @@
   compressBtn.addEventListener("click", compressPrompt);
 
   clearBtn.addEventListener("click", () => {
+    cancelActiveCompression();
     input.value = "";
     fileInput.value = "";
     setOutput("Your compressed prompt will appear here.", { placeholder: true });
@@ -281,12 +386,6 @@
     await loadTextFile(file);
   });
   dropzone.addEventListener("click", () => fileInput.click());
-  dropzone.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      fileInput.click();
-    }
-  });
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
@@ -304,6 +403,7 @@
       setStatus("Listening for your prompt…", "loading");
     });
     recognition.addEventListener("result", (event) => {
+      cancelActiveCompression("The active request was cancelled because the prompt changed.");
       input.value = Array.from(event.results).map((result) => result[0].transcript).join(" ");
       updateCounts();
     });

@@ -111,17 +111,225 @@
     });
 
     document.querySelectorAll("[data-tilt]").forEach((element) => {
+      const modelViewer = element.querySelector("[data-model-viewer]");
       element.addEventListener("pointermove", (event) => {
         const bounds = element.getBoundingClientRect();
         const x = (event.clientX - bounds.left) / bounds.width - 0.5;
         const y = (event.clientY - bounds.top) / bounds.height - 0.5;
         const range = element.classList.contains("hero-console") ? 4 : 2.2;
         element.style.transform = `perspective(1000px) rotateX(${(-y * range).toFixed(2)}deg) rotateY(${(x * range).toFixed(2)}deg) translateY(-2px)`;
+
+        if (modelViewer) {
+          modelViewer.style.setProperty("--model-rotate-x", `${(-y * 10).toFixed(2)}deg`);
+          modelViewer.style.setProperty("--model-rotate-y", `${(x * 14).toFixed(2)}deg`);
+          modelViewer.style.setProperty("--model-shift-x", `${(x * 8).toFixed(2)}px`);
+          modelViewer.style.setProperty("--model-shift-y", `${(y * 8).toFixed(2)}px`);
+        }
       });
       element.addEventListener("pointerleave", () => {
         element.style.transform = "";
+        if (modelViewer) {
+          modelViewer.style.removeProperty("--model-rotate-x");
+          modelViewer.style.removeProperty("--model-rotate-y");
+          modelViewer.style.removeProperty("--model-shift-x");
+          modelViewer.style.removeProperty("--model-shift-y");
+        }
       });
     });
+  }
+
+  class PixelCardField {
+    constructor(canvas) {
+      this.canvas = canvas;
+      this.context = canvas.getContext("2d");
+      this.card = canvas.closest("[data-pixel-card]");
+      this.points = [];
+      this.frame = 0;
+      this.resizeFrame = 0;
+      this.visible = true;
+      this.mode = "idle";
+      this.motionDisabled = reducedMotion.matches;
+      this.previousTime = performance.now();
+      this.modeStarted = this.previousTime;
+      this.drawInterval = 1000 / 30;
+      this.animate = this.animate.bind(this);
+      this.resize = this.resize.bind(this);
+      this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+
+      if (!this.context || !this.card) return;
+
+      this.card.addEventListener("pointerenter", (event) => {
+        if (event.pointerType !== "touch") this.setMode("appear");
+      });
+      this.card.addEventListener("pointerleave", () => this.setMode("disappear"));
+
+      if ("ResizeObserver" in window) {
+        this.resizeObserver = new ResizeObserver(() => {
+          cancelAnimationFrame(this.resizeFrame);
+          this.resizeFrame = requestAnimationFrame(this.resize);
+        });
+        this.resizeObserver.observe(this.card);
+      } else {
+        window.addEventListener("resize", this.resize, { passive: true });
+      }
+
+      if ("IntersectionObserver" in window) {
+        this.visibilityObserver = new IntersectionObserver(([entry]) => {
+          this.visible = entry.isIntersecting;
+          if (!this.visible) {
+            cancelAnimationFrame(this.frame);
+            this.frame = 0;
+          } else if (this.mode !== "idle") {
+            if (this.mode === "appear" && !this.card.matches(":hover")) this.mode = "disappear";
+            this.schedule();
+          }
+        }, { rootMargin: "80px" });
+        this.visibilityObserver.observe(this.card);
+      }
+
+      document.addEventListener("visibilitychange", this.handleVisibilityChange);
+      this.resize();
+    }
+
+    resize() {
+      if (!this.context || !this.card) return;
+      const bounds = this.card.getBoundingClientRect();
+      const width = Math.max(1, Math.floor(bounds.width));
+      const height = Math.max(1, Math.floor(bounds.height));
+      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+      const requestedGap = Number(this.card.dataset.pixelGap);
+      const safeGap = Number.isFinite(requestedGap) ? Math.max(7, Math.min(24, requestedGap)) : 10;
+      const gap = Math.max(safeGap, Math.ceil(Math.sqrt((width * height) / 2600)));
+      const colors = String(this.card.dataset.pixelColors || "#7658ff,#9b87ff,#ffffff")
+        .split(",")
+        .map((color) => color.trim())
+        .filter(Boolean)
+        .slice(0, 8);
+
+      this.canvas.width = Math.floor(width * ratio);
+      this.canvas.height = Math.floor(height * ratio);
+      this.canvas.style.width = `${width}px`;
+      this.canvas.style.height = `${height}px`;
+      this.context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      this.width = width;
+      this.height = height;
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const maxDistance = Math.max(1, Math.hypot(centerX, centerY));
+      this.points = [];
+
+      for (let x = gap / 2; x < width; x += gap) {
+        for (let y = gap / 2; y < height; y += gap) {
+          const distance = Math.hypot(x - centerX, y - centerY);
+          this.points.push({
+            x,
+            y,
+            color: colors[Math.floor(Math.random() * colors.length)] || "#7658ff",
+            size: 0,
+            maxSize: 1.2 + Math.random() * Math.min(2.8, gap * 0.32),
+            delay: (distance / maxDistance) * 240,
+            elapsed: 0,
+            phase: Math.random() * Math.PI * 2
+          });
+        }
+      }
+
+      if (this.mode === "appear") this.schedule();
+    }
+
+    setMode(mode) {
+      if (!this.context || this.motionDisabled) return;
+      this.mode = mode;
+      this.previousTime = performance.now();
+      this.modeStarted = this.previousTime;
+      this.points.forEach((point) => { point.elapsed = 0; });
+      this.card.classList.toggle("is-pixel-active", mode === "appear");
+      this.schedule();
+    }
+
+    setReducedMotion(disabled) {
+      this.motionDisabled = disabled;
+      if (!disabled) return;
+      cancelAnimationFrame(this.frame);
+      this.frame = 0;
+      this.mode = "idle";
+      this.card.classList.remove("is-pixel-active");
+      this.context?.clearRect(0, 0, this.width || 0, this.height || 0);
+    }
+
+    schedule() {
+      if (this.frame || this.motionDisabled || !this.visible || document.hidden) return;
+      this.frame = requestAnimationFrame(this.animate);
+    }
+
+    animate(now) {
+      this.frame = 0;
+      if (!this.context || !this.visible || document.hidden) return;
+
+      const elapsedSinceDraw = Math.max(0, now - this.previousTime);
+      if (elapsedSinceDraw < this.drawInterval) {
+        this.schedule();
+        return;
+      }
+
+      const delta = Math.min(50, elapsedSinceDraw);
+      this.previousTime = now;
+      this.context.clearRect(0, 0, this.width, this.height);
+      let moving = false;
+      const shimmerActive = this.mode === "appear" && now - this.modeStarted < 1800;
+
+      this.points.forEach((point) => {
+        point.elapsed += delta;
+        const ready = point.elapsed >= point.delay;
+        const shimmer = shimmerActive ? Math.sin(now * 0.004 + point.phase) * 0.32 : 0;
+        const target = this.mode === "appear" && ready ? Math.max(0.8, point.maxSize + shimmer) : 0;
+        point.size += (target - point.size) * Math.min(1, delta * 0.014);
+
+        if (Math.abs(target - point.size) > 0.06 || (this.mode === "appear" && (!ready || shimmerActive))) moving = true;
+        if (point.size < 0.08) return;
+
+        this.context.fillStyle = point.color;
+        this.context.fillRect(
+          Math.round(point.x - point.size / 2),
+          Math.round(point.y - point.size / 2),
+          point.size,
+          point.size
+        );
+      });
+
+      if (moving) {
+        this.schedule();
+      } else if (this.mode === "disappear") {
+        this.mode = "idle";
+        this.card.classList.remove("is-pixel-active");
+        this.context.clearRect(0, 0, this.width, this.height);
+      }
+    }
+
+    handleVisibilityChange() {
+      if (document.hidden) {
+        cancelAnimationFrame(this.frame);
+        this.frame = 0;
+      } else if (this.mode !== "idle") {
+        if (this.mode === "appear" && !this.card.matches(":hover")) this.mode = "disappear";
+        this.previousTime = performance.now();
+        this.schedule();
+      }
+    }
+  }
+
+  const pixelFields = finePointer.matches
+    ? Array.from(document.querySelectorAll("[data-pixel-canvas]"), (canvas) => new PixelCardField(canvas))
+    : [];
+
+  const updatePixelMotionPreference = (event) => {
+    pixelFields.forEach((field) => field.setReducedMotion(event.matches));
+  };
+  if (reducedMotion.addEventListener) {
+    reducedMotion.addEventListener("change", updatePixelMotionPreference);
+  } else if (reducedMotion.addListener) {
+    reducedMotion.addListener(updatePixelMotionPreference);
   }
 
   class NetworkField {
