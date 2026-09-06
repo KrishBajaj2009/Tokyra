@@ -98,6 +98,25 @@
                 ></textarea>
               </div>
 
+              <div class="target-control">
+                <div>
+                  <label for="targetCharacters">Target output length</label>
+                  <span>Tokyra will aim for this size without bypassing fidelity checks.</span>
+                </div>
+                <div class="target-input-wrap">
+                  <input
+                    id="targetCharacters"
+                    type="number"
+                    min="200"
+                    max="500000"
+                    step="50"
+                    placeholder="Auto"
+                    inputmode="numeric"
+                  >
+                  <span>characters (optional)</span>
+                </div>
+              </div>
+
               <div class="upload-row">
                 <button class="button button-secondary" id="uploadBtn" type="button">Upload text file</button>
                 <input
@@ -339,6 +358,7 @@
       const RESULT_STORAGE_KEY = "tokyra:last-result";
 
       const input = document.getElementById("promptInput");
+      const targetCharactersInput = document.getElementById("targetCharacters");
       const output = document.getElementById("output");
       const compressBtn = document.getElementById("compressBtn");
       const copyBtn = document.getElementById("copyBtn");
@@ -409,7 +429,18 @@
         }
 
         const outputText = output.classList.contains("is-placeholder") ? "" : output.textContent;
-        outputCount.textContent = `${outputText.length.toLocaleString()} characters`;
+        const rawTarget =
+          targetCharactersInput.value.trim();
+        const targetCharacters = rawTarget
+          ? Math.max(
+              200,
+              Math.min(
+                MAX_INPUT_CHARS,
+                Math.round(number(rawTarget, 200))
+              )
+            )
+          : null;
+        outputCount.textContent = `${outputText.length.toLocaleString()} characters • ${targetCharacters === null ? "automatic" : targetCharacters.toLocaleString()} target`;
       };
 
       const setFileMeta = (message) => {
@@ -470,6 +501,21 @@
 
       async function compressPrompt() {
         const prompt = input.value.trim();
+        const rawTarget =
+          targetCharactersInput.value.trim();
+        const targetCharacters = rawTarget
+          ? Math.max(
+              200,
+              Math.min(
+                MAX_INPUT_CHARS,
+                Math.round(number(rawTarget, 200))
+              )
+            )
+          : null;
+
+        if (targetCharacters !== null) {
+          targetCharactersInput.value = String(targetCharacters);
+        }
 
         if (!prompt) {
           setStatus("Add a prompt before compressing.", "error");
@@ -494,13 +540,19 @@
         const startedAt = performance.now();
 
         try {
+          const payload = {
+            prompt,
+            mode: "maximum"
+          };
+
+          if (targetCharacters !== null) {
+            payload.targetCharacters = targetCharacters;
+          }
+
           const response = await fetch(WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              prompt,
-              mode: "maximum"
-            })
+            body: JSON.stringify(payload)
           });
 
           const raw = await response.text();
@@ -527,7 +579,10 @@
           const compression = Math.round(number(data.compressionPercent));
           const fidelity = Math.round(number(data.fidelityPercent ?? data.fidelity));
           const cfs = number(data.cfsScore);
-          const latency = number(data.latencyMs, Math.round(performance.now() - startedAt));
+          const latency = Math.max(
+            number(data.latencyMs),
+            Math.round(performance.now() - startedAt)
+          );
 
           setOutput(optimized);
           fields.originalTokens.textContent = formatNumber(data.originalTokens);
@@ -551,14 +606,55 @@
             fidelityPercent: fidelity,
             cfsScore: cfs,
             latencyMs: Math.round(latency),
+            targetReductionPercent: number(data.targetReductionPercent),
+            compressionTargetMet: data.compressionTargetMet === true,
+            targetCharacters: number(data.targetCharacters),
+            optimizedCharacters: number(data.optimizedCharacters, optimized.length),
+            characterTargetMet: data.characterTargetMet === true,
+            status: String(data.status || ""),
             optimizedPreview: optimized.slice(0, 1200)
           });
 
-          setStatus("Compression complete. Review the optimized prompt before using it.", "success");
+          if (data.unchanged || data.noVerifiedShorterCandidate) {
+            setStatus(
+              "Tokyra tested every verified compression path. This input has no shorter certified representation; the original and measured scores are shown.",
+              "success"
+            );
+          } else if (data.accepted && data.characterTargetMet === false) {
+            const verifiedCharacters = number(data.optimizedCharacters, optimized.length);
+            setStatus(
+              `The ${targetCharacters.toLocaleString()}-character target was not safe for this prompt. Tokyra returned the shortest verified result at ${verifiedCharacters.toLocaleString()} characters.`,
+              "success"
+            );
+          } else if (data.accepted && data.targetCharacters && data.characterTargetMet) {
+            setStatus(
+              `Verified compression hit the ${number(data.targetCharacters).toLocaleString()}-character target without bypassing the fidelity gates.`,
+              "success"
+            );
+          } else if (data.accepted && data.compressionTargetMet === false) {
+            const target = Math.round(number(data.targetReductionPercent, 90));
+            setStatus(
+              `Verified compression saved ${compression}% of estimated tokens. The requested ${target}% reduction was not safe for this prompt, so Tokyra returned the shortest certified version instead.`,
+              "success"
+            );
+          } else if (data.accepted) {
+            setStatus(
+              "Verified compression complete. Every detected requirement and prohibition passed the fidelity gates.",
+              "success"
+            );
+          } else {
+            setStatus(
+              "Compression complete with review recommended. Check the reported fidelity before using it.",
+              "error"
+            );
+          }
         } catch (error) {
           console.error("Tokyra compression error:", error);
-          setOutput(`Unable to compress this prompt. ${error.message}`, true);
-          setStatus(error.message || "Compression failed.", "error");
+          const message = error instanceof TypeError && /fetch|network/i.test(String(error.message))
+            ? "The compressor service did not respond. Your prompt is still here; retry in a moment."
+            : error.message || "Compression failed.";
+          setOutput(`Unable to compress this prompt. ${message}`, true);
+          setStatus(message, "error");
         } finally {
           compressBtn.disabled = false;
           compressBtn.innerHTML = 'Compress prompt <span aria-hidden="true">→</span>';
@@ -566,6 +662,7 @@
       }
 
       input.addEventListener("input", updateCounts);
+      targetCharactersInput.addEventListener("input", updateCounts);
       input.addEventListener("keydown", (event) => {
         if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
           event.preventDefault();

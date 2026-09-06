@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tokyra-compressor",
+  "main": "tokyra-worker.js",
+  "minify": true,
+  "keep_names": false,
+  "compatibility_date": "2026-08-23",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "ai": {
+    "binding": "AI"
+  }
+}

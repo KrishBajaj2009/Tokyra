@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tokyra Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brandmark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M7.8 12h8.4M10.3 17h3.4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+      <div><strong>Tokyra</strong><span>Extension settings</span></div>
+    </header>
+
+    <main>
+      <section class="hero"><span class="kicker">Live writing assistant</span><h1>Get prompt suggestions while you type.</h1><p>Tokyra waits until you pause, checks the active editor automatically, and puts a fidelity-checked rewrite one click away.</p></section>
+
+      <form id="settingsForm">
+        <section class="card">
+          <div class="card-title"><div><h2>General</h2><p>Control when Tokyra appears in your browser.</p></div></div>
+          <label class="toggle-row"><span><strong>Enable Tokyra</strong><small>Allow the extension to optimize prompts.</small></span><input id="enabled" type="checkbox"><i></i></label>
+          <label class="toggle-row"><span><strong>Inline assistant</strong><small>Show the green Tokyra button beside editable fields.</small></span><input id="showInline" type="checkbox"><i></i></label>
+          <label class="toggle-row"><span><strong>Suggest as I write</strong><small>Automatically analyze the latest text after you pause typing.</small></span><input id="autoAnalyze" type="checkbox"><i></i></label>
+          <label class="input-row"><span><strong>Pause before checking</strong><small>A longer pause sends fewer Worker requests.</small></span><div class="number-wrap"><select id="analysisDelay"><option value="700">0.7 seconds</option><option value="1200">1.2 seconds</option><option value="2000">2 seconds</option><option value="3000">3 seconds</option></select></div></label>
+          <label class="input-row"><span><strong>Minimum prompt length</strong><small>Start making suggestions after this many characters.</small></span><div class="number-wrap"><input id="minCharacters" type="number" min="20" max="10000" step="10"><em>characters</em></div></label>
+        </section>
+
+        <section class="card">
+          <div class="card-title"><div><h2>Optimization</h2><p>Set the defaults used by the inline assistant and toolbar.</p></div></div>
+          <div class="grid">
+            <label class="field"><span>Default style</span><select id="mode"><option value="auto">Automatic</option><option value="safe">Safe</option><option value="balanced">Balanced</option><option value="maximum">Maximum</option></select><small>Automatic lets Tokyra choose from prompt structure.</small></label>
+            <label class="field"><span>Target reduction</span><select id="targetReduction"><option value="20">Light · 20%</option><option value="35">Standard · 35%</option><option value="55">Strong · 55%</option><option value="75">Maximum · 75%</option></select><small>The worker may use a safer feasible target.</small></label>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-title"><div><h2>Worker connection</h2><p>The deployed Tokyra Worker handles compression and fidelity checks.</p></div><span class="status" id="connectionStatus"><i></i><b>Not tested</b></span></div>
+          <label class="field full"><span>Worker URL</span><div class="endpoint-row"><input id="endpoint" type="url" required placeholder="https://your-worker.workers.dev"><button id="testButton" type="button">Test connection</button></div><small>Use the Worker base URL or its <code>/compress</code> endpoint.</small></label>
+          <div class="connection-message hidden" id="connectionMessage"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-title"><div><h2>Paused websites</h2><p>The inline assistant stays hidden on these domains.</p></div></div>
+          <div class="site-list" id="siteList"></div>
+          <div class="add-site"><input id="siteInput" type="text" placeholder="example.com"><button id="addSiteButton" type="button">Add website</button></div>
+        </section>
+
+        <div class="save-row"><span id="saveMessage"></span><button class="save" type="submit">Save settings</button></div>
+      </form>
+    </main>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

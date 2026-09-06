@@ -1,0 +1,30 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/status"
+  to = "/.netlify/functions/api?route=status"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/humanize"
+  to = "/.netlify/functions/api?route=humanize"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/detect"
+  to = "/.netlify/functions/api?route=detect"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

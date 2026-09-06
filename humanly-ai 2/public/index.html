@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rewrite stiff text into a more natural voice and inspect AI-like writing patterns with transparent signals.">
+  <meta name="theme-color" content="#f4f0e8">
+  <title>Humanly — Make writing sound like you</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="app.js?v=2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to workspace</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Humanly home">
+      <span class="brand-mark" aria-hidden="true">h.</span>
+      <span>humanly</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#workspace">Workspace</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#truth">Our promise</a>
+    </nav>
+    <div class="connection-pill" id="connectionPill">
+      <span class="connection-dot"></span>
+      <span id="connectionText">Checking engine…</span>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="eyebrow"><span></span> An honest writing assistant</div>
+      <h1>Sound less like a template.<br><em>More like yourself.</em></h1>
+      <p class="hero-copy">Turn stiff, generic prose into writing with a real voice—or inspect a passage for the patterns people associate with AI. No fake certainty. No black box verdicts.</p>
+      <div class="hero-meta">
+        <span>Meaning-first rewrites</span>
+        <span>Visible writing signals</span>
+        <span>Private local demo mode</span>
+      </div>
+    </section>
+
+    <section class="workspace" id="workspace" aria-labelledby="workspace-title">
+      <div class="workspace-topbar">
+        <div>
+          <span class="section-kicker">Your workspace</span>
+          <h2 id="workspace-title">One text. Two honest tools.</h2>
+        </div>
+        <div class="mode-switch" role="tablist" aria-label="Choose a tool">
+          <button class="mode-button active" id="rewriteTab" type="button" role="tab" aria-selected="true" aria-controls="rewritePanel" data-mode="rewrite">
+            <span class="mode-icon">✦</span> Rewrite
+          </button>
+          <button class="mode-button" id="detectTab" type="button" role="tab" aria-selected="false" aria-controls="detectPanel" data-mode="detect">
+            <span class="mode-icon">◎</span> Analyze
+          </button>
+        </div>
+      </div>
+
+      <div class="editor-grid">
+        <section class="editor-card input-card" aria-labelledby="input-label">
+          <div class="card-head">
+            <div>
+              <span class="card-number">01</span>
+              <h3 id="input-label">Paste your text</h3>
+            </div>
+            <div class="card-actions">
+              <button class="text-button" id="sampleButton" type="button">Use sample</button>
+              <button class="text-button" id="clearButton" type="button">Clear</button>
+            </div>
+          </div>
+          <div class="textarea-shell">
+            <label class="sr-only" for="textInput">Text to rewrite or analyze</label>
+            <textarea id="textInput" maxlength="40000" placeholder="Paste an email, essay, article, post, report, or any other text…" spellcheck="true"></textarea>
+            <div class="input-footer">
+              <span id="wordCount">0 words</span>
+              <span id="characterCount">0 / 40,000</span>
+            </div>
+          </div>
+
+          <div id="rewritePanel" role="tabpanel" aria-labelledby="rewriteTab">
+            <div class="control-row">
+              <label for="voiceSelect">
+                <span>Voice</span>
+                <select id="voiceSelect">
+                  <option value="natural">Natural</option>
+                  <option value="warm">Warm</option>
+                  <option value="professional">Professional</option>
+                  <option value="casual">Casual</option>
+                  <option value="concise">Concise</option>
+                </select>
+              </label>
+              <label for="strengthSelect">
+                <span>Edit strength</span>
+                <select id="strengthSelect">
+                  <option value="light">Light</option>
+                  <option value="balanced" selected>Balanced</option>
+                  <option value="bold">Bold</option>
+                </select>
+              </label>
+              <label for="audienceInput" class="audience-control">
+                <span>Audience <small>optional</small></span>
+                <input id="audienceInput" type="text" maxlength="120" placeholder="e.g. my manager">
+              </label>
+            </div>
+            <button class="primary-action" id="humanizeButton" type="button">
+              <span>Rewrite naturally</span>
+              <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+
+          <div id="detectPanel" role="tabpanel" aria-labelledby="detectTab" hidden>
+            <div class="analysis-note">
+              <strong>What this checks</strong>
+              <span>Sentence rhythm, vocabulary, formulaic phrasing, structure, and personal voice. A result is evidence—not proof.</span>
+            </div>
+            <button class="primary-action analyze-action" id="analyzeButton" type="button">
+              <span>Analyze writing patterns</span>
+              <span aria-hidden="true">◎</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="editor-card result-card" aria-live="polite" aria-labelledby="result-title">
+          <div class="card-head">
+            <div>
+              <span class="card-number">02</span>
+              <h3 id="result-title">Your result</h3>
+            </div>
+            <div class="card-actions result-actions" id="resultActions" hidden>
+              <button class="icon-button" id="copyButton" type="button" title="Copy result" aria-label="Copy result">⧉</button>
+              <button class="icon-button" id="downloadButton" type="button" title="Download result" aria-label="Download result">↓</button>
+            </div>
+          </div>
+
+          <div class="empty-state" id="emptyState">
+            <div class="empty-orbit" aria-hidden="true">
+              <span>h.</span>
+            </div>
+            <h4>Your words, refined.</h4>
+            <p>Choose a tool, paste your text, and your result will appear here.</p>
+          </div>
+
+          <div class="loading-state" id="loadingState" hidden>
+            <div class="loading-glyph"><span></span><span></span><span></span></div>
+            <h4 id="loadingTitle">Reading the rhythm…</h4>
+            <p id="loadingCopy">Preserving your meaning while smoothing the language.</p>
+          </div>
+
+          <div class="rewrite-result" id="rewriteResult" hidden>
+            <div class="result-meta">
+              <span class="result-badge" id="resultBadge">Natural rewrite</span>
+              <span id="resultNote"></span>
+            </div>
+            <div class="output-text" id="outputText" tabindex="0"></div>
+            <div class="rewrite-stats">
+              <article><span>Before</span><strong id="beforeChars">—</strong><small>characters</small></article>
+              <article><span>After</span><strong id="afterChars">—</strong><small>characters</small></article>
+              <article><span>Rhythm</span><strong id="rhythmChange">—</strong><small>variation</small></article>
+            </div>
+          </div>
+
+          <div class="detect-result" id="detectResult" hidden>
+            <div class="score-layout">
+              <div class="score-ring" id="scoreRing" style="--score: 0">
+                <div><strong id="scoreValue">0</strong><span>/ 100</span></div>
+              </div>
+              <div class="score-copy">
+                <span class="confidence-label" id="confidenceLabel">Low confidence</span>
+                <h4 id="verdictText">Inconclusive</h4>
+                <p id="verdictCopy">This score estimates AI-like patterns. It does not prove who—or what—wrote the text.</p>
+              </div>
+            </div>
+            <div class="metric-list" id="metricList"></div>
+            <div class="signal-section">
+              <h5>What influenced the score</h5>
+              <div class="signal-list" id="signalList"></div>
+            </div>
+            <div class="attribution-box">
+              <strong>Model attribution</strong>
+              <p id="attributionText"></p>
+            </div>
+          </div>
+
+          <div class="error-state" id="errorState" hidden>
+            <span>!</span>
+            <h4>We hit a snag.</h4>
+            <p id="errorMessage"></p>
+            <button class="text-button" id="retryButton" type="button">Try again</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="principles" id="how-it-works">
+      <div class="principles-intro">
+        <span class="section-kicker">Built around the text</span>
+        <h2>Better writing,<br>without the theater.</h2>
+      </div>
+      <div class="principle-grid">
+        <article>
+          <span class="principle-icon">↯</span>
+          <span class="principle-number">01</span>
+          <h3>Keep the meaning</h3>
+          <p>Names, dates, numbers, claims, quotes, and technical details stay intact. The voice changes; the truth doesn’t.</p>
+        </article>
+        <article>
+          <span class="principle-icon">≋</span>
+          <span class="principle-number">02</span>
+          <h3>Find a real rhythm</h3>
+          <p>Human writing breathes. We reduce canned transitions, vary pacing, and replace corporate filler with plain language.</p>
+        </article>
+        <article>
+          <span class="principle-icon">◌</span>
+          <span class="principle-number">03</span>
+          <h3>Show the evidence</h3>
+          <p>The analyzer explains which patterns moved the score and admits when the evidence is thin or inconclusive.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="truth-section" id="truth">
+      <div class="truth-mark">“</div>
+      <blockquote>No detector can reliably recognize every GPT, Claude, Gemini, or human passage from text alone.</blockquote>
+      <p>Humanly reports stylistic signals and confidence—not accusations. Use it to review writing, never as the sole basis for grading, hiring, discipline, or moderation.</p>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand footer-brand" href="#top"><span class="brand-mark">h.</span><span>humanly</span></a>
+    <p>Writing help that respects the writer.</p>
+    <span>Built with uncertainty included.</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

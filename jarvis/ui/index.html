@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Your local, read-only knowledge graph. Explore notes and the connections between them.">
+  <title>JARVIS · Knowledge graph</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+  <script type="module" src="/assistant-ui.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#note-search">Skip to note explorer</a>
+  <div class="workspace">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="JARVIS home"><span class="brand-symbol">J</span><span>JARVIS<span class="brand-sub">PERSONAL INTELLIGENCE</span></span></a>
+      <div class="view-title"><span class="tiny-cross">✦</span> Knowledge graph <span class="view-line"></span></div>
+      <div class="top-status"><button id="import-button" class="import-button" type="button">+ Import project</button><span class="badge" id="mode-badge">Loading index</span><span class="local-status"><i></i> LOCAL ONLY</span></div>
+    </header>
+
+    <main class="main-grid">
+      <aside class="left-rail" aria-label="Note explorer and inspector">
+        <section class="panel explorer">
+          <div class="panel-heading"><h1>Explore your brain</h1><span class="section-number">01</span></div>
+          <label class="search-box" for="note-search"><span aria-hidden="true">⌕</span><input id="note-search" type="search" placeholder="Find a note…" autocomplete="off"><kbd>/</kbd></label>
+          <div id="search-results" class="search-results" hidden aria-label="Matching notes"></div>
+          <div class="hub-header"><h2>TOP CONNECTIONS</h2><span>LINKS</span></div>
+          <ol id="hub-list" class="hub-list"><li class="placeholder">Loading your index…</li></ol>
+        </section>
+
+        <section class="panel inspector" aria-label="Selected note">
+          <div class="panel-heading"><h2>Inspector</h2><span class="section-number">02</span></div>
+          <div id="inspector-empty" class="inspector-empty"><span class="empty-orbit" aria-hidden="true">◎</span><p>Follow a connection.</p><span>Select any node to open its note.</span></div>
+          <div id="note-detail" hidden>
+            <div class="note-kind"><span id="note-type" class="type-tag"></span><span id="note-degree"></span></div>
+            <h3 id="note-title"></h3>
+            <p id="note-path" class="source-path"></p>
+            <div class="note-actions"><button id="trace-from" type="button">Trace a connection <span aria-hidden="true">↗</span></button><button id="clear-selection" class="quiet-button" type="button" aria-label="Clear selected note">×</button></div>
+            <div id="note-content" class="note-content" aria-live="polite"></div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="graph-area" aria-label="Interactive knowledge graph">
+        <div class="graph-heading"><div><span class="eyebrow">THE BIG PICTURE</span><h2>Everything is connected.</h2></div><span class="graph-index">BRAIN / <span id="index-number">—</span></span></div>
+        <canvas id="graph" tabindex="0" aria-label="Knowledge graph. Drag to pan, scroll to zoom, click a node to inspect it. Use the note explorer for keyboard navigation."></canvas>
+        <div id="graph-overlay" class="graph-overlay"><span class="loading-ring"></span><p>Mapping your connections…</p></div>
+        <section id="conversation-panel" class="conversation-panel" aria-label="Conversation" hidden><div class="conversation-header"><span>JARVIS <small id="model-status">CONNECTING</small></span><button id="close-conversation" type="button">Back to graph ×</button></div><div id="message-list" class="message-list" aria-live="polite"></div></section>
+        <div id="graph-tooltip" class="graph-tooltip" hidden></div>
+        <div id="path-banner" class="path-banner" hidden><span id="path-message" role="status"></span><button id="clear-path" type="button" aria-label="Clear traced path">×</button></div>
+        <div class="graph-bottom"><div class="graph-stats"><span><strong id="visible-count">—</strong> <span id="visible-label">notes</span></span><span class="stat-divider"></span><span><strong id="edge-count">—</strong> connections</span></div><div class="graph-controls" aria-label="Graph view controls"><button id="zoom-out" aria-label="Zoom out" type="button">−</button><span id="zoom-value">100%</span><button id="zoom-in" aria-label="Zoom in" type="button">+</button><span class="control-divider"></span><button id="reset-view" aria-label="Fit graph to view" title="Fit graph to view" type="button">⌖</button></div></div>
+        <div class="graph-hint">DRAG TO EXPLORE <span>·</span> SCROLL TO ZOOM <span>·</span> SHIFT + CLICK TO TRACE</div>
+      </section>
+
+      <aside class="right-rail" aria-label="Graph filters and assistant state">
+        <section class="panel reactor-panel"><div class="reactor-label"><span class="eyebrow">JARVIS CORE</span><span class="status-dot"></span></div><div class="reactor" aria-hidden="true"><div class="reactor-outer"></div><div class="reactor-middle"></div><div class="reactor-inner"></div><div class="reactor-center">J<span id="reactor-word">IDLE</span></div><span class="reactor-marker m1"></span><span class="reactor-marker m2"></span></div><div class="reactor-status"><span class="small-line"></span><strong id="core-state">Ready when you are</strong><span class="small-line"></span></div><p>Your knowledge. Connected.</p><div class="stage-status"><span>LOCAL CORE</span><span>JARVIS 01</span></div></section>
+        <section class="panel filters-panel"><div class="panel-heading"><h2>Visible layers</h2><button id="toggle-all" class="text-button" type="button">Hide all</button></div><div id="type-filters" class="type-filters"></div><div class="filter-footer"><span id="type-count">— types</span><span>LIVE INDEX</span></div></section>
+        <section class="data-note"><span aria-hidden="true">◇</span><div><strong id="data-note-title">Fictional demo data</strong><p id="data-note-copy">A compression-business sandbox. Benchmark numbers are simulated.</p></div></section>
+        <details id="index-diagnostics" class="diagnostics" hidden><summary id="diagnostics-label">Index notices</summary><ul id="diagnostics-list"></ul></details>
+      </aside>
+    </main>
+
+    <div class="voice-strip"><div class="audio-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span id="live-caption">Type below, or start a voice conversation.</span><span id="voice-status">Checking voice…</span></div>
+    <div id="assistant-error" class="assistant-error" role="alert" hidden></div>
+    <footer class="bottom-dock"><form id="ask-form" class="ask-shell"><span class="ask-spark" aria-hidden="true">✦</span><input id="ask-input" aria-label="Ask JARVIS" autocomplete="off" maxlength="8000" placeholder="What should I focus on today?"><button id="send-message" class="send-button" type="submit" aria-label="Send message">↑</button><button id="mic-toggle" type="button" class="mic-button" aria-label="Toggle microphone" aria-pressed="false" title="Start a voice conversation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M6 11v1a6 6 0 0 0 12 0v-1M12 18v4M9 22h6"/></svg></button></form><div class="dock-actions" aria-label="Assistant tools"><button id="brief-button" type="button"><span aria-hidden="true">☷</span> Brief</button><button id="plan-button" type="button"><span aria-hidden="true">▤</span> Plan</button><button id="memory-button" type="button"><span aria-hidden="true">◇</span> Memory</button><button id="mute-toggle" type="button" aria-pressed="false">Mute</button></div></footer>
+    <div id="app-status" class="app-status" role="status" aria-live="polite"></div>
+  </div>
+  <dialog id="import-dialog" class="setup-dialog"><div class="dialog-heading"><h2>Import a project</h2><button type="button" data-close-dialog="import-dialog" aria-label="Close import dialog">×</button></div><p>Connect a local folder to JARVIS. Your original files stay read-only; no copies are uploaded.</p><label for="project-path">Absolute folder path</label><input id="project-path" placeholder="/Users/your-name/Documents/my-project" autocomplete="off"><p class="dialog-help">Reads notes, PDFs and common source files. Skips dependency folders, hidden files, recognizable credentials and files over 2 MB.</p><p class="dialog-help">When you ask about an imported file, relevant excerpts may be sent to Groq to answer you. Importing itself stays local.</p><button id="preview-project" type="button" class="primary-button">Review folder</button><div id="project-preview" class="project-preview"></div><p id="import-error" role="alert" class="inline-error"></p><button id="import-confirm" type="button" class="primary-button" hidden>Import read-only</button><button id="switch-demo" type="button" class="secondary-button">Return to demo data</button></dialog>
+  <dialog id="memory-dialog" class="setup-dialog"><div class="dialog-heading"><h2>Remember something</h2><button type="button" data-close-dialog="memory-dialog" aria-label="Close memory dialog">×</button></div><p>One lasting fact. JARVIS will show exactly what it saves.</p><label for="memory-fact">What should I remember?</label><textarea id="memory-fact" rows="4" maxlength="1500" placeholder="I prefer concise answers with a clear next step."></textarea><div class="dialog-actions"><button id="save-memory" type="button" class="primary-button">Remember this</button><button id="show-memories" type="button" class="secondary-button">View saved facts</button></div></dialog>
+</body>
+</html>

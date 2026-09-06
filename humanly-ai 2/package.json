@@ -1,0 +1,14 @@
+{
+  "name": "humanly-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A transparent AI-assisted rewriting and AI-pattern analysis workspace.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

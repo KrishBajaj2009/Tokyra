@@ -838,6 +838,7 @@ pre {
 }
 
 .prompt-textarea:focus,
+.target-input-wrap input:focus,
 .dropzone:focus,
 .button:focus-visible {
   outline: 2px solid rgba(100, 240, 208, 0.44);
@@ -855,6 +856,54 @@ pre {
 
 .output-content.is-placeholder {
   color: var(--text-faint);
+}
+
+.target-control {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(100, 240, 208, 0.18);
+  background: rgba(100, 240, 208, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.target-control label {
+  display: block;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.target-control > div > span {
+  display: block;
+  margin-top: 5px;
+  color: var(--text-faint);
+  font-size: 0.86rem;
+}
+
+.target-input-wrap {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.target-input-wrap input {
+  width: 120px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(4, 10, 17, 0.72);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+}
+
+.target-input-wrap span {
+  color: var(--text-dim);
+  font-size: 0.9rem;
 }
 
 .character-row,
@@ -1269,6 +1318,16 @@ pre {
   .helper-row {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .target-control {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .target-input-wrap input {
+    flex: 1;
+    width: auto;
   }
 
   .nav-actions {
