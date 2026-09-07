@@ -3,228 +3,63 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Tokyra compresses AI prompts to cut token usage while protecting instructions, critical literals, and intent.">
-  <meta name="theme-color" content="#f4f3ef">
-  <title>Tokyra — Make every token count</title>
+  <meta name="description" content="Less noise. More signal. Tokyra compresses AI prompts while protecting instructions, exact literals, and intent.">
+  <meta name="theme-color" content="#08090e">
+  <title>Tokyra — Less noise. More signal.</title>
   <link rel="icon" href="tokyra.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="experience.css">
   <script src="auth.js" defer></script>
   <script src="site.js" defer></script>
+  <script src="experience.js" defer></script>
 </head>
-<body class="home-page">
+<body class="home-page signal-page">
   <a class="skip-link" href="#main">Skip to content</a>
-  <div class="cursor-glow" aria-hidden="true"></div>
-
-  <header class="site-header">
-    <div class="container nav-shell">
-      <a class="brand" href="index.html" aria-label="Tokyra home">
-        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span>Tokyra</span>
-      </a>
-
-      <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-controls="primary-nav" aria-expanded="false"><span></span></button>
-
-      <nav class="nav-menu" id="primary-nav" aria-label="Primary navigation">
-        <a class="nav-link" href="#product">Product</a>
-        <a class="nav-link" href="demos.html">Demos</a>
-        <a class="nav-link" href="metrics.html">Metrics</a>
-        <a class="nav-link" href="#how">How it works</a>
-      </nav>
-
-      <div class="nav-actions">
-        <span class="account-badge" data-auth-account hidden></span>
-        <button class="nav-login" type="button" data-auth-login>Log in</button>
-        <button class="nav-login" type="button" data-auth-logout hidden>Log out</button>
-        <a class="button button-dark button-small magnetic" href="compressor.html">Open compressor <span class="arrow" aria-hidden="true">↗</span></a>
-      </div>
-    </div>
-  </header>
-
+  <header class="site-header"><div class="container nav-shell">
+    <a class="brand" href="index.html" aria-label="Tokyra home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>tokyra<span class="brand-period">.</span></span></a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-controls="primary-nav" aria-expanded="false"><span></span></button>
+    <nav class="nav-menu" id="primary-nav" aria-label="Primary navigation"><a class="nav-link" href="#product">The engine</a><a class="nav-link" href="demos.html">Demos</a><a class="nav-link" href="metrics.html">Metrics</a><a class="nav-link" href="#how">How it works</a><button class="mobile-workspace" type="button" data-auth-login>Workspace</button><button class="mobile-workspace" type="button" data-auth-logout hidden>Clear workspace</button></nav>
+    <div class="nav-actions"><span class="account-badge" data-auth-account hidden></span><button class="nav-login" type="button" data-auth-login>Workspace</button><button class="nav-login" type="button" data-auth-logout hidden>Log out</button><a class="button button-small signal-button" href="compressor.html">Launch app <span aria-hidden="true">↗</span></a></div>
+  </div></header>
   <main id="main">
-    <section class="home-hero">
-      <canvas class="network-canvas" data-network aria-hidden="true"></canvas>
-      <div class="hero-grid-lines" aria-hidden="true"></div>
-      <div class="container hero-layout">
-        <div class="hero-copy reveal">
-          <div class="signal-pill"><span></span> Prompt efficiency infrastructure</div>
-          <h1>Make every<br><em>token count.</em></h1>
-          <p>Tokyra strips prompt bloat before inference—preserving exact instructions, critical literals, and intent while making AI workflows leaner.</p>
-          <div class="hero-actions">
-            <a class="button button-accent magnetic" href="compressor.html">Compress a prompt <span class="arrow" aria-hidden="true">↗</span></a>
-            <a class="text-link" href="demos.html">Watch it work <span aria-hidden="true">→</span></a>
-          </div>
-          <ul class="trust-line" aria-label="Tokyra benefits">
-            <li><i></i>No model lock-in</li>
-            <li><i></i>Literal-safe checks</li>
-            <li><i></i>Visible metrics</li>
-          </ul>
+    <section class="signal-hero" aria-labelledby="hero-heading">
+      <div class="hero-coordinate" aria-hidden="true">INTELLIGENCE, DISTILLED. / V.01</div>
+      <div class="container signal-hero-grid">
+        <div class="signal-copy">
+          <div class="eyebrow"><span class="status-light"></span> THE PROMPT COMPRESSION ENGINE</div>
+          <h1 id="hero-heading">Less noise.<br>More <span>signal.</span></h1>
+          <p class="hero-description">Big ideas. Smaller prompts. Cut the token bloat and keep what matters—your instructions, your intent, your edge.</p>
+          <div class="signal-actions"><a class="button signal-button magnetic" href="compressor.html">Compress a prompt <span aria-hidden="true">↗</span></a><a class="demo-link" href="demos.html"><span class="play-icon" aria-hidden="true">▶</span> See it in action</a></div>
+          <div class="hero-assurances"><span>⌁ Model agnostic</span><span>◇ Literal-safe checks</span></div>
         </div>
-
-        <div class="hero-console-wrap reveal reveal-delay-1">
-          <div class="orbit orbit-one" aria-hidden="true"></div>
-          <div class="orbit orbit-two" aria-hidden="true"></div>
-          <article class="hero-console tilt-card" data-tilt aria-label="Animated Tokyra prompt compression preview">
-            <div class="console-bar">
-              <div class="console-brand"><span class="console-pulse"></span> TOKYRA / OPTIMIZER</div>
-              <div class="console-state"><span>LIVE</span> 01</div>
-            </div>
-            <div class="console-screen">
-              <div class="console-column">
-                <div class="console-label"><span>01 / INPUT</span><strong id="demoInputTokens">126 TOKENS</strong></div>
-                <p class="console-prompt" id="heroOriginal">You are a helpful customer support assistant. Carefully read the customer’s request, identify the main issue, and write a clear, concise, friendly response that directly answers every question…</p>
-                <div class="token-stream" aria-hidden="true">
-                  <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span><span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span><span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
-                </div>
-              </div>
-              <div class="compression-core" aria-hidden="true">
-                <span class="core-ring"></span>
-                <span class="core-ring"></span>
-                <span class="core-mark">T</span>
-                <span class="core-beam"></span>
-              </div>
-              <div class="console-column console-output">
-                <div class="console-label"><span>02 / OUTPUT</span><strong id="demoOutputTokens">68 TOKENS</strong></div>
-                <p class="console-prompt" id="heroOptimized">Write a concise, friendly support response that answers every question. Preserve supplied dates and reference numbers; avoid unsupported guarantees and repetition.</p>
-                <div class="console-metrics">
-                  <div><span>REDUCTION</span><strong id="heroReduction">46%</strong></div>
-                  <div><span>FIDELITY</span><strong id="heroFidelity">98%</strong></div>
-                  <div><span>STATUS</span><strong class="success-text">PASSED</strong></div>
-                </div>
-              </div>
-            </div>
-            <div class="console-footer"><span>Balanced mode</span><span>Literal guard active</span><span>Ready for inference</span></div>
-          </article>
+        <div class="core-stage" id="core-stage">
+          <img class="core-art" src="assets/compression-core.png" width="1254" height="1254" alt="An interlocking chrome and violet compression core suspended in orbital light" fetchpriority="high">
+          <div class="core-corner core-corner-tl" aria-hidden="true"></div><div class="core-corner core-corner-br" aria-hidden="true"></div>
+          <div class="core-label core-label-top"><span class="status-light"></span> SIGNAL CORE <span>001</span></div>
+          <div class="core-annotation annotation-input" aria-hidden="true"><span>RAW CONTEXT</span><i></i></div>
+          <div class="core-annotation annotation-output" aria-hidden="true"><i></i><span>PURE INTENT</span></div>
+          <div class="core-caption"><span>COMPLEXITY IN. CLARITY OUT.</span><span aria-hidden="true">[ T ]</span></div>
+          <button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false"><span aria-hidden="true">Ⅱ</span> Pause motion</button>
         </div>
       </div>
-      <div class="scroll-cue" aria-hidden="true"><span></span> SCROLL TO EXPLORE</div>
+      <div class="container hero-baseline"><a href="#product"><span class="scroll-icon" aria-hidden="true">↓</span> EXPLORE THE ENGINE</a><span>DESIGNED FOR THE WAY YOU BUILD</span><span aria-hidden="true">01 — 03</span></div>
     </section>
-
-    <section class="ticker" aria-label="Supported AI workflows">
-      <div class="ticker-track">
-        <span>System prompts</span><i></i><span>AI agents</span><i></i><span>RAG pipelines</span><i></i><span>Coding workflows</span><i></i><span>Model APIs</span><i></i><span>Automation</span><i></i>
-        <span aria-hidden="true">System prompts</span><i aria-hidden="true"></i><span aria-hidden="true">AI agents</span><i aria-hidden="true"></i><span aria-hidden="true">RAG pipelines</span><i aria-hidden="true"></i><span aria-hidden="true">Coding workflows</span><i aria-hidden="true"></i><span aria-hidden="true">Model APIs</span><i aria-hidden="true"></i><span aria-hidden="true">Automation</span><i aria-hidden="true"></i>
-      </div>
+    <div class="workflow-ribbon" aria-label="Works with your AI workflows"><div class="container workflow-list"><span>LESS OVERHEAD.<br><b>MORE POSSIBILITIES.</b></span><p>System prompts</p><i aria-hidden="true">✳</i><p>AI agents</p><i aria-hidden="true">✳</i><p>RAG pipelines</p><i aria-hidden="true">✳</i><p>Coding workflows</p></div></div>
+    <section class="engine-section container" id="product">
+      <div class="section-top reveal"><p class="eyebrow">01 / UNDER THE SURFACE</p><div><h2>Every token has a cost.<br>Make yours <em>count.</em></h2><p>Strip away repetition. Protect the details. Get a leaner prompt you can inspect before it reaches your model.</p></div></div>
+      <article class="signal-console reveal" aria-label="Illustrative prompt compression example">
+        <div class="signal-console-top"><span><i class="status-light"></i> TOKYRA / OPTIMIZER</span><span>ILLUSTRATIVE EXAMPLE <b>↙</b></span></div>
+        <div class="signal-console-body"><div class="prompt-pane"><div class="pane-label"><span>01 — ORIGINAL</span><strong id="demoInputTokens">126 TOKENS</strong></div><p id="heroOriginal">You are a helpful customer support assistant. Carefully read the customer’s request, identify the main issue, and write a clear, concise, friendly response that directly answers every question…</p><div class="token-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="pane-divider" aria-hidden="true">↗</div><div class="prompt-pane optimized-pane"><div class="pane-label"><span>02 — OPTIMIZED</span><strong id="demoOutputTokens">68 TOKENS</strong></div><p id="heroOptimized">Write a concise, friendly support response that answers every question. Preserve supplied dates and reference numbers; avoid unsupported guarantees and repetition.</p><div class="example-metrics"><span><strong id="heroReduction">46%</strong> REDUCTION</span><span><strong id="heroFidelity">98%</strong> FIDELITY</span></div></div></div>
+        <div class="signal-console-bottom"><span>Example results. Your prompt’s results will vary.</span><a href="demos.html">Explore all demos <span aria-hidden="true">↗</span></a></div>
+      </article>
+      <div class="principles"><article class="reveal"><span class="principle-icon" aria-hidden="true">⌘</span><span class="mini-index">01</span><h3>Keep the meaning.</h3><p>Instructions, conditions, and exceptions stay central. Redundant phrasing falls away.</p></article><article class="reveal"><span class="principle-icon" aria-hidden="true">◇</span><span class="mini-index">02</span><h3>Protect the exact.</h3><p>Numbers, URLs, IDs, dates, and behavior-changing negations get literal-safe checks.</p></article><article class="reveal"><span class="principle-icon" aria-hidden="true">↗</span><span class="mini-index">03</span><h3>Measure the difference.</h3><p>Inspect token savings, fidelity, and latency. See the tradeoffs beside every result.</p></article></div>
     </section>
-
-    <section class="section product-section" id="product">
-      <div class="container">
-        <div class="section-intro reveal">
-          <p class="section-index">01 / THE PRODUCT</p>
-          <h2>Compression that understands what <em>cannot</em> be lost.</h2>
-          <p class="section-summary">Shorter is only useful when the prompt still behaves the same. Tokyra evaluates each candidate before it reaches your model.</p>
-        </div>
-
-        <div class="bento-grid">
-          <article class="bento-card bento-wide intent-card reveal tilt-card" data-tilt>
-            <div class="card-topline"><span>SEMANTIC FIDELITY</span><span class="card-number">01</span></div>
-            <div class="intent-visual" data-model-viewer aria-hidden="true">
-              <div class="intent-ring ring-a"></div><div class="intent-ring ring-b"></div><div class="intent-ring ring-c"></div>
-              <div class="intent-word">
-                <span class="intent-glyph"><i></i><i></i><i></i></span>
-                <span>INTENT</span>
-              </div>
-              <span class="intent-node node-a">CONDITIONS</span><span class="intent-node node-b">NEGATIONS</span><span class="intent-node node-c">EXCEPTIONS</span>
-            </div>
-            <div class="card-copy"><h3>Keep the behavior, lose the bloat.</h3><p>Requirements, prohibitions, conditions, and exceptions stay central while repetition and empty phrasing fall away.</p></div>
-          </article>
-
-          <article class="bento-card literal-card reveal reveal-delay-1 tilt-card" data-tilt data-pixel-card data-pixel-gap="10" data-pixel-colors="#7658ff,#9b87ff,#ffffff">
-            <canvas class="pixel-card-canvas" data-pixel-canvas aria-hidden="true"></canvas>
-            <div class="card-topline"><span>LITERAL GUARD</span><span class="card-number">02</span></div>
-            <div class="literal-stack" aria-hidden="true">
-              <span style="--i:0">$5.00 <b>LOCKED</b></span>
-              <span style="--i:1">/api/v2/run <b>LOCKED</b></span>
-              <span style="--i:2">90% floor <b>LOCKED</b></span>
-              <span style="--i:3">DO NOT rename <b>LOCKED</b></span>
-            </div>
-            <div class="card-copy"><h3>Exact means exact.</h3><p>Numbers, URLs, IDs, paths, prices, dates, model names, and behavior-changing negations are protected.</p></div>
-          </article>
-
-          <article class="bento-card metric-visual-card reveal tilt-card" data-tilt>
-            <div class="card-topline"><span>OBSERVABILITY</span><span class="card-number">03</span></div>
-            <div class="dial-visual" aria-hidden="true">
-              <svg viewBox="0 0 240 140" role="presentation"><path class="dial-track" d="M25 120a95 95 0 0 1 190 0"/><path class="dial-value" d="M25 120a95 95 0 0 1 190 0"/></svg>
-              <strong>6</strong><span>LIVE METRICS</span>
-            </div>
-            <div class="card-copy"><h3>See every tradeoff.</h3><p>Token counts, savings, compression, fidelity, latency, and CFS appear beside every result.</p></div>
-          </article>
-
-          <article class="bento-card bento-wide anywhere-card reveal reveal-delay-1 tilt-card" data-tilt>
-            <div class="card-topline"><span>MODEL AGNOSTIC</span><span class="card-number">04</span></div>
-            <div class="pipeline-visual" aria-hidden="true">
-              <div class="pipeline-source">YOUR PROMPT</div><span class="pipeline-line"></span><div class="pipeline-core">T</div><span class="pipeline-line"></span>
-              <div class="model-stack"><span>LLM</span><span>AGENT</span><span>API</span></div>
-            </div>
-            <div class="card-copy"><h3>Optimize once. Send anywhere.</h3><p>Tokyra returns clean text, so the output fits the model, provider, agent framework, or workflow you already use.</p></div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section process-section" id="how">
-      <div class="container process-layout">
-        <div class="process-sticky reveal">
-          <p class="section-index light">02 / THE FLOW</p>
-          <h2>From verbose to <em>production-ready.</em></h2>
-          <p>One focused path from raw instruction to a measured, reviewable result.</p>
-          <a class="button button-light magnetic" href="compressor.html">Try your prompt <span class="arrow" aria-hidden="true">↗</span></a>
-        </div>
-
-        <div class="process-steps">
-          <article class="process-step reveal">
-            <div class="step-meta"><span>01</span><i></i><small>INPUT</small></div>
-            <h3>Bring the real prompt.</h3>
-            <p>Paste, dictate, or upload a text-based system prompt, agent instruction, coding workflow, or reusable template.</p>
-          </article>
-          <article class="process-step reveal">
-            <div class="step-meta"><span>02</span><i></i><small>OPTIMIZE</small></div>
-            <h3>Tokyra finds the signal.</h3>
-            <p>The compressor removes redundancy, restructures instructions, and checks candidate output against protected meaning and literals.</p>
-          </article>
-          <article class="process-step reveal">
-            <div class="step-meta"><span>03</span><i></i><small>VERIFY</small></div>
-            <h3>Review what changed.</h3>
-            <p>Compare both prompts and inspect live compression, fidelity, token, latency, and CFS metrics before production use.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="numbers-section">
-      <div class="container">
-        <div class="numbers-heading reveal"><p class="section-index">03 / BUILT FOR REAL PROMPTS</p><h2>Lean on tokens.<br>Serious about constraints.</h2></div>
-        <div class="numbers-grid">
-          <article class="number-stat reveal"><strong><span data-count="1">1</span></strong><p>fast-path request per compression run</p></article>
-          <article class="number-stat reveal reveal-delay-1"><strong><span data-count="500">500</span><small>K</small></strong><p>character input ceiling in the current worker</p></article>
-          <article class="number-stat reveal reveal-delay-2"><strong><span data-count="6">6</span></strong><p>result metrics shown after every run</p></article>
-          <article class="number-stat reveal reveal-delay-3"><strong><span data-count="90">90</span><small>+</small></strong><p>fidelity target used by Tokyra’s safety path</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="final-cta">
-      <canvas class="network-canvas" data-network aria-hidden="true"></canvas>
-      <div class="container final-cta-inner reveal">
-        <p class="section-index light">READY WHEN YOU ARE</p>
-        <h2>Your prompts can<br><em>do more with less.</em></h2>
-        <div class="final-actions">
-          <a class="button button-accent magnetic" href="compressor.html">Open Tokyra <span class="arrow" aria-hidden="true">↗</span></a>
-          <a class="text-link light-link" href="metrics.html">Explore live metrics <span aria-hidden="true">→</span></a>
-        </div>
-      </div>
-    </section>
+    <section class="flow-section" id="how"><div class="container"><div class="flow-heading reveal"><p class="eyebrow">02 / FROM NOISE TO SIGNAL</p><h2>A smaller prompt.<br>A bigger <em>possibility.</em></h2><a class="text-link" href="compressor.html">Put your prompt to work <span aria-hidden="true">↗</span></a></div><div class="flow-steps"><article class="reveal"><div><span>01</span><small>INPUT</small></div><h3>Bring your context.</h3><p>Paste, dictate, or upload the real prompt. System instructions, agent workflows, and everything in between.</p></article><article class="reveal"><div><span>02</span><small>COMPRESS</small></div><h3>Find the signal.</h3><p>Tokyra removes redundancy and checks the result against the instructions and literals that matter.</p></article><article class="reveal"><div><span>03</span><small>DEPLOY</small></div><h3>Review. Copy. Go.</h3><p>Compare the result, check the metrics, and take your optimized prompt to the model you already use.</p></article></div></div></section>
+    <section class="closing-section container"><div class="closing-top reveal"><p class="eyebrow">03 / YOUR NEXT PROMPT STARTS HERE</p><span aria-hidden="true">↗</span></div><h2 class="reveal">Think bigger.<br><span>Prompt smaller.</span></h2><div class="closing-bottom reveal"><p>All the intent. Less of the overhead.</p><a href="compressor.html" class="button signal-button magnetic">Open the compressor <span aria-hidden="true">↗</span></a></div></section>
   </main>
-
-  <footer class="site-footer dark-footer">
-    <div class="container footer-main">
-      <a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Tokyra</span></a>
-      <p>Prompt efficiency infrastructure for cleaner AI workflows.</p>
-      <div class="footer-nav"><a href="compressor.html">Compressor</a><a href="demos.html">Demos</a><a href="metrics.html">Metrics</a></div>
-    </div>
-    <div class="container footer-bottom"><span>© <span data-year></span> Tokyra</span><span>Make every token count.</span></div>
-  </footer>
+  <footer class="signal-footer container"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>tokyra.</span></a><span>© <span data-year>2026</span> Tokyra</span><nav aria-label="Footer"><a href="compressor.html">Compressor</a><a href="demos.html">Demos</a><a href="metrics.html">Metrics</a></nav><a class="back-top" href="#main" aria-label="Back to top">↑</a></footer>
 </body>
 </html>

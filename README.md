@@ -13,6 +13,12 @@ Tokyra is a static, Netlify-ready frontend for prompt compression. The live comp
 
 Shared presentation and interaction code lives in `style.css`, `site.js`, and `auth.js`. Page-specific behavior lives in `compressor.js`, `demos.js`, and `metrics.js`.
 
+## Signal visual theme
+
+`experience.css` applies the dark violet theme across all four pages. The homepage pairs original chrome-core artwork with perspective-projected particle orbits, cursor parallax, and scroll reveals. `experience.js` provides the hero animation without external runtime dependencies. It caps canvas resolution, suspends rendering offscreen or in hidden tabs, honors reduced motion, and offers a persistent pause control. The illustrated homepage metrics remain labeled examples.
+
+The existing static hosting flow remains supported. To validate local links and prepare a public-only Sites bundle, run `node .openai/build.mjs`. Its output is `dist/`; `.openai/hosting.json` identifies the separate private review deployment.
+
 ## Compressor behavior
 
 The compressor sends one request in `balanced` mode with a 66% target reduction. It supports paste, voice input when the browser provides speech recognition, and text-like file uploads up to 500,000 characters.
