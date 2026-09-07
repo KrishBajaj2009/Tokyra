@@ -450,6 +450,7 @@
     ];
     let demoIndex = 0;
     const renderDemo = () => {
+      if (document.hidden || reducedMotion.matches || document.documentElement.dataset.motion === 'off') return;
       demoIndex = (demoIndex + 1) % demos.length;
       const demo = demos[demoIndex];
       Object.values(heroDemoElements).forEach((element) => {
